@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use AOBench, please cite it using the metadata in this file."
+title: "AOBench: A Trace-Driven, Role-Aware Benchmark for Agent Operations in Realistic Environments"
+abstract: >-
+  AOBench (Agent Operations Benchmark) is an open-source Python benchmark
+  framework for evaluating AI agents that operate High-Performance Computing
+  (HPC) systems. It measures whether an agent completes HPC operational tasks —
+  job scheduling, telemetry interpretation, energy reasoning, and policy
+  enforcement — using the right tools, roles, and permissions. Every task is
+  evaluated against a deterministic environment snapshot with mock HPC tools
+  (SLURM, telemetry, RBAC, docs, facility), so results are role-aware,
+  permission-enforced, trace-based, and reproducible.
+type: software
+authors:
+  - family-names: "Seyedkazemi Ardebili"
+    given-names: "Mohsen"
+    email: "mohsen.seyedkazemi@gmail.com"
+repository-code: "https://github.com/MSKazemi/aobench"
+url: "https://mskazemi.github.io/aobench/"
+license: Apache-2.0
+version: "0.3.0"
+date-released: "2026-06-19"
+keywords:
+  - "AI agents"
+  - "agent evaluation"
+  - "benchmark"
+  - "HPC"
+  - "high-performance computing"
+  - "LLM evaluation"
+  - "tool use"
+  - "RBAC"
+  - "SLURM"
+  - "reproducibility"

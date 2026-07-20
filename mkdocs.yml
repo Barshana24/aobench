@@ -1,0 +1,102 @@
+site_name: AOBench
+site_description: "AOBench: A Trace-Driven, Role-Aware Benchmark for Agent Operations in Realistic Environments"
+site_url: https://mskazemi.github.io/aobench/
+repo_url: https://github.com/MSKazemi/aobench
+repo_name: MSKazemi/aobench
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - search.highlight
+    - content.tabs.link
+    - navigation.top
+    - content.action.edit
+    - announce.dismiss
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+
+plugins:
+  - search
+  - include-markdown
+  - social
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - admonition
+  - toc:
+      permalink: true
+  - md_in_html
+
+extra:
+  version:
+    provider: mike
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation & Running: getting-started/installation.md
+  - Framework:
+    - Overview: framework/overview.md
+    - Background: framework/background.md
+    - Architecture: framework/architecture.md
+    - Environments: framework/environments.md
+    - Evaluation: framework/evaluation.md
+  - Tutorials:
+    - Serve the Benchmark (REST & MCP): tutorials/serving-the-benchmark.md
+  - Guides:
+    - Adapters & Tools: guides/adapters-and-tools.md
+    - Programmatic Access (REST & MCP): guides/programmatic-access.md
+    - Langfuse Integration: guides/langfuse-integration.md
+  - Reference:
+    - Scoring Dimensions: framework/scoring-dimensions.md
+    - Taxonomy: framework/taxonomy.md
+    - System Architecture: reference/system-architecture.md
+    - Environments Overview: reference/environments-overview.md
+    - CLI Commands: reference/commands.md
+  - Contributing:
+    - How to Contribute: about/contributing.md
+    - Developer Guide: framework/implementation.md
+  - About:
+    - Changelog: about/changelog.md
+    - Security: about/security.md

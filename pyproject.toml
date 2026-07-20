@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aobench"
+version = "0.1.0"
+description = "AOBench: A Trace-Driven, Role-Aware Benchmark for Agent Operations in Realistic Environments"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+    "rich>=13.0",
+    "pandas>=2.0",
+    "pyarrow>=14.0",
+    "python-dotenv>=1.0",
+    "rapidfuzz>=3.0",
+    "paramiko>=4.0.0",
+]
+
+[project.optional-dependencies]
+openai = ["openai>=1.0"]
+anthropic = ["anthropic>=0.30"]
+mcp = ["mcp>=1.0", "fastmcp>=2.0", "openai>=1.0"]
+langfuse = ["langfuse>=4.0"]
+leaderboard = ["fastapi>=0.136.0", "uvicorn>=0.46.0"]
+rest = ["fastapi>=0.136.0", "uvicorn>=0.46.0"]
+otel = ["opentelemetry-sdk>=1.30", "opentelemetry-exporter-otlp-proto-http>=1.30"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pingouin>=0.5",
+    "krippendorff>=0.6",
+    "scipy>=1.12",
+    "httpx>=0.28.0",
+    "types-pyyaml>=6.0.12.20260518",
+    "pandas-stubs>=2.3.3.260113",
+]
+docs = [
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.7",
+    "mike>=2.1",
+    "mkdocs-minify-plugin>=0.8",
+    "mkdocs-include-markdown-plugin>=7.1",
+    "pillow>=11.0",
+    "cairosvg>=2.7",
+]
+
+[project.scripts]
+aobench = "aobench.cli.main:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+
+# Optional third-party deps that are not installed in the base environment and
+# ship no type stubs — treat as untyped rather than failing the strict gate.
+[[tool.mypy.overrides]]
+module = [
+    "jinja2",
+    "jinja2.*",
+    "anthropic",
+    "anthropic.*",
+    "langfuse",
+    "langfuse.*",
+]
+ignore_missing_imports = true
