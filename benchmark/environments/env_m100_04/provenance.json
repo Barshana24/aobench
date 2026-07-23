@@ -1,0 +1,10 @@
+{
+  "data_source": "CINECA Marconi100 ExaData (time_aggregated population, 120 real nodes)",
+  "grounding": "hybrid",
+  "citation": "F. Beneventi et al., M100 ExaData \u2014 see exadata/README.md",
+  "schema": "M100 ipmi_pub metric vocabulary in canonical long-format telemetry",
+  "baselines": "per-node baselines drawn from real cross-node population spread (node_baseline_std)",
+  "m100_seed": 702,
+  "scenario": "node_down",
+  "perturbation": "drop all r7n2 telemetry after T0 (last 1.25h); SLURM state=down"
+}

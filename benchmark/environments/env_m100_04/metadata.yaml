@@ -1,0 +1,30 @@
+bundle_root: environments/env_m100_04
+cluster_name: marconi100
+description: 'Real-M100-grounded snapshot (ipmi_pub telemetry). Node r7n2 went dark
+  at ~10:45 UTC: all of its IPMI telemetry stops after that point while peers keep
+  reporting, and SLURM marks r7n2 ''down''. Sysadmin must identify the unreachable
+  node and the time it stopped reporting.'
+environment_id: env_m100_04
+implementation_status: bundled
+included_files:
+- slurm/slurm_state.json
+- telemetry/telemetry_timeseries.parquet
+- policy/rbac_policy.yaml
+- incidents/incident_metadata.json
+- docs/node_down_runbook.md
+- provenance.json
+included_sources:
+- slurm
+- telemetry
+- docs
+- rbac
+- incidents
+scenario_type: incident_response
+snapshot_name: M100 Node Down
+snapshot_timestamp: '2022-08-10T12:00:00Z'
+supported_categories:
+- MON
+supported_roles:
+- sysadmin
+- scientific_user
+validation_status: validated

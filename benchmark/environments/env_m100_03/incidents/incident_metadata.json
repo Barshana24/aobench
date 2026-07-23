@@ -1,0 +1,26 @@
+{
+  "incident_id": "INC-M100-0802-001",
+  "severity": "high",
+  "title": "Rack-4 cooling fault \u2014 ambient rising across all nodes",
+  "opened_at": "2022-08-02T14:20:00Z",
+  "status": "open",
+  "affected_resource": "rack-4",
+  "affected_job": null,
+  "summary": "The vertiv CRAC Supply_Air_Temperature feeding rack 4 climbed from ~18\u00b0C to ~30\u00b0C, and IPMI ambient (inlet) on every rack-4 node (r4n0\u2013r4n7) rose from ~22\u00b0C to ~32\u00b0C over 2 hours \u2014 a rack-wide signature of a cooling (CRAC) fault rather than a single-node issue. Fans ramped up.",
+  "timeline": [
+    {
+      "time": "2022-08-02T13:00:00Z",
+      "event": "ambient starts rising across rack 4"
+    },
+    {
+      "time": "2022-08-02T14:20:00Z",
+      "event": "rack-4 inlet temps exceed 28\u00b0C warning"
+    },
+    {
+      "time": "2022-08-02T15:00:00Z",
+      "event": "Snapshot captured \u2014 ambient ~32\u00b0C rack-wide"
+    }
+  ],
+  "resolution": null,
+  "notes": "Check the cooling unit serving rack 4; ambient rising on ALL nodes rules out per-node fault."
+}

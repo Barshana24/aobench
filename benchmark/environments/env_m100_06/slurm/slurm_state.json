@@ -1,0 +1,177 @@
+{
+  "cluster": "marconi100",
+  "snapshot_time": "2022-07-25T18:00:00Z",
+  "nodes": [
+    {
+      "name": "r5n0",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r5n1",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r5n2",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r5n3",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r5n4",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r5n5",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r5n6",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r5n7",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    }
+  ],
+  "partitions": [
+    {
+      "name": "m100_usr_prod",
+      "max_time": "24:00:00",
+      "max_mem_per_node_mb": 262144,
+      "default_mem_per_cpu_mb": 7600
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "66353",
+      "user": "1164",
+      "state": "FAILED",
+      "job_state": "OUT_OF_MEMORY",
+      "partition": "m100_usr_prod",
+      "node": "r5n3",
+      "nodes": [
+        "r5n3"
+      ],
+      "num_cpus": 4,
+      "num_nodes": 1,
+      "elapsed": "07:03:26",
+      "qos": "1",
+      "time_limit": "1-00:00:00",
+      "state_reason": "OutOfMemory"
+    },
+    {
+      "job_id": "5672054",
+      "user": "1242",
+      "state": "CANCELLED",
+      "partition": "m100_usr_prod",
+      "node": "r5n0",
+      "nodes": [
+        "r5n0"
+      ],
+      "num_cpus": 32,
+      "num_nodes": 1,
+      "elapsed": null,
+      "qos": "1",
+      "job_state": "CANCELLED",
+      "time_limit": "1-00:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "2664230",
+      "user": "1684",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r5n1",
+      "nodes": [
+        "r5n1"
+      ],
+      "num_cpus": 8192,
+      "num_nodes": 64,
+      "elapsed": "15:54:33",
+      "qos": "4",
+      "job_state": "NODE_FAIL",
+      "time_limit": "1-00:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "3672910",
+      "user": "1563",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r5n2",
+      "nodes": [
+        "r5n2"
+      ],
+      "num_cpus": 128,
+      "num_nodes": 1,
+      "elapsed": "01:40:06",
+      "qos": "1",
+      "job_state": "OUT_OF_MEMORY",
+      "time_limit": "12:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "1929458",
+      "user": "1216",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r5n3",
+      "nodes": [
+        "r5n3"
+      ],
+      "num_cpus": 4,
+      "num_nodes": 1,
+      "elapsed": "00:01:05",
+      "qos": "8",
+      "job_state": "OUT_OF_MEMORY",
+      "time_limit": "1:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    }
+  ]
+}

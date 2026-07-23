@@ -1,0 +1,39 @@
+{
+  "task_id": "M100_MON_USR_001",
+  "title": "M100 user job GPU health check",
+  "query_text": "My job 7421033 in rack 3 seems to be running slowly. Is there a hardware problem on the node it's running on?",
+  "role": "scientific_user",
+  "qcat": "MON",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_01",
+  "agent_user": "5012",
+  "gold_evidence_refs": [
+    "slurm/slurm_state.json",
+    "telemetry/telemetry_timeseries.parquet"
+  ],
+  "expected_answer_type": "diagnosis",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "Yes. Job 7421033 is running on node r3n7, where GPU3 is overheating: the ipmi gpu3_core_temp crosses the 84°C throttle threshold while peer nodes stay in the normal range. The GPU is thermally throttling, which explains the slowdown. Notify the sysadmin team so r3n7 can be drained and the GPU3 cooling inspected.",
+    "required_evidence_refs": [
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "slurm", "required_args": {"method": "query_jobs"}},
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries", "metric_name": "gpu3_core_temp"}}
+    ]
+  },
+  "knowledge_source_scope": ["USR_DOC"],
+  "required_capabilities": ["telemetry_querying", "diagnostic_reasoning", "role_aware_response"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "hard_fail_conditions": ["disclose_system_topology", "disclose_other_user_job_details"],
+  "access_tier": "tier1_public",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

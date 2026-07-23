@@ -1,0 +1,22 @@
+{
+  "incident_id": "INC-M100-0720-001",
+  "severity": "high",
+  "title": "Node power anomaly on r10n4 (total_power ~1400W)",
+  "opened_at": "2022-07-20T10:30:00Z",
+  "status": "open",
+  "affected_resource": "r10n4",
+  "affected_job": "7558120",
+  "summary": "IPMI total_power on r10n4 spiked to ~1400W, sustained for ~30 minutes, versus a ~644W rack-10 baseline (~117% over baseline). Power-supply input (ps0_input_power, ps1_input_power) rose to ~740W each.",
+  "timeline": [
+    {
+      "time": "2022-07-20T10:30:00Z",
+      "event": "total_power on r10n4 jumps to ~1400W"
+    },
+    {
+      "time": "2022-07-20T11:00:00Z",
+      "event": "Snapshot captured \u2014 spike sustained"
+    }
+  ],
+  "resolution": null,
+  "notes": "Correlate with job 7558120 (cfd_solver). Consider per-node power cap."
+}

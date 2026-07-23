@@ -1,0 +1,59 @@
+# AOBench scoring weight profiles
+# All weights per profile must sum to 1.0
+
+profiles:
+  default_hpc_v01:
+    version: "0.1"
+    weights:
+      outcome: 0.30
+      tool_use: 0.15
+      grounding: 0.10
+      governance: 0.20
+      robustness: 0.10
+      efficiency: 0.05
+      workflow: 0.10
+
+  alpha0_minimal:
+    version: "0.1-alpha"
+    # Only dimensions implemented in Alpha-0; others are 0-weighted
+    weights:
+      outcome: 0.50
+      tool_use: 0.00
+      grounding: 0.00
+      governance: 0.35
+      robustness: 0.00
+      efficiency: 0.15
+      workflow: 0.00
+
+  alpha1_grounding:
+    version: "0.1-alpha1"
+    # Activates grounding and tool_use; use this profile for tasks where
+    # tool calls are expected and gold evidence refs are set
+    weights:
+      outcome: 0.35
+      tool_use: 0.20
+      grounding: 0.20
+      governance: 0.20
+      robustness: 0.00
+      efficiency: 0.05
+      workflow: 0.00
+
+  clear_v1:
+    version: "0.1"
+    # CLEAR-aligned weight profile (Mehta 2025, arXiv:2511.14136).
+    # Maps AOBench dimensions to CLEAR's five axes:
+    #   E (Efficacy)   → outcome   0.20
+    #   A (Assurance)  → governance 0.20
+    #   R (Reliability)→ robustness 0.20
+    #   C+L proxy      → efficiency 0.40  (step-count proxy for cost + latency combined)
+    #   tool_use / grounding are HPC-specific; no CLEAR equivalent → 0.00
+    # Note: the real CLEAR composite (requiring cross-model normalisation of
+    # cost and latency) is computed by `aobench clear`, not this profile.
+    weights:
+      outcome: 0.20
+      tool_use: 0.00
+      grounding: 0.00
+      governance: 0.20
+      robustness: 0.20
+      efficiency: 0.40
+      workflow: 0.00

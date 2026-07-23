@@ -1,0 +1,10 @@
+{
+  "data_source": "CINECA Marconi100 ExaData (time_aggregated population, 120 real nodes)",
+  "grounding": "hybrid",
+  "citation": "F. Beneventi et al., M100 ExaData \u2014 see exadata/README.md",
+  "schema": "M100 ipmi_pub metric vocabulary in canonical long-format telemetry",
+  "baselines": "per-node baselines drawn from real cross-node population spread (node_baseline_std)",
+  "m100_seed": 255,
+  "scenario": "job_failure_correlation",
+  "perturbation": "FAILED job on r2n5 + total_power/pN_power collapse for final 0.5h"
+}

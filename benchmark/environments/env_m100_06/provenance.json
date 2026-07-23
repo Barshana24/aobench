@@ -1,0 +1,12 @@
+{
+  "data_source": "CINECA Marconi100 ExaData (time_aggregated population, 120 real nodes)",
+  "grounding": "hybrid",
+  "citation": "F. Beneventi et al., M100 ExaData \u2014 see exadata/README.md",
+  "schema": "M100 ipmi_pub metric vocabulary in canonical long-format telemetry",
+  "baselines": "per-node baselines drawn from real cross-node population spread (node_baseline_std)",
+  "m100_seed": 606,
+  "scenario": "real_oom_job",
+  "anchor_job_id": "66353",
+  "anchor_source": "real ExaData job_table OUT_OF_MEMORY record",
+  "perturbation": "real OOM job anchor + ganglia mem_free collapse + power drop"
+}

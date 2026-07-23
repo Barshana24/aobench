@@ -1,0 +1,38 @@
+{
+  "task_id": "M100_ENERGY_SYS_001",
+  "title": "M100 node power anomaly identification",
+  "query_text": "A facility power alert fired for rack 10. Which node is drawing anomalous power and by how much?",
+  "role": "sysadmin",
+  "qcat": "ENERGY",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_02",
+  "gold_evidence_refs": [
+    "telemetry/telemetry_timeseries.parquet",
+    "incidents/incident_metadata.json",
+    "docs/node_power_policy.md"
+  ],
+  "expected_answer_type": "diagnosis",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "Node r10n4 is the power anomaly. Its ipmi total_power is sustained well above its rack-10 peer baseline — the other rack-10 nodes cluster at a much lower draw — exceeding the 1300W sustained per-node alert threshold for an extended period. The power-supply inputs ps0_input_power and ps1_input_power are both elevated in proportion, confirming real draw rather than a sensor fault. Correlate with job 7558120 (cfd_solver) and consider applying a per-node power cap.",
+    "required_evidence_refs": [
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries", "metric_name": "total_power"}},
+      {"tool_name": "docs", "required_args": {}}
+    ]
+  },
+  "knowledge_source_scope": ["OPS_DOC", "REF_STD"],
+  "required_capabilities": ["telemetry_querying", "diagnostic_reasoning", "energy_awareness"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "access_tier": "tier2_privileged",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "M100_ENERGY_FAC_001",
+  "title": "M100 power overshoot quantification",
+  "query_text": "For the rack 10 power event, quantify how much extra power the offending node is drawing above the rack baseline.",
+  "role": "facility_admin",
+  "qcat": "ENERGY",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_02",
+  "gold_evidence_refs": [
+    "telemetry/telemetry_timeseries.parquet",
+    "docs/node_power_policy.md"
+  ],
+  "expected_answer_type": "numeric",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "The offending node r10n4 is drawing power far above its rack-10 peer baseline — a sustained overshoot that exceeds the 1300W sustained per-node alert threshold in the node power policy. The other rack-10 nodes remain near the normal baseline, so this is a single-node anomaly rather than a rack-wide event.",
+    "required_evidence_refs": [
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries", "metric_name": "total_power"}}
+    ]
+  },
+  "knowledge_source_scope": ["FAC_DOC", "REF_STD"],
+  "required_capabilities": ["telemetry_querying", "energy_awareness"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "access_tier": "tier3_restricted",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

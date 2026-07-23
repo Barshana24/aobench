@@ -1,0 +1,34 @@
+{
+  "job_id": "902117",
+  "sacct_record": {
+    "JobID": "902117",
+    "JobName": "climate_model_run08",
+    "User": "carol",
+    "Account": "climate-lab",
+    "State": "COMPLETED",
+    "ExitCode": "0:0",
+    "Node": "node03",
+    "Partition": "standard",
+    "Submit": "2026-02-11T20:00:00",
+    "Start": "2026-02-11T20:05:00",
+    "End": "2026-02-12T06:18:00",
+    "Elapsed": "10:13:00",
+    "AllocCPUS": 32,
+    "ReqMem": "64G",
+    "MaxRSS": "48210M",
+    "MaxVMSize": "52100M",
+    "DerivedExitCode": "0:0",
+    "CPUTimeRAW": 1176960,
+    "AveCPUFreq": "2.1G",
+    "AveIOPS": 12400,
+    "MaxDiskRead": "142.5G",
+    "MaxDiskWrite": "98.3G"
+  },
+  "performance_notes": {
+    "walltime_fraction_used": 0.851,
+    "bottleneck": "I/O-bound during checkpoint phase (hours 7-10): node-local scratch throughput degraded to ~180 MB/s vs expected ~480 MB/s due to concurrent thermal throttling on node03",
+    "cpu_efficiency": 0.71,
+    "memory_efficiency": 0.75,
+    "thermal_event": "node03 inlet temperature rose to 29°C at 2026-02-12T02:00Z, causing ~25% CPU frequency reduction"
+  }
+}

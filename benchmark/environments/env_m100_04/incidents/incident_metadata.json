@@ -1,0 +1,26 @@
+{
+  "incident_id": "INC-M100-0810-001",
+  "severity": "high",
+  "title": "Node r7n2 unreachable \u2014 telemetry stopped, SLURM down",
+  "opened_at": "2022-08-10T10:50:00Z",
+  "status": "open",
+  "affected_resource": "r7n2",
+  "affected_job": null,
+  "summary": "Node r7n2 stopped reporting all IPMI telemetry at ~10:45 UTC and SLURM marks it 'down'. Peer nodes r7n0\u2013r7n7 continue reporting normally. The node is unreachable and any jobs on it require rescheduling.",
+  "timeline": [
+    {
+      "time": "2022-08-10T10:45:00Z",
+      "event": "r7n2 telemetry stops"
+    },
+    {
+      "time": "2022-08-10T10:50:00Z",
+      "event": "SLURM marks r7n2 down"
+    },
+    {
+      "time": "2022-08-10T12:00:00Z",
+      "event": "Snapshot captured \u2014 r7n2 still dark"
+    }
+  ],
+  "resolution": null,
+  "notes": "Power-cycle r7n2 via BMC; check IB link and BMC reachability."
+}

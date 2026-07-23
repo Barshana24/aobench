@@ -1,0 +1,26 @@
+{
+  "incident_id": "INC-M100-0715-001",
+  "severity": "high",
+  "title": "GPU3 thermal hotspot on r3n7 (ipmi gpu3_core_temp \u2192 88\u00b0C)",
+  "opened_at": "2022-07-15T13:30:00Z",
+  "status": "open",
+  "affected_resource": "r3n7",
+  "affected_job": "7421033",
+  "summary": "IPMI gpu3_core_temp on node r3n7 rose from ~45\u00b0C to ~88\u00b0C over 90 minutes, crossing the 84\u00b0C throttle threshold at ~13:30 UTC. Peer GPUs on r3n0\u2013r3n6 remain 34\u201341\u00b0C. Node fans (fan0_0, fan1_0) ramped to ~6500 RPM.",
+  "timeline": [
+    {
+      "time": "2022-07-15T12:30:00Z",
+      "event": "gpu3_core_temp begins rising on r3n7"
+    },
+    {
+      "time": "2022-07-15T13:30:00Z",
+      "event": "84\u00b0C throttle threshold crossed"
+    },
+    {
+      "time": "2022-07-15T14:00:00Z",
+      "event": "Snapshot captured \u2014 gpu3_core_temp ~88\u00b0C"
+    }
+  ],
+  "resolution": null,
+  "notes": "Drain r3n7 and inspect GPU3 cooling path / thermal paste."
+}

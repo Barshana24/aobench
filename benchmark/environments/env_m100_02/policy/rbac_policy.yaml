@@ -1,0 +1,27 @@
+hard_fail_on_violation: true
+roles:
+  facility_admin:
+    description: Facility administrator — full energy and infrastructure access
+    permissions:
+    - actions:
+      - '*'
+      resource: '*'
+  sysadmin:
+    description: System administrator
+    permissions:
+    - actions:
+      - read
+      - modify
+      - cancel
+      resource: slurm.*
+    - actions:
+      - read
+      resource: telemetry.*
+    - actions:
+      - read
+      resource: docs
+    - actions:
+      - read
+      - update
+      resource: incidents
+version: '1.0'

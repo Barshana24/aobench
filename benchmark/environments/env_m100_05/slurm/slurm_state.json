@@ -1,0 +1,208 @@
+{
+  "cluster": "marconi100",
+  "snapshot_time": "2022-08-18T16:00:00Z",
+  "nodes": [
+    {
+      "name": "r2n0",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r2n1",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r2n2",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r2n3",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r2n4",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r2n5",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r2n6",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r2n7",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    }
+  ],
+  "partitions": [
+    {
+      "name": "m100_usr_prod",
+      "max_time": "24:00:00",
+      "max_mem_per_node_mb": 262144,
+      "default_mem_per_cpu_mb": 7600
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "7798450",
+      "user": "9120",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r2n5",
+      "num_cpus": 128,
+      "num_nodes": 1,
+      "qos": "normal",
+      "job_state": "FAILED",
+      "nodes": [
+        "r2n5"
+      ],
+      "submit_time": "2022-08-18T16:00:00Z",
+      "start_time": "2022-08-18T11:00:00Z",
+      "time_limit": "24:00:00",
+      "min_memory_node": 262144,
+      "priority": 100000,
+      "job_name": "qmc_solver",
+      "end_time": "2022-08-18T15:30:00Z",
+      "elapsed": "04:30:00",
+      "run_time": 16200,
+      "exit_code": "1:0",
+      "derived_ec": "1:0",
+      "state_reason": "JobLaunchFailure"
+    },
+    {
+      "job_id": "7798451",
+      "user": "9120",
+      "state": "RUNNING",
+      "partition": "m100_usr_prod",
+      "node": "r2n1",
+      "num_cpus": 128,
+      "num_nodes": 1,
+      "qos": "normal",
+      "job_state": "RUNNING",
+      "nodes": [
+        "r2n1"
+      ],
+      "submit_time": "2022-08-18T16:00:00Z",
+      "start_time": "2022-08-18T11:00:00Z",
+      "time_limit": "24:00:00",
+      "min_memory_node": 262144,
+      "priority": 100000,
+      "job_name": "qmc_solver",
+      "elapsed": "05:00:00",
+      "run_time": 18000
+    },
+    {
+      "job_id": "4456762",
+      "user": "1234",
+      "state": "COMPLETED",
+      "partition": "m100_usr_prod",
+      "node": "r2n0",
+      "nodes": [
+        "r2n0"
+      ],
+      "num_cpus": 4,
+      "num_nodes": 1,
+      "elapsed": "00:26:49",
+      "qos": "1",
+      "job_state": "COMPLETED",
+      "time_limit": "2:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "989033",
+      "user": "366",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r2n1",
+      "nodes": [
+        "r2n1"
+      ],
+      "num_cpus": 4,
+      "num_nodes": 1,
+      "elapsed": "00:00:01",
+      "qos": "1",
+      "job_state": "FAILED",
+      "time_limit": "1-00:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "5435946",
+      "user": "1739",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r2n2",
+      "nodes": [
+        "r2n2"
+      ],
+      "num_cpus": 128,
+      "num_nodes": 1,
+      "elapsed": "00:00:10",
+      "qos": "8",
+      "job_state": "FAILED",
+      "time_limit": "2:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "3480701",
+      "user": "1347",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r2n3",
+      "nodes": [
+        "r2n3"
+      ],
+      "num_cpus": 20,
+      "num_nodes": 1,
+      "elapsed": "03:25:03",
+      "qos": "1",
+      "job_state": "OUT_OF_MEMORY",
+      "time_limit": "3:31:00",
+      "state_reason": null,
+      "derived_ec": null
+    }
+  ]
+}

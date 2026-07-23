@@ -1,0 +1,26 @@
+{
+  "incident_id": "INC-M100-0818-001",
+  "severity": "medium",
+  "title": "Job 7798450 FAILED on r2n5 \u2014 power collapse at failure time",
+  "opened_at": "2022-08-18T15:35:00Z",
+  "status": "open",
+  "affected_resource": "r2n5",
+  "affected_job": "7798450",
+  "summary": "Job 7798450 (qmc_solver) on r2n5 entered FAILED state at ~15:30 UTC (exit_code 1:0, reason JobLaunchFailure). IPMI total_power on r2n5 dropped from ~730W to ~260W and CPU package power (p0_power/p1_power) fell to idle at the same time, consistent with the workload terminating.",
+  "timeline": [
+    {
+      "time": "2022-08-18T11:00:00Z",
+      "event": "Job 7798450 starts on r2n5"
+    },
+    {
+      "time": "2022-08-18T15:30:00Z",
+      "event": "Job 7798450 FAILED; node power collapses"
+    },
+    {
+      "time": "2022-08-18T16:00:00Z",
+      "event": "Snapshot captured \u2014 r2n5 at idle power"
+    }
+  ],
+  "resolution": null,
+  "notes": "Check the job's stderr for the launch failure; node hardware looks healthy (idle power normal)."
+}

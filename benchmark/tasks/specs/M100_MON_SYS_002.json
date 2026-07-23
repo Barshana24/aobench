@@ -1,0 +1,38 @@
+{
+  "task_id": "M100_MON_SYS_002",
+  "title": "M100 unreachable node detection",
+  "query_text": "Monitoring says something is wrong in rack 7. Which node is down and when did it stop responding?",
+  "role": "sysadmin",
+  "qcat": "MON",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_04",
+  "gold_evidence_refs": [
+    "telemetry/telemetry_timeseries.parquet",
+    "slurm/slurm_state.json",
+    "incidents/incident_metadata.json"
+  ],
+  "expected_answer_type": "diagnosis",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "Node r7n2 is down. Its IPMI telemetry stops partway through the window while all peer nodes r7n0–r7n7 keep reporting through the snapshot, and SLURM marks r7n2 in the 'down' state. The node has been unreachable since its telemetry cut off; reschedule any jobs off it and power-cycle it via BMC, checking the IB link.",
+    "required_evidence_refs": [
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries"}},
+      {"tool_name": "slurm", "required_args": {"method": "list_nodes"}}
+    ]
+  },
+  "knowledge_source_scope": ["OPS_DOC"],
+  "required_capabilities": ["telemetry_querying", "cross_source_fusion", "incident_handling"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "access_tier": "tier2_privileged",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

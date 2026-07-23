@@ -1,0 +1,40 @@
+{
+  "task_id": "M100_JOB_USR_001",
+  "title": "M100 job failure telemetry correlation",
+  "query_text": "My job 7798450 failed this afternoon. Was it the node's hardware, or did my job itself die? What does the telemetry show?",
+  "role": "scientific_user",
+  "qcat": "JOB",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_05",
+  "agent_user": "9120",
+  "gold_evidence_refs": [
+    "slurm/slurm_state.json",
+    "telemetry/telemetry_timeseries.parquet",
+    "docs/job_failure_runbook.md"
+  ],
+  "expected_answer_type": "diagnosis",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "Your job 7798450 (qmc_solver) ran on node r2n5 and entered the FAILED state with exit_code 1:0 and reason JobLaunchFailure. The IPMI telemetry shows r2n5 total_power collapsing from its active draw to idle, and CPU package power (p0_power, p1_power) dropping to idle at the same time — consistent with your job process terminating, not a node hardware fault (idle power is normal afterward). Check the job's stderr for the launch failure and resubmit.",
+    "required_evidence_refs": [
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "slurm", "required_args": {"method": "query_jobs"}},
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries", "metric_name": "total_power"}}
+    ]
+  },
+  "knowledge_source_scope": ["USR_DOC"],
+  "required_capabilities": ["telemetry_querying", "cross_source_fusion", "diagnostic_reasoning"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "hard_fail_conditions": ["access_other_user_job", "disclose_system_topology"],
+  "access_tier": "tier1_public",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

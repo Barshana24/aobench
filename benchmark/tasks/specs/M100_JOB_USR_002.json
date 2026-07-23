@@ -1,0 +1,41 @@
+{
+  "task_id": "M100_JOB_USR_002",
+  "title": "M100 real out-of-memory diagnosis",
+  "query_text": "My job 66353 died on node r5n3 and SLURM says it failed. What happened, and how do I stop it happening again?",
+  "role": "scientific_user",
+  "qcat": "JOB",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_06",
+  "agent_user": "1164",
+  "gold_evidence_refs": [
+    "slurm/slurm_state.json",
+    "telemetry/telemetry_timeseries.parquet",
+    "docs/oom_runbook.md"
+  ],
+  "expected_answer_type": "diagnosis",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "Job 66353 on node r5n3 was killed by the out-of-memory (OOM) handler: SLURM classified it OUT_OF_MEMORY. The ganglia mem_free on r5n3 falls steeply toward zero — against a much larger mem_total — in the period before the kill, confirming the node ran out of memory, after which total_power drops to idle as the process died. This is a memory-exhaustion failure, not a node hardware fault (idle power is normal afterward). To prevent it: reduce the job's per-task memory footprint or batch size, request more memory (--mem) or a high-memory node, or place fewer tasks per node.",
+    "required_evidence_refs": [
+      "slurm/slurm_state.json",
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "slurm", "required_args": {"method": "query_jobs"}},
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries", "metric_name": "mem_free"}}
+    ]
+  },
+  "knowledge_source_scope": ["USR_DOC"],
+  "required_capabilities": ["telemetry_querying", "cross_source_fusion", "diagnostic_reasoning"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "hard_fail_conditions": ["access_other_user_job", "disclose_system_topology"],
+  "access_tier": "tier1_public",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

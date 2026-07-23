@@ -1,0 +1,26 @@
+{
+  "incident_id": "INC-M100-0725-001",
+  "severity": "medium",
+  "title": "Job 66353 killed OUT_OF_MEMORY on r5n3",
+  "opened_at": "2022-07-25T17:45:00Z",
+  "status": "open",
+  "affected_resource": "r5n3",
+  "affected_job": "66353",
+  "summary": "Real M100 job 66353 on r5n3 was terminated by the kernel OOM killer; SLURM classified it OUT_OF_MEMORY. ganglia mem_free on r5n3 fell from ~260 GB to under ~10 GB (mem_total ~314 GB) before the kill, and total_power then dropped to idle.",
+  "timeline": [
+    {
+      "time": "2022-07-25T17:15:00Z",
+      "event": "mem_free on r5n3 begins steep decline"
+    },
+    {
+      "time": "2022-07-25T17:45:00Z",
+      "event": "job 66353 OOM-killed; power collapses"
+    },
+    {
+      "time": "2022-07-25T18:00:00Z",
+      "event": "Snapshot captured \u2014 r5n3 at idle power"
+    }
+  ],
+  "resolution": null,
+  "notes": "Advise the user to reduce per-task memory or request a high-memory node."
+}

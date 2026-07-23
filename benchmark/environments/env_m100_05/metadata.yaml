@@ -1,0 +1,31 @@
+bundle_root: environments/env_m100_05
+cluster_name: marconi100
+description: Real-M100-grounded snapshot (ipmi_pub telemetry). Job 7798450 on node
+  r2n5 FAILED at ~15:30 UTC; the node's total_power and CPU package power (p0_power,
+  p1_power) collapse to near-idle at that moment as the process dies. The agent must
+  correlate the failed SLURM job with the telemetry drop.
+environment_id: env_m100_05
+implementation_status: bundled
+included_files:
+- slurm/slurm_state.json
+- telemetry/telemetry_timeseries.parquet
+- policy/rbac_policy.yaml
+- incidents/incident_metadata.json
+- docs/job_failure_runbook.md
+- provenance.json
+included_sources:
+- slurm
+- telemetry
+- docs
+- rbac
+- incidents
+scenario_type: job_failure
+snapshot_name: M100 Job Failure Correlation
+snapshot_timestamp: '2022-08-18T16:00:00Z'
+supported_categories:
+- JOB
+- MON
+supported_roles:
+- scientific_user
+- sysadmin
+validation_status: validated

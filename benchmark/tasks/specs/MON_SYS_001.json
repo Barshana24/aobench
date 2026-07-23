@@ -1,0 +1,43 @@
+{
+  "task_id": "MON_SYS_001",
+  "legacy_query_id": "Q-MON-001",
+  "title": "Node anomaly detection",
+  "query_text": "Which node looks abnormal compared with the rest?",
+  "role": "sysadmin",
+  "qcat": "MON",
+  "difficulty": "medium",
+  "environment_id": "env_02",
+  "gold_evidence_refs": [
+    "telemetry/node_metrics.json",
+    "alerts/node_alerts.json"
+  ],
+  "expected_answer_type": "comparison",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "Node node03 is abnormal: temperature 72\u00b0C (others 42\u201355\u00b0C), CPU 94%, memory 89%. Alerts indicate thermal warning.",
+    "required_evidence_refs": [
+      "telemetry/node_metrics.json"
+    ]
+  },
+  "allowed_tools": [
+    "slurm",
+    "telemetry",
+    "docs"
+  ],
+  "hard_fail_conditions": [],
+  "aggregate_weight_profile": "alpha1_grounding",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "expected_tool_calls": [
+    "telemetry"
+  ],
+  "knowledge_source_scope": [
+    "OPS_DOC",
+    "POLICY"
+  ],
+  "access_tier": "tier2_privileged",
+  "difficulty_tier": 2,
+  "task_creation_date": "2026-05-02",
+  "contamination_risk": "clean"
+}

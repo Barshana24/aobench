@@ -1,0 +1,14 @@
+[
+  {
+    "job_id": "921001",
+    "sacct_record": {
+      "JobID": "921001", "JobName": "gpu_idle_test", "User": "jdoe",
+      "Account": "proj_x", "State": "COMPLETED", "ExitCode": "0:0",
+      "Node": "gpu02", "Partition": "gpu",
+      "Submit": "2026-03-01T22:00:00", "Start": "2026-03-01T22:05:00",
+      "End": "2026-03-02T07:10:00", "Elapsed": "09:05:00",
+      "AllocCPUS": 8, "ReqMem": "32G"
+    },
+    "notes": "Job submitted to gpu partition using account proj_x; this succeeded due to a misconfigured QoS association that has since been flagged."
+  }
+]

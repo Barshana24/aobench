@@ -1,0 +1,204 @@
+{
+  "cluster": "marconi100",
+  "snapshot_time": "2022-07-20T11:00:00Z",
+  "nodes": [
+    {
+      "name": "r10n0",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r10n1",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r10n2",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r10n3",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r10n4",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r10n5",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r10n6",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    },
+    {
+      "name": "r10n7",
+      "state": "allocated",
+      "cpus": 128,
+      "memory_mb": 262144,
+      "partitions": [
+        "m100_usr_prod"
+      ]
+    }
+  ],
+  "partitions": [
+    {
+      "name": "m100_usr_prod",
+      "max_time": "24:00:00",
+      "max_mem_per_node_mb": 262144,
+      "default_mem_per_cpu_mb": 7600
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "7558120",
+      "user": "6221",
+      "state": "RUNNING",
+      "partition": "m100_usr_prod",
+      "node": "r10n4",
+      "num_cpus": 128,
+      "num_nodes": 1,
+      "qos": "normal",
+      "job_state": "RUNNING",
+      "nodes": [
+        "r10n4"
+      ],
+      "submit_time": "2022-07-20T11:00:00Z",
+      "start_time": "2022-07-20T08:00:00Z",
+      "time_limit": "24:00:00",
+      "min_memory_node": 262144,
+      "priority": 100000,
+      "job_name": "cfd_solver",
+      "elapsed": "03:00:00",
+      "run_time": 10800
+    },
+    {
+      "job_id": "7558121",
+      "user": "6221",
+      "state": "RUNNING",
+      "partition": "m100_usr_prod",
+      "node": "r10n1",
+      "num_cpus": 128,
+      "num_nodes": 1,
+      "qos": "normal",
+      "job_state": "RUNNING",
+      "nodes": [
+        "r10n1"
+      ],
+      "submit_time": "2022-07-20T11:00:00Z",
+      "start_time": "2022-07-20T08:00:00Z",
+      "time_limit": "24:00:00",
+      "min_memory_node": 262144,
+      "priority": 100000,
+      "job_name": "cfd_solver",
+      "elapsed": "03:00:00",
+      "run_time": 10800
+    },
+    {
+      "job_id": "3544501",
+      "user": "1585",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r10n0",
+      "nodes": [
+        "r10n0"
+      ],
+      "num_cpus": 128,
+      "num_nodes": 1,
+      "elapsed": "24:00:18",
+      "qos": "1",
+      "job_state": "TIMEOUT",
+      "time_limit": "1-00:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "3445240",
+      "user": "1544",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r10n1",
+      "nodes": [
+        "r10n1"
+      ],
+      "num_cpus": 4,
+      "num_nodes": 1,
+      "elapsed": "24:00:23",
+      "qos": "1",
+      "job_state": "TIMEOUT",
+      "time_limit": "1-00:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "790409",
+      "user": "1234",
+      "state": "FAILED",
+      "partition": "m100_usr_prod",
+      "node": "r10n2",
+      "nodes": [
+        "r10n2"
+      ],
+      "num_cpus": 4,
+      "num_nodes": 1,
+      "elapsed": "00:27:58",
+      "qos": "1",
+      "job_state": "NODE_FAIL",
+      "time_limit": "2:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    },
+    {
+      "job_id": "5672054",
+      "user": "1242",
+      "state": "CANCELLED",
+      "partition": "m100_usr_prod",
+      "node": "r10n3",
+      "nodes": [
+        "r10n3"
+      ],
+      "num_cpus": 32,
+      "num_nodes": 1,
+      "elapsed": null,
+      "qos": "1",
+      "job_state": "CANCELLED",
+      "time_limit": "1-00:00:00",
+      "state_reason": null,
+      "derived_ec": null
+    }
+  ]
+}

@@ -256,6 +256,9 @@ tool-free `direct_qa` baseline for reference.
 
 Full documentation site: <https://mskazemi.github.io/aobench/>
 
+Source: [github.com/MSKazemi/aobench](https://github.com/MSKazemi/aobench) ·
+Mirror: [gitlab.com/mskazemi/aobench](https://gitlab.com/mskazemi/aobench)
+
 ## AOBench-QA
 
 The `benchmark/qa/` directory embeds the AOBench-QA dataset — ~95 HPC
@@ -273,6 +276,8 @@ repository" button from that file.
 Seyedkazemi Ardebili, Mohsen. AOBench: A Trace-Driven, Role-Aware Benchmark for
 Agent Operations in Realistic Environments. https://github.com/MSKazemi/aobench
 ```
+
+The source is mirrored at <https://gitlab.com/mskazemi/aobench>.
 
 ## License
 

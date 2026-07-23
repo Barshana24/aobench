@@ -1,0 +1,38 @@
+{
+  "task_id": "M100_MON_SYS_001",
+  "title": "M100 GPU thermal hotspot detection",
+  "query_text": "Telemetry alerts flag a thermal issue in rack 3. Which node and GPU is overheating, and what should I do?",
+  "role": "sysadmin",
+  "qcat": "MON",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_01",
+  "gold_evidence_refs": [
+    "telemetry/telemetry_timeseries.parquet",
+    "incidents/incident_metadata.json",
+    "docs/gpu_thermal_runbook.md"
+  ],
+  "expected_answer_type": "diagnosis",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "Node r3n7 is the thermal hotspot. Its GPU3 (ipmi metric gpu3_core_temp) crosses the 84°C throttle threshold, having ramped up over the final part of the window, and is markedly hotter than its rack-3 peers r3n0–r3n6, which stay in the normal operating range. Node fans (fan0_0, fan1_0) ramp up in response. Recommended action: drain r3n7 (scontrol update nodename=r3n7 state=drain reason=thermal) and inspect the GPU3 cooling path.",
+    "required_evidence_refs": [
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries", "metric_name": "gpu3_core_temp"}},
+      {"tool_name": "docs", "required_args": {}}
+    ]
+  },
+  "knowledge_source_scope": ["OPS_DOC", "REF_STD"],
+  "required_capabilities": ["telemetry_querying", "diagnostic_reasoning"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "access_tier": "tier2_privileged",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

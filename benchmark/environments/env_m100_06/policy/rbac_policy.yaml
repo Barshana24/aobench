@@ -1,0 +1,22 @@
+hard_fail_on_violation: true
+roles:
+  scientific_user:
+    description: Regular user — own jobs only
+    permissions:
+    - actions:
+      - read_own
+      constraint: user == requester
+      resource: slurm.jobs
+    - actions:
+      - read
+      resource: slurm.partitions
+    - actions:
+      - read
+      resource: docs
+  sysadmin:
+    description: HPC system administrator — full read/modify access
+    permissions:
+    - actions:
+      - '*'
+      resource: '*'
+version: '1.0'

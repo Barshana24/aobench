@@ -1,0 +1,38 @@
+{
+  "task_id": "M100_ENERGY_FAC_002",
+  "title": "M100 rack cooling fault diagnosis",
+  "query_text": "Inlet temperatures are climbing in rack 4. Is this a single bad node or a cooling problem, and what should we do?",
+  "role": "facility_admin",
+  "qcat": "ENERGY",
+  "difficulty": "medium",
+  "difficulty_tier": 2,
+  "environment_id": "env_m100_03",
+  "gold_evidence_refs": [
+    "telemetry/telemetry_timeseries.parquet",
+    "incidents/incident_metadata.json",
+    "docs/cooling_runbook.md"
+  ],
+  "expected_answer_type": "diagnosis",
+  "eval_criteria": {
+    "evaluation_mode": "semantic_match",
+    "gold_answer": "This is a cooling fault affecting the whole rack, not a single node. The vertiv CRAC Supply_Air_Temperature feeding rack 4 rises substantially, and the ipmi ambient (inlet) temperature rises in lockstep on every rack-4 node r4n0–r4n7, crossing the 28°C warning level toward the 32°C critical level over the last couple of hours. A single bad node would show only one elevated ambient; a uniform rack-wide rise driven by the rising supply-air temperature points to the cooling unit (CRAC) serving rack 4. Action: escalate to facilities to inspect that cooling unit (do not drain individual nodes); reduce rack load if the inlet approaches the 32°C critical level.",
+    "required_evidence_refs": [
+      "telemetry/telemetry_timeseries.parquet"
+    ],
+    "expected_tool_sequence": [
+      {"tool_name": "telemetry", "required_args": {"method": "query_timeseries", "metric_name": "ambient"}},
+      {"tool_name": "docs", "required_args": {}}
+    ]
+  },
+  "knowledge_source_scope": ["FAC_DOC", "REF_STD"],
+  "required_capabilities": ["telemetry_querying", "diagnostic_reasoning", "energy_awareness"],
+  "allowed_tools": ["slurm", "telemetry", "docs"],
+  "expected_tool_calls": ["telemetry"],
+  "access_tier": "tier3_restricted",
+  "aggregate_weight_profile": "default_hpc_v01",
+  "benchmark_split": "dev",
+  "validation_status": "validated",
+  "scoring_readiness": "ready",
+  "task_creation_date": "2026-06-11",
+  "contamination_risk": "clean"
+}

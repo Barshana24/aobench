@@ -1,0 +1,32 @@
+bundle_root: environments/env_m100_03
+cluster_name: marconi100
+description: 'Real-M100-grounded snapshot (ipmi_pub + vertiv_pub telemetry). A cooling
+  fault affects ALL of rack 4: the CRAC Supply_Air_Temperature climbs ~18→30°C, driving
+  inlet temperature (ambient) on every node from ~22°C to ~33°C over the final 2 hours
+  (vs a single-node hotspot). facility_admin must recognise the rack-wide signature
+  and attribute it to the cooling unit, not a node.'
+environment_id: env_m100_03
+implementation_status: bundled
+included_files:
+- slurm/slurm_state.json
+- telemetry/telemetry_timeseries.parquet
+- policy/rbac_policy.yaml
+- incidents/incident_metadata.json
+- docs/cooling_runbook.md
+- provenance.json
+included_sources:
+- slurm
+- telemetry
+- docs
+- rbac
+- incidents
+scenario_type: energy_anomaly
+snapshot_name: M100 Rack Cooling Fault
+snapshot_timestamp: '2022-08-02T15:00:00Z'
+supported_categories:
+- ENERGY
+- MON
+supported_roles:
+- facility_admin
+- sysadmin
+validation_status: validated
