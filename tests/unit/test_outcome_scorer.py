@@ -96,3 +96,15 @@ def test_hard_fail_scores_zero():
     result = scorer.score(_task(gold="OOM kill", mode="exact_match"), _trace(hard_fail=True))
     assert result.score == 0.0
     assert result.hard_fail is True
+
+
+def test_numeric_match_mode_runs_numeric_check():
+    """Regression: 'numeric_match' must run the numeric-tolerance path, not the
+    unknown-mode 0.5 default (v0.2.1 wiring-bug fix)."""
+    # exact numeric agreement scores 1.0, not the neutral 0.5
+    hit = scorer.score(_task(gold="80.0 kW", mode="numeric_match"), _trace("80.0 kW"))
+    assert hit.score == 1.0
+    # a non-numeric irrelevant answer must NOT receive the 0.5 neutral default
+    miss = scorer.score(_task(gold="80.0 kW", mode="numeric_match"),
+                        _trace("no numbers here"))
+    assert miss.score != 0.5

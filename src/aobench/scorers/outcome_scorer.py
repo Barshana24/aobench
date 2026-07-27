@@ -91,7 +91,7 @@ class OutcomeScorer(BaseScorer):
             return ScorerOutput(dimension=self.dimension, score=1.0 if match else 0.0,
                                 notes=f"exact_match={'yes' if match else 'no'}")
 
-        if mode == "numeric":
+        if mode in ("numeric", "numeric_match"):
             num_score = _numeric_match(pred, gold)
             if num_score is None:
                 # No numbers in gold — fall back to fuzzy

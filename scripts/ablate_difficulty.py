@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""E5 ablation: stratify outcome score by task difficulty with 95% bootstrap CIs.
+"""E5 ablation: stratify the per-task aggregate score by task difficulty with
+95% bootstrap CIs. (The score is the aggregate S_agg, not the Outcome dimension;
+see _get_score, which reads aggregate_score.)
 
 Reads every data/runs/v02_dev/<model>/run_*/results/*.json for all model subdirs found.
 Stratifies by 'difficulty' field (easy/medium/hard).  The 'difficulty' string is
@@ -94,7 +96,12 @@ def _get_difficulty(record: dict, spec_map: dict[str, str] | None = None) -> str
 
 
 def _get_score(record: dict) -> float | None:
-    """Extract the primary outcome score from a result record."""
+    """Extract the per-task aggregate score S_agg from a result record.
+
+    Prefers ``aggregate_score`` (the weighted, hard-fail-gated aggregate);
+    falls back to ``dimension_scores.outcome`` only when the aggregate is
+    absent.
+    """
     score = record.get("aggregate_score")
     if score is not None:
         return float(score)

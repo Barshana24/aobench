@@ -64,7 +64,7 @@ server. To refresh it from the real data:
 # On n1 (where the full dataset lives), over a population of real nodes:
 uv run --with pandas --with pyarrow python scripts/build_m100_reference.py \
     --aggregated-dir /home/mohsen/exadata/time_aggregated \
-    --catalog /path/to/exadata/data_extraction/M100_metrics.csv \
+    --catalog /home/mohsen/exadata/data_extraction/M100_metrics.csv \
     --out benchmark/environments/_m100_reference --n-nodes 120 --seed 388
 
 # Offline fallback (no full dataset): fit from the single bundled node sample
