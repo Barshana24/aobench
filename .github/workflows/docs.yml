@@ -35,9 +35,11 @@ jobs:
           git config user.name "Mohsen Seyedkazemi Ardebili"
           git config user.email "mohsen.seyedkazemi@gmail.com"
 
-      - name: Deploy 0.1.0 (on push to main)
+      - name: Deploy current version (on push to main / manual dispatch)
         if: github.ref == 'refs/heads/main'
-        run: uv run mike deploy --push --update-aliases 0.1.0 latest
+        run: |
+          VERSION=$(grep -m1 '^version' pyproject.toml | sed -E 's/.*"(.*)".*/\1/')
+          uv run mike deploy --push --update-aliases "$VERSION" latest
 
       - name: Deploy version + update latest (on tag)
         if: startsWith(github.ref, 'refs/tags/')
