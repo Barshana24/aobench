@@ -18,10 +18,21 @@ from io import StringIO
 from pathlib import Path
 from statistics import stdev
 
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 RESPONSES_DIR = ROOT / "data" / "rubric_validation" / "responses"
 SCRIPTS_DIR = ROOT / "scripts"
+
+# The rubric-validation response set lives under data/rubric_validation/, which is
+# an author-local artifacts directory excluded from the published repo (p2p
+# always-exclude). These tests validate the local rubric tooling against that set,
+# so skip the whole module when the fixtures are absent (e.g. a fresh clone or CI)
+# rather than hard-failing. They still run in the author's full working tree.
+pytestmark = pytest.mark.skipif(
+    not RESPONSES_DIR.exists() or not any(RESPONSES_DIR.glob("rv_*.json")),
+    reason="data/rubric_validation/responses fixtures are not part of the published repo",
+)
 
 
 # ---------------------------------------------------------------------------
