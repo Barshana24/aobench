@@ -1,0 +1,49 @@
+name: "✨ Feature request"
+description: Suggest a new task, environment, adapter, scorer, or capability for AOBench.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve AOBench! Please describe the idea and the
+        problem it solves.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case or limitation you are hitting.
+      placeholder: I want to evaluate agents on ... but AOBench currently ...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like AOBench to do? Be as concrete as you can.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of AOBench does this touch?
+      options:
+        - Tasks / benchmark data
+        - Environments / snapshots
+        - Adapters (openai / anthropic / mcp / direct_qa)
+        - Scorers / scoring dimensions
+        - CLEAR scorecard / reports
+        - CLI
+        - REST / MCP / serving surfaces
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workarounds or alternative designs you have thought about.
+    validations:
+      required: false

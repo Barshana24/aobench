@@ -1,0 +1,65 @@
+name: "🐛 Bug report"
+description: Report a problem with AOBench so we can fix it.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. Please fill in as much
+        of the form below as you can — it helps us reproduce and fix the issue faster.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug, including the full error output or traceback.
+      placeholder: When I run `aobench run task ...`, it fails with ...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: The exact command(s) you ran and any relevant task/environment/adapter IDs.
+      placeholder: |
+        1. `aobench run task --task JOB_USR_001 --env env_01 --adapter direct_qa`
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: AOBench version
+      description: Output of `aobench --version` (or the git commit / release tag).
+      placeholder: v0.4.0
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      description: Output of `python --version`.
+      placeholder: "3.12.3"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Ubuntu 24.04 / macOS 14 / Windows 11 (WSL2)
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that might help — logs, config, adapter, screenshots.
+    validations:
+      required: false

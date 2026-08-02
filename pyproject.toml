@@ -4,11 +4,48 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aobench"
-version = "0.1.0"
-description = "AOBench: A Trace-Driven, Role-Aware Benchmark for Agent Operations in Realistic Environments"
+version = "0.4.0"
+description = "AOBench: A Trace-Driven, Role-Aware Benchmark for Agent Operations in Realistic (HPC) Environments"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
+authors = [
+    { name = "Mohsen Seyedkazemi Ardebili", email = "mohsen.seyedkazemi@gmail.com" },
+]
+maintainers = [
+    { name = "Mohsen Seyedkazemi Ardebili", email = "mohsen.seyedkazemi@gmail.com" },
+]
+keywords = [
+    "AI agents",
+    "agent evaluation",
+    "agent benchmark",
+    "benchmark",
+    "HPC",
+    "high-performance computing",
+    "LLM evaluation",
+    "LLM agents",
+    "tool use",
+    "RBAC",
+    "SLURM",
+    "MCP",
+    "AIOps",
+    "reproducibility",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Distributed Computing",
+    "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic>=2.0",
     "pyyaml>=6.0",
@@ -55,6 +92,14 @@ docs = [
 
 [project.scripts]
 aobench = "aobench.cli.main:app"
+
+[project.urls]
+Homepage = "https://mskazemi.github.io/aobench/"
+Documentation = "https://mskazemi.github.io/aobench/"
+Repository = "https://github.com/MSKazemi/aobench"
+Issues = "https://github.com/MSKazemi/aobench/issues"
+Changelog = "https://github.com/MSKazemi/aobench/blob/main/CHANGELOG.md"
+"Source mirror" = "https://gitlab.com/mskazemi/aobench"
 
 [tool.setuptools.packages.find]
 where = ["src"]

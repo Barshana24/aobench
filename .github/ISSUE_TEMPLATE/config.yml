@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & Discussions
+    url: https://github.com/MSKazemi/aobench/discussions
+    about: Ask questions, share ideas, and discuss AOBench with the community.
+  - name: 📖 Documentation
+    url: https://mskazemi.github.io/aobench/
+    about: Read the docs before opening an issue — many questions are answered there.
