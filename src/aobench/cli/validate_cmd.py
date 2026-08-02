@@ -18,8 +18,13 @@ def validate_benchmark(
 ) -> None:
     """Validate all task specs and environment bundles."""
     from aobench.loaders.registry import BenchmarkRegistry
+    from aobench.paths import BenchmarkDataNotFound, resolve_benchmark_root
 
-    root = Path(benchmark_root)
+    try:
+        root = resolve_benchmark_root(benchmark_root)
+    except BenchmarkDataNotFound as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=2) from exc
     typer.echo(f"Validating benchmark at {root.resolve()}")
     registry = BenchmarkRegistry(root)
     registry.load_all()

@@ -104,6 +104,12 @@ Changelog = "https://github.com/MSKazemi/aobench/blob/main/CHANGELOG.md"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+# Bundle the benchmark corpus (task specs, environment snapshots, configs) into
+# the wheel so `pip install aobench` is self-sufficient. src/aobench/benchmark is
+# a symlink to the repo-root benchmark/ directory.
+aobench = ["benchmark/**/*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v"
@@ -111,10 +117,14 @@ addopts = "-v"
 [tool.ruff]
 line-length = 100
 src = ["src"]
+# src/aobench/benchmark is a symlink to the bundled data corpus, not source.
+extend-exclude = ["src/aobench/benchmark"]
 
 [tool.mypy]
 python_version = "3.10"
 strict = true
+# src/aobench/benchmark is a symlink to the bundled data corpus, not source.
+exclude = ['^src/aobench/benchmark/']
 
 # Optional third-party deps that are not installed in the base environment and
 # ship no type stubs — treat as untyped rather than failing the strict gate.

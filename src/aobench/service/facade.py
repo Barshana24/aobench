@@ -86,7 +86,17 @@ class BenchmarkService:
         benchmark_root: str | Path = "benchmark",
         output_root: str | Path = "data/runs",
     ) -> None:
-        self._benchmark_root = Path(benchmark_root)
+        # The sentinel default "benchmark" means "auto-detect": prefer
+        # $AOBENCH_BENCHMARK_ROOT, then a checkout found from the CWD, then the
+        # copy bundled inside an installed wheel. An explicit path is honored
+        # as-is (failures stay lazy, as before). See aobench.paths.
+        from aobench.paths import default_benchmark_root
+
+        if benchmark_root is None or str(benchmark_root) == "benchmark":
+            resolved = default_benchmark_root()
+            self._benchmark_root = resolved if resolved is not None else Path("benchmark")
+        else:
+            self._benchmark_root = Path(benchmark_root)
         self._output_root = Path(output_root)
         self._jobs = InMemoryJobRegistry()
         self._job_counter = 0
