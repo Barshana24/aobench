@@ -7,7 +7,7 @@ evaluating AI agents that operate HPC systems. Here is how to get help.
 
 Most questions are answered in the docs and README:
 
-- **Documentation site:** <https://mskazemi.github.io/aobench/>
+- **Documentation site:** <https://mskazemi.com/aobench/>
 - **README (quickstart, examples, FAQ):** <https://github.com/MSKazemi/aobench/blob/main/README.md>
 - **CLI reference:** <https://github.com/MSKazemi/aobench/blob/main/docs/reference/commands.md>
 - **Programmatic access (REST / MCP):** <https://github.com/MSKazemi/aobench/blob/main/docs/guides/programmatic-access.md>

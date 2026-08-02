@@ -254,7 +254,7 @@ tool-free `direct_qa` baseline for reference.
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting and threat model |
 
-Full documentation site: <https://mskazemi.github.io/aobench/>
+Full documentation site: <https://mskazemi.com/aobench/>
 
 Source: [github.com/MSKazemi/aobench](https://github.com/MSKazemi/aobench) ·
 Mirror: [gitlab.com/mskazemi/aobench](https://gitlab.com/mskazemi/aobench)

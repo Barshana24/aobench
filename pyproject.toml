@@ -94,8 +94,8 @@ docs = [
 aobench = "aobench.cli.main:app"
 
 [project.urls]
-Homepage = "https://mskazemi.github.io/aobench/"
-Documentation = "https://mskazemi.github.io/aobench/"
+Homepage = "https://mskazemi.com/aobench/"
+Documentation = "https://mskazemi.com/aobench/"
 Repository = "https://github.com/MSKazemi/aobench"
 Issues = "https://github.com/MSKazemi/aobench/issues"
 Changelog = "https://github.com/MSKazemi/aobench/blob/main/CHANGELOG.md"

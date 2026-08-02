@@ -1,6 +1,6 @@
 site_name: AOBench
 site_description: "AOBench: A Trace-Driven, Role-Aware Benchmark for Agent Operations in Realistic Environments"
-site_url: https://mskazemi.github.io/aobench/
+site_url: https://mskazemi.com/aobench/
 repo_url: https://github.com/MSKazemi/aobench
 repo_name: MSKazemi/aobench
 edit_uri: edit/main/docs/
