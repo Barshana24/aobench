@@ -1,43 +1,104 @@
-# Python
+# ─────────────────────────────────────────────────────────────────────────────
+# .gitignore — AOBench
+# Universal build/junk/secret rules honoured by EVERY git operating in this tree
+# (both the public .git and the private .git-private).
+#
+# NOTE: private research material (design/, AOBench-paper/, ExaBench-QA/,
+# exadata/, prompts/, data/, .claude/, CLAUDE.md, …) is deliberately NOT listed
+# here — it is versioned in the PRIVATE git and kept off the PUBLIC remote by the
+# repo-local allowlist in .git/info/exclude, not by this file.
+#
+# This file IS tracked by both gits (it is part of the public surface).
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Secrets / credentials ────────────────────────────────────────────────────
+.env
+.env.*
+*.env
+*.local
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+secrets/
+credentials/
+
+# Local-only tunnel helper (embeds private host details) — never in ANY git
+scripts/ollama_tunnel.py
+
+# ── AI tooling scratch (never committed anywhere) ────────────────────────────
+.superpowers/
+.playwright-mcp/
+.gstack/
+
+# ── Python / uv build artifacts ──────────────────────────────────────────────
+.venv/
+venv/
+env/
 __pycache__/
 *.py[cod]
 *.so
 *.egg
 *.egg-info/
 .eggs/
-build/
 dist/
+build/
 
-# Virtual environments
-.venv/
-venv/
-env/
-
-# Testing / type-checking / coverage
+# ── Testing / coverage / type-check caches ───────────────────────────────────
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
-
-# MkDocs build output / cache
-site/
 .cache/
 
-# Runtime benchmark artifacts (large, run-specific)
-data/runs/
-data/logs/
+# ── Jupyter ──────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
 
-# Large data artifacts
+# ── MkDocs build output ──────────────────────────────────────────────────────
+site/
+
+# ── Runtime benchmark artifacts (large, run-specific) ────────────────────────
+data/runs/*/
+data/runs/*.json
+data/logs/ollama_batch_20260506_031425.log
+
+# Large data artifacts. NOTE: a few benchmark telemetry parquet files were
+# force-added to the private git on purpose and stay tracked despite this rule.
 *.parquet
 
-# Environment secrets
-.env
-.env.*
-*.local
+# Benchmark / QA generated artifacts
+benchmark/qa/user_query_taxonomy_prompt.md
+AOBench-paper/Agent-Eval/
 
-# OS / editor
-.DS_Store
-*.swp
+# ── p2p leftover tool state (legacy — p2p no longer used for this repo) ──────
+.p2p.toml
+.p2p-manifest.json
+.p2p-history.jsonl
+.p2p-baseline.json
+.p2p-undo/
+
+# ── Editor / OS ──────────────────────────────────────────────────────────────
 .vscode/
 .idea/
+.cursor/
+*.swp
+.DS_Store
+
+# ── Progress / plan scratch ──────────────────────────────────────────────────
+PROGRESS.md
+*.plan.md
+
+# ── Git worktrees ────────────────────────────────────────────────────────────
+.worktrees/
+
+# ── Screenshot artifacts (the two architecture PNGs are already tracked by the
+#    public git and stay tracked; this only stops NEW ones being added) ───────
+before.png
+architecture-diagram-preview.png
+architecture-diagram-v02-preview.png
