@@ -33,8 +33,8 @@ identifiers:
     value: "https://gitlab.com/mskazemi/aobench"
     description: "GitLab source mirror"
 license: Apache-2.0
-version: "0.4.0"
-date-released: "2026-07-23"
+version: "0.4.1"
+date-released: "2026-08-08"
 keywords:
   - "AI agents"
   - "agent evaluation"

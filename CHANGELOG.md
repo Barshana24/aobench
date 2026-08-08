@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+## [0.4.1] — 2026-08-08
+
+### Security
+
+- `scripts/ollama_tunnel.py` no longer ships a real SSH host, username and port as module
+  defaults. `MC_SSH_HOST` is now required with no default. The values remain in published
+  history; removing them there requires a history rewrite.
+- Removed references to maintainer-only paths from public files, and a local home-directory
+  path from the M100 guide.
+
+### Added
+
+- `codemeta.json` (CodeMeta 3.0) and `.zenodo.json` so registries and Zenodo carry the same
+  authors, ORCIDs, licence and keywords as `CITATION.cff`.
+- Docs: **Cite AOBench** and **Reproducing results** pages.
+- CodeQL workflow, Dependabot configuration, `CODEOWNERS`, and a social preview image.
+
+### Fixed
+
+- **`CITATION.cff` was missing co-author Andrea Bartolini entirely.** Both authors are now
+  present with ORCIDs and affiliation.
+- Corpus counts were understated across every public surface: 80 tasks / 26 environments →
+  **88 / 29**; split 62 dev / 18 test → **67 / 21** (synthetic core 59 / 21).
+- M100 `provenance.json` records cited the wrong first author for the ExaData dataset paper
+  (Beneventi → **Borghesi**); corrected in the data and in the generator scripts.
+- `CONTRIBUTING.md` instructed `cd AOBench` when the repository clones as `aobench`.
+- `llms.txt` was published only under `/latest/` and 404'd at the discoverable path.
+
 ### Added — Installation & running guide (docs)
 
 - New canonical **[Installation & Running](docs/getting-started/installation.md)** page

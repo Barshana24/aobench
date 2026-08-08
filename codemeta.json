@@ -3,7 +3,7 @@
   "@type": "SoftwareSourceCode",
   "name": "AOBench",
   "description": "AOBench (Agent Operations Benchmark) is an open-source Python benchmark framework for evaluating AI agents that operate High-Performance Computing (HPC) systems. It measures whether an agent completes HPC operational tasks — job scheduling, telemetry interpretation, energy reasoning, and policy enforcement — using the right tools, roles, and permissions. Every task is evaluated against a deterministic environment snapshot with mock HPC tools (SLURM, telemetry, RBAC, docs, facility), so results are role-aware, permission-enforced, trace-based, and reproducible. Six of the 29 environment snapshots and eight of the 88 tasks are grounded in the public Marconi100 ExaData dataset from CINECA's 980-node Tier-0 supercomputer.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "dateModified": "2026-08-08",
   "datePublished": "2026-07-23",
   "license": "https://spdx.org/licenses/Apache-2.0",
@@ -13,7 +13,10 @@
   "readme": "https://github.com/MSKazemi/aobench/blob/main/README.md",
   "programmingLanguage": "Python",
   "runtimePlatform": "Python 3.12",
-  "operatingSystem": ["Linux", "macOS"],
+  "operatingSystem": [
+    "Linux",
+    "macOS"
+  ],
   "applicationCategory": "Computational Science",
   "developmentStatus": "active",
   "isAccessibleForFree": true,
