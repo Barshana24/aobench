@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### Changed — CI
+
+- `actions/checkout` 4 → 7 and `astral-sh/setup-uv` 4 → **`v9.0.0`** across `ci.yml` and
+  `docs.yml`. setup-uv publishes no floating major tag beyond `v7` (dropped at v8.0.0 as
+  supply-chain hardening), so it is pinned to the immutable release tag rather than a
+  mutable major.
+
+### Fixed — CI
+
+- The docs deploy pushed `gh-pages` from a linked `git worktree`. checkout v6+ injects the
+  token via `includeIf.gitdir:<repo>/.git`, which does not match a worktree's gitdir, so that
+  push would have become unauthenticated — latent, because the step is a no-op while
+  `llms.txt` is unchanged, and `docs.yml` never runs on a pull request. The push is now
+  issued from the main worktree and runs unconditionally, so a broken token fails the run
+  immediately.
+
 ## [0.4.1] — 2026-08-08
 
 ### Security
