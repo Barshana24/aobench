@@ -25,7 +25,7 @@ Usage::
         [--dataset-path /path/to/full/m100/parquet]   # optional live-slice refinement
 
 Determinism: a single numpy RNG seeded per environment makes the parquet byte-stable.
-Provenance: CINECA Marconi100 ExaData dataset (see exadata/README.md).
+Provenance: CINECA Marconi100 ExaData dataset, doi:10.1038/s41597-023-02174-3.
 """
 
 from __future__ import annotations
@@ -420,7 +420,8 @@ def m100_job(job_id: str, user_id: int, node: str, snap_time: str, **extra) -> d
 PROVENANCE_BASE = {
     "data_source": "CINECA Marconi100 ExaData (time_aggregated population, 120 real nodes)",
     "grounding": "hybrid",
-    "citation": "F. Beneventi et al., M100 ExaData — see exadata/README.md",
+    "citation": "Borghesi, A. et al. (2023) M100 ExaData: a data collection campaign on the CINECA's Marconi100 Tier-0 supercomputer. Scientific Data 10(1):288. https://doi.org/10.1038/s41597-023-02174-3",
+    "data_source_url": "https://doi.org/10.1038/s41597-023-02174-3",
     "schema": "M100 ipmi_pub metric vocabulary in canonical long-format telemetry",
     "baselines": "per-node baselines drawn from real cross-node population spread (node_baseline_std)",
 }

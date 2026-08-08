@@ -1,10 +1,12 @@
 {
   "data_source": "CINECA Marconi100 ExaData (time_aggregated population, 120 real nodes)",
   "grounding": "hybrid",
-  "citation": "F. Beneventi et al., M100 ExaData \u2014 see exadata/README.md",
+  "citation": "Borghesi, A. et al. (2023) M100 ExaData: a data collection campaign on the CINECA's Marconi100 Tier-0 supercomputer. Scientific Data 10(1):288. https://doi.org/10.1038/s41597-023-02174-3",
   "schema": "M100 ipmi_pub metric vocabulary in canonical long-format telemetry",
   "baselines": "per-node baselines drawn from real cross-node population spread (node_baseline_std)",
   "m100_seed": 1004,
   "scenario": "node_power_anomaly",
-  "perturbation": "step total_power on r10n4 to 1400W for final 0.5h"
+  "perturbation": "step total_power on r10n4 to 1400W for final 0.5h",
+  "data_source_url": "https://doi.org/10.1038/s41597-023-02174-3",
+  "data_license": "See the M100 ExaData publication for dataset terms; AOBench-derived snapshots are CC BY 4.0."
 }

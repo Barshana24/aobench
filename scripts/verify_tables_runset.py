@@ -4,7 +4,7 @@
 Reads ONLY RUNSET_v0.2.json to resolve runs (never 'latest'/glob/mtime),
 recomputes every headline per-model quantity from the frozen per-task result
 files with the final scorer (applying the numeric_match correction), and diffs
-against the values parsed from FGCP-submitted/AOBench.tex. Exits non-zero (fails
+against the values parsed from a LaTeX manuscript ($AOBENCH_PAPER_TEX). Exits non-zero (fails
 the build) if any inline value diverges from frozen truth beyond tolerance.
 
 Deterministic quantities checked (point estimates, rng-independent):
@@ -23,6 +23,7 @@ Usage:
 """
 from __future__ import annotations
 
+import os
 import argparse
 import json
 import re
@@ -231,7 +232,12 @@ def parse_tex_generic(tex: str, label: str, ncols: int) -> dict[str, tuple]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tex", default=str(ROOT / "AOBench-paper/FGCP-submitted/AOBench.tex"))
+    ap.add_argument(
+        "--tex",
+        default=os.environ.get("AOBENCH_PAPER_TEX", ""),
+        help="Path to a LaTeX manuscript whose result tables should be verified "
+        "against the frozen run set. Defaults to $AOBENCH_PAPER_TEX.",
+    )
     # 0.0015 tolerates 3-decimal display/rounding-convention artifacts (one ULP
     # at 3 dp), matching assert_tables.py; only genuine drift (> ~0.001) fails.
     ap.add_argument("--tol", type=float, default=0.0015)

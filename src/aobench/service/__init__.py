@@ -1,7 +1,7 @@
 """AOBench service façade — transport-agnostic run/score/report engine access.
 
-See design/adr/0001-multi-surface-access-architecture.md and
-design/vision/specs/spec-0001-service-facade.md.
+Every access surface (CLI, REST, MCP, A2A) calls this shared façade, so scores are
+identical across transports.
 """
 
 from __future__ import annotations

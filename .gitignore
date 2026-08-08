@@ -3,8 +3,7 @@
 # Universal build/junk/secret rules honoured by EVERY git operating in this tree
 # (both the public .git and the private .git-private).
 #
-# NOTE: private research material (design/, AOBench-paper/, ExaBench-QA/,
-# exadata/, prompts/, data/, .claude/, CLAUDE.md, …) is deliberately NOT listed
+# NOTE: material that belongs only to the maintainer's working tree is deliberately NOT listed
 # here — it is versioned in the PRIVATE git and kept off the PUBLIC remote by the
 # repo-local allowlist in .git/info/exclude, not by this file.
 #
@@ -74,7 +73,6 @@ data/logs/ollama_batch_20260506_031425.log
 
 # Benchmark / QA generated artifacts
 benchmark/qa/user_query_taxonomy_prompt.md
-AOBench-paper/Agent-Eval/
 
 # ── p2p leftover tool state (legacy — p2p no longer used for this repo) ──────
 .p2p.toml

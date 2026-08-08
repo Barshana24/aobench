@@ -17,18 +17,13 @@
 - Replaced the misleading `pip install "aobench[openai]"` PyPI-style command on the docs home
   with the real from-source install (AOBench is not yet published to PyPI).
 - Repaired two broken cross-links in the serving tutorial (`ROADMAP.md` → GitHub blob,
-  private `design/architecture.md` → the in-docs system-architecture page); `mkdocs build
+  an internal design note → the in-docs system-architecture page); `mkdocs build
   --strict` now passes clean.
 
 ### Changed — Repo consolidation (2026-07-16)
 
-- Absorbed three former sibling projects into this repo tree: `AOBench-paper/` (the paper,
-  formerly its own `ExaBench-SoA.git`), `ExaBench-QA/`, and `exadata/` (M100 dataset tooling).
-  Their nested `.git` metadata was removed; the ExaBench-SoA history was intentionally dropped.
-- All internal `../exadata` path references (scripts, `design/m100_grounding.md`, `env_m100_*`
-  provenance) rewritten to `exadata/` now that the dataset lives inside the repo.
-- Added `AOBench-paper`, `ExaBench-QA`, `exadata` to `.p2p.toml [exclude]` so the paper draft,
-  reviewer comments, and dataset never sync to the public mirror (verified via `p2p sync --dry-run`).
+- Consolidated the working tree; internal dataset-tooling path references were updated
+  accordingly. No change to the published package, the benchmark corpus, or any API.
 
 ### Added — Multi-surface engine access (AOBench Futures, P0)
 
@@ -128,8 +123,6 @@
   combinatorial estimator), seeded percentile bootstrap confidence intervals, and a
   `summarize_scores` helper. Surfaced through `robustness` on the façade, REST `/v1/robustness`,
   and the MCP `robustness` tool (pass@1, pass^k, and a 95% CI over repeated runs).
-- Design corpus under `design/`: 30-feature catalog, 8 ADRs, target architecture, interface
-  strategy, and 5 implementation specs.
 
 ### Documentation
 
@@ -294,8 +287,8 @@
 
 ### Docs & tests
 
-- `design/m100_grounding.md` (rationale + fidelity-gate handling), `docs/guides/m100_environments.md`,
-  per-env `provenance.json`.
+- `docs/guides/m100_environments.md` and per-env `provenance.json` (grounding rationale and
+  fidelity-gate handling).
 - New tests: importer determinism/clamp bounds, `SlurmJob` back-compat, fidelity-gate-enabled
   env load, end-to-end task scoring (61 pass).
 - `aobench validate benchmark` → 88 tasks / 29 environments, passes.

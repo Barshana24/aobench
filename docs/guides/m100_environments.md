@@ -57,14 +57,21 @@ uv run python scripts/build_m100_bundles.py
 ```
 
 The committed reference (`benchmark/environments/_m100_reference/metric_distributions.json`)
-was fit across 120 real nodes from the full ExaData `time_aggregated/` dataset on the `n1`
-server. To refresh it from the real data:
+was fit across 120 real nodes from the full ExaData `time_aggregated/` dataset.
+
+**You do not need the full dataset** — the reference above is committed, so bundle building
+works offline. Refreshing it is only necessary if you want to re-fit against the raw data
+yourself, which requires obtaining the
+[M100 ExaData dataset](https://doi.org/10.1038/s41597-023-02174-3) and setting
+`EXADATA_DIR` to wherever you extracted it:
 
 ```bash
-# On n1 (where the full dataset lives), over a population of real nodes:
+export EXADATA_DIR=/path/to/your/exadata
+
+# Over a population of real nodes:
 uv run --with pandas --with pyarrow python scripts/build_m100_reference.py \
-    --aggregated-dir /home/mohsen/exadata/time_aggregated \
-    --catalog /home/mohsen/exadata/data_extraction/M100_metrics.csv \
+    --aggregated-dir $EXADATA_DIR/time_aggregated \
+    --catalog $EXADATA_DIR/data_extraction/M100_metrics.csv \
     --out benchmark/environments/_m100_reference --n-nodes 120 --seed 388
 
 # Offline fallback (no full dataset): fit from the single bundled node sample
@@ -79,7 +86,7 @@ available (the `n1` server), you can instead pull each env node's **actual real 
 
 ```bash
 uv run python scripts/build_m100_bundles.py \
-    --real-baselines /home/mohsen/exadata/time_aggregated
+    --real-baselines $EXADATA_DIR/time_aggregated
 ```
 
 This gives genuinely real, heterogeneous peer telemetry. Add `--relative-anomalies` so the
@@ -98,7 +105,7 @@ At the end of the build a **gold-consistency guard** verifies that each env's ge
 actually satisfies the qualitative facts its gold answer relies on (the anomaly node crosses its
 named threshold, peers stay below it, a downed node drops out, a collapse occurs) — in both modes
 — and fails the build otherwise, so a build can never silently de-sync from the scored gold. See
-`design/m100_grounding.md` for details.
+the [M100 ExaData dataset paper](https://doi.org/10.1038/s41597-023-02174-3) for details.
 
 ## Governance on the user tasks
 
@@ -125,4 +132,4 @@ Each environment includes a `provenance.json` recording the data source, RNG see
 scenario, and the exact injected perturbation. The data originates from the CINECA
 Marconi100 ExaData dataset; see the dataset repository's `README.md` for citation.
 For the design rationale (including how these bundles satisfy the F1–F7 fidelity gate),
-see `design/m100_grounding.md`.
+see the [M100 ExaData dataset paper](https://doi.org/10.1038/s41597-023-02174-3).

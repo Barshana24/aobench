@@ -24,7 +24,7 @@ then::
         --job-parquet <extracted a_0.parquet> --year-month 22-07 \
         --out benchmark/environments/_m100_reference/real_jobs.json
 
-Provenance: CINECA Marconi100 ExaData dataset (see exadata/README.md).
+Provenance: CINECA Marconi100 ExaData dataset, doi:10.1038/s41597-023-02174-3.
 """
 
 from __future__ import annotations

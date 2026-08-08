@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # patch_perf_sys_002.sh — Run PERF_SYS_002 for Ollama models and merge
 # the result into each model's existing test run directory.
-# Must be run from /home/mohsen/scratch/AOBench/aobench/
+# Must be run from the repository root.
 set -euo pipefail
 
 MODELS=(
