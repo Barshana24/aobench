@@ -1,5 +1,8 @@
 # AOBench
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21854862.svg)](https://doi.org/10.5281/zenodo.21854862)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
 **Benchmark framework for evaluating AI agent systems in High-Performance Computing (HPC) environments.**
 
 AOBench measures how well AI agents complete HPC operational tasks — job

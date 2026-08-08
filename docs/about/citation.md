@@ -15,10 +15,11 @@ authoritative metadata. In BibTeX:
                Operations in Realistic Environments},
   author    = {Seyedkazemi Ardebili, Mohsen and Bartolini, Andrea},
   year      = {2026},
-  version   = {0.4.0},
+  version   = {0.4.1},
   license   = {Apache-2.0},
-  url       = {https://github.com/MSKazemi/aobench},
-  publisher = {GitHub}
+  doi       = {10.5281/zenodo.21854863},
+  url       = {https://doi.org/10.5281/zenodo.21854863},
+  publisher = {Zenodo}
 }
 ```
 
@@ -41,9 +42,16 @@ will disagree about who wrote the software.
 
 ## Archival DOI
 
-A DOI is minted per release once the repository is archived. When that is in place, cite
-the **version DOI** for exact reproducibility, or the **concept DOI** if you mean "AOBench
-in general". The concept DOI always resolves to the newest version.
+Every release is archived on Zenodo and carries a DOI.
+
+| DOI | Use it when |
+|---|---|
+| [`10.5281/zenodo.21854862`](https://doi.org/10.5281/zenodo.21854862) | You mean **AOBench in general** — the concept DOI always resolves to the newest release |
+| [`10.5281/zenodo.21854863`](https://doi.org/10.5281/zenodo.21854863) | You mean **v0.4.1 exactly** — use this for reproducibility, so a reader gets the code you ran |
+
+For a paper reporting benchmark numbers, cite the **version DOI**. A concept DOI resolves
+to whatever is newest at the time of reading, which is not what your results were produced
+with.
 
 ## Also cite the data, where it applies
 

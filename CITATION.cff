@@ -28,7 +28,14 @@ authors:
       "Guglielmo Marconi" (DEI), University of Bologna, Italy
 repository-code: "https://github.com/MSKazemi/aobench"
 url: "https://mskazemi.com/aobench/"
+doi: "10.5281/zenodo.21854862"
 identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21854862"
+    description: "Concept DOI — always resolves to the latest release"
+  - type: doi
+    value: "10.5281/zenodo.21854863"
+    description: "Version DOI for v0.4.1"
   - type: url
     value: "https://gitlab.com/mskazemi/aobench"
     description: "GitLab source mirror"
