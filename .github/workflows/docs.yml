@@ -11,6 +11,13 @@ on:
 permissions:
   contents: write
 
+# Both the push-to-main and the tag push trigger this workflow, and both deploy to
+# gh-pages. Without serialisation they race and one loses ("failed to push some refs").
+# Queue them instead of cancelling — a cancelled deploy would leave docs half-published.
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
