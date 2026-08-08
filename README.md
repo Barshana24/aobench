@@ -61,12 +61,12 @@ AOBench/
 │   └── taxonomy/           # 24-leaf TRAIL-adapted HPC error taxonomy
 │
 ├── benchmark/              # Static benchmark data (versioned in git)
-│   ├── tasks/specs/        # 80 JSON task specs (all 10 QCATs × 5 roles)
+│   ├── tasks/specs/        # 88 JSON task specs (80 synthetic + 8 M100 ExaData)
 │   ├── tasks/task_set_v1.json   # 36 HPC v1 tasks (Souza 2025 schema)
-│   ├── tasks/task_set_v3.json   # v3 task index (80 tasks)
-│   ├── tasks/dataset_splits.py  # 62 dev / 18 test split (~22% held-out)
+│   ├── tasks/task_set_v3.json   # v3 task index (88 tasks)
+│   ├── tasks/dataset_splits.py  # 67 dev / 21 test (synthetic core: 59 dev / 21 test)
 │   ├── tasks/lite_manifest_v1.json  # AOBench-Lite curated subset
-│   ├── environments/env_01–env_26/  # 26 deterministic snapshot bundles
+│   ├── environments/           # 29 snapshot bundles (23 synthetic + 6 M100)
 │   ├── configs/            # scoring_profiles.yaml, hpc_tool_catalog.yaml,
 │   │                       # error_taxonomy.yaml
 │   └── qa/                 # AOBench-QA (~95 HPC operational queries)
@@ -125,19 +125,19 @@ See the [programmatic-access guide](docs/guides/programmatic-access.md) and the
 [serving tutorial](docs/tutorials/serving-the-benchmark.md) for end-to-end
 walkthroughs, and [ROADMAP.md](ROADMAP.md) for surface status and what's next.
 
-## Implemented scope (v0.3)
+## Implemented scope (v0.4)
 
 | Item | Count | Location |
 |------|-------|----------|
-| Tasks | 80 across 10 QCATs × 5 roles | `benchmark/tasks/specs/` |
-| Environments | 26 deterministic snapshot bundles | `benchmark/environments/env_01`…`env_26` |
+| Tasks | **88** — 80 synthetic core (10 QCATs × 5 roles) + 8 grounded in real Marconi100 ExaData | `benchmark/tasks/specs/` |
+| Environments | **29** deterministic snapshot bundles — 23 synthetic + **6 built from real Marconi100 ExaData** | `benchmark/environments/` |
 | Roles (scored) | 5 — `scientific_user`, `sysadmin`, `facility_admin`, `researcher`, `system_designer` | `src/aobench/schemas/task.py` |
 | QCATs (scored) | 10 — `JOB`, `MON`, `ENERGY`, `PERF`, `DATA`, `SEC`, `FAC`, `ARCH`, `AIOPS`, `DOCS` | `benchmark/tasks/specs/` |
 | Adapters | 4 — `direct_qa`, `openai`, `anthropic`, `mcp` | `src/aobench/adapters/` |
 | Mock tool families | 5 — slurm, docs, rbac, telemetry, facility | `src/aobench/tools/` |
 | Scorers | 12 across 6 dimensions | `src/aobench/scorers/` |
 | Scoring profiles | `alpha0_minimal`, `alpha1_grounding`, `default_hpc_v01` | `benchmark/configs/scoring_profiles.yaml` |
-| Tests | 1048 passing | `tests/` |
+| Tests | ~1470 passing | `tests/` |
 
 The 6 evaluation dimensions and their `default_hpc_v01` weights:
 
@@ -165,7 +165,7 @@ Reliability, Cost, and Latency into a single comparable score per model.
   the task.
 - **Reproduce and publish results.** Evaluate against deterministic snapshot
   bundles so runs are portable and safe to publish without live-cluster access.
-- **Author new tasks and environments.** Extend the 80-task / 26-environment
+- **Author new tasks and environments.** Extend the 88-task / 29-environment
   corpus using the versioned JSON specs and snapshot format.
 
 ## Comparison and alternatives
@@ -189,7 +189,7 @@ benchmark above.
 - **Not a live-cluster test.** AOBench runs against mock tools and deterministic
   snapshots by design; it does not execute against real production HPC
   infrastructure and does not measure real-world side effects.
-- **HPC-scoped.** The corpus covers 5 roles, 10 QCATs, 80 tasks, and 26
+- **HPC-scoped.** The corpus covers 5 roles, 10 QCATs, 88 tasks, and 29
   environments. It is not a general-purpose reasoning, web, or coding benchmark.
 - **API keys required for hosted models.** The `openai` and `anthropic` adapters
   need the corresponding API keys and incur provider cost; the `direct_qa`
@@ -249,7 +249,6 @@ tool-free `direct_qa` baseline for reference.
 | [docs/adapters-and-tools.md](docs/guides/adapters-and-tools.md) | Plain-English adapter and tool guide |
 | [docs/architecture-flowchart.md](docs/reference/architecture-flowchart.md) | System diagrams |
 | [docs/langfuse-integration.md](docs/guides/langfuse-integration.md) | Observability backend |
-| [docs/paper_reproduction_guide.md](docs/guides/paper-reproduction.md) | Reproducing v0.1 paper tables |
 | [CHANGELOG.md](CHANGELOG.md) | Release notes |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting and threat model |
@@ -266,11 +265,59 @@ operational queries with role-specific variants and structured taxonomies. It
 is consumed by the `direct_qa` baseline and seeds task design for the v1 HPC
 task set.
 
+## Contributing
+
+**Contributions are welcome, and the project is set up so you can start without
+asking permission first.**
+
+Good places to start, easiest first:
+
+| If you want to… | Start here |
+|---|---|
+| Fix something small and well-specified | [**Good first issues**](https://github.com/MSKazemi/aobench/labels/good%20first%20issue) — each one names the files to touch, the tests to write, and an honest time estimate |
+| Report a bug or ask for a feature | [Open an issue](https://github.com/MSKazemi/aobench/issues/new/choose) |
+| Ask a question or propose an idea | [Discussions](https://github.com/MSKazemi/aobench/discussions) — questions are welcome and expected |
+| Add a task or an environment | [CONTRIBUTING.md § How to Add a Task](CONTRIBUTING.md) |
+| Report a security issue | [SECURITY.md](SECURITY.md) — please don't open a public issue |
+
+From clone to green tests in three commands:
+
+```bash
+git clone https://github.com/MSKazemi/aobench && cd aobench
+make install     # creates .venv and installs everything
+make test        # ~1470 tests should pass
+```
+
+**What you can expect from us:** a first response within 3 working days — even if
+that response is just "seen, I'll look properly on Friday". If a PR of yours goes
+quiet for over a week, ping it; that's our failure, not rudeness on your part.
+
+**What helps us:** PRs under ~300 changed lines. Bug fixes, docs, tests, examples
+and new CLI flags need no prior discussion — just send them. Open an issue first
+only if you're changing the task schema, the scoring weights, the RBAC model, or
+a public CLI signature.
+
+You do not need HPC access or a cluster to contribute. The whole benchmark runs
+against frozen snapshots on a laptop, and the `direct_qa` adapter needs no API key.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
+
 ## Citation
 
-If you use AOBench in your research, please cite it. Citation metadata is
-provided in [CITATION.cff](CITATION.cff); GitHub renders a "Cite this
-repository" button from that file.
+If you use AOBench in your research, please cite it — and please cite **the version
+you actually ran**, since the task corpus and scoring profiles change between minor
+versions.
+
+- **[How to cite](https://mskazemi.com/aobench/latest/about/citation/)** — BibTeX, the
+  four fields to report alongside any score, and when to also cite the ExaData dataset.
+- **[Reproducing results](https://mskazemi.com/aobench/latest/about/reproducing-results/)** —
+  what AOBench pins, what it cannot pin, and how to re-derive a published number.
+
+Machine-readable metadata is provided in three formats, all kept in sync:
+[`CITATION.cff`](CITATION.cff) (GitHub renders a "Cite this repository" button from it),
+[`codemeta.json`](codemeta.json) (CodeMeta 3.0, for research-software registries), and
+[`.zenodo.json`](.zenodo.json) (archival deposition metadata).
 
 ```
 Seyedkazemi Ardebili, Mohsen. AOBench: A Trace-Driven, Role-Aware Benchmark for

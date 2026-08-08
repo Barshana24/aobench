@@ -1,0 +1,51 @@
+{
+  "title": "AOBench: a role-aware, RBAC-enforced benchmark for LLM agents in HPC operations",
+  "description": "<p>AOBench (Agent Operations Benchmark) is an open-source Python benchmark framework for evaluating AI agents that operate High-Performance Computing (HPC) systems. It measures whether an agent completes HPC operational tasks &mdash; job scheduling, telemetry interpretation, energy reasoning, and policy enforcement &mdash; using the right tools, the right roles, and the right permissions.</p><p>The corpus is 88 tasks over a five-role &times; ten-category grid, evaluated against 29 deterministic environment snapshots with mock HPC tools (SLURM, telemetry, RBAC, docs, facility). Six of those snapshots and eight of the tasks are grounded in the public Marconi100 ExaData dataset from CINECA's 980-node Tier-0 supercomputer; the remainder are synthetic and fidelity-validated against reference distributions.</p><p>Role-based access control is enforced in the execution harness rather than scored after the fact, and a Completion-under-Policy gate zeroes any task completed through a forbidden tool call. Results are reported on the five-dimensional CLEAR scorecard (Cost, Latency, Efficacy, Assurance, Reliability). Runs target frozen snapshots and never live infrastructure, so results are reproducible and safe to publish.</p>",
+  "upload_type": "software",
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Seyedkazemi Ardebili, Mohsen",
+      "affiliation": "Department of Electrical, Electronic and Information Engineering \"Guglielmo Marconi\" (DEI), University of Bologna, Italy",
+      "orcid": "0000-0002-1166-6559"
+    },
+    {
+      "name": "Bartolini, Andrea",
+      "affiliation": "Department of Electrical, Electronic and Information Engineering \"Guglielmo Marconi\" (DEI), University of Bologna, Italy",
+      "orcid": "0000-0002-1148-2450"
+    }
+  ],
+  "keywords": [
+    "AI agents",
+    "agent benchmark",
+    "LLM evaluation",
+    "high-performance computing",
+    "HPC operations",
+    "role-based access control",
+    "tool use",
+    "SLURM",
+    "AIOps",
+    "reproducibility",
+    "AI governance",
+    "Marconi100"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/MSKazemi/aobench",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://mskazemi.com/aobench/",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.1038/s41597-023-02174-3",
+      "relation": "isDerivedFrom",
+      "scheme": "doi",
+      "resource_type": "dataset"
+    }
+  ]
+}

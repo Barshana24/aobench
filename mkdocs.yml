@@ -88,6 +88,7 @@ nav:
     - Adapters & Tools: guides/adapters-and-tools.md
     - Programmatic Access (REST & MCP): guides/programmatic-access.md
     - Langfuse Integration: guides/langfuse-integration.md
+    - Marconi100 ExaData Environments: guides/m100_environments.md
   - Reference:
     - Scoring Dimensions: framework/scoring-dimensions.md
     - Taxonomy: framework/taxonomy.md
@@ -98,5 +99,7 @@ nav:
     - How to Contribute: about/contributing.md
     - Developer Guide: framework/implementation.md
   - About:
+    - Cite AOBench: about/citation.md
+    - Reproducing Results: about/reproducing-results.md
     - Changelog: about/changelog.md
     - Security: about/security.md

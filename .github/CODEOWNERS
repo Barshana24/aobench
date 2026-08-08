@@ -1,0 +1,19 @@
+# Review routing. Every PR gets a review request automatically.
+# When a second maintainer joins, split these lines by area rather than
+# leaving one person on everything — that is the bottleneck this file exists
+# to make visible.
+
+*                       @MSKazemi
+
+# Areas where a change has consequences beyond the file being edited.
+# Kept explicit so it is obvious to a contributor that these get a closer look.
+
+/benchmark/             @MSKazemi   # task specs + environment snapshots: changing
+                                    # these changes published results
+/src/aobench/scorers/   @MSKazemi   # scoring semantics
+/src/aobench/tools/     @MSKazemi   # RBAC-filtered tool registry
+/.github/               @MSKazemi   # CI, and the workflows that publish docs
+/SECURITY.md            @MSKazemi
+/CITATION.cff           @MSKazemi   # citation metadata
+/codemeta.json          @MSKazemi
+/.zenodo.json           @MSKazemi

@@ -15,6 +15,17 @@ authors:
   - family-names: "Seyedkazemi Ardebili"
     given-names: "Mohsen"
     email: "mohsen.seyedkazemi@gmail.com"
+    orcid: "https://orcid.org/0000-0002-1166-6559"
+    affiliation: >-
+      Department of Electrical, Electronic and Information Engineering
+      "Guglielmo Marconi" (DEI), University of Bologna, Italy
+  - family-names: "Bartolini"
+    given-names: "Andrea"
+    email: "a.bartolini@unibo.it"
+    orcid: "https://orcid.org/0000-0002-1148-2450"
+    affiliation: >-
+      Department of Electrical, Electronic and Information Engineering
+      "Guglielmo Marconi" (DEI), University of Bologna, Italy
 repository-code: "https://github.com/MSKazemi/aobench"
 url: "https://mskazemi.com/aobench/"
 identifiers:

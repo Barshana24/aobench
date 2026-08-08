@@ -1,0 +1,78 @@
+{
+  "@context": "https://w3id.org/codemeta/3.0",
+  "@type": "SoftwareSourceCode",
+  "name": "AOBench",
+  "description": "AOBench (Agent Operations Benchmark) is an open-source Python benchmark framework for evaluating AI agents that operate High-Performance Computing (HPC) systems. It measures whether an agent completes HPC operational tasks — job scheduling, telemetry interpretation, energy reasoning, and policy enforcement — using the right tools, roles, and permissions. Every task is evaluated against a deterministic environment snapshot with mock HPC tools (SLURM, telemetry, RBAC, docs, facility), so results are role-aware, permission-enforced, trace-based, and reproducible. Six of the 29 environment snapshots and eight of the 88 tasks are grounded in the public Marconi100 ExaData dataset from CINECA's 980-node Tier-0 supercomputer.",
+  "version": "0.4.0",
+  "dateModified": "2026-08-08",
+  "datePublished": "2026-07-23",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "codeRepository": "https://github.com/MSKazemi/aobench",
+  "url": "https://mskazemi.com/aobench/",
+  "issueTracker": "https://github.com/MSKazemi/aobench/issues",
+  "readme": "https://github.com/MSKazemi/aobench/blob/main/README.md",
+  "programmingLanguage": "Python",
+  "runtimePlatform": "Python 3.12",
+  "operatingSystem": ["Linux", "macOS"],
+  "applicationCategory": "Computational Science",
+  "developmentStatus": "active",
+  "isAccessibleForFree": true,
+  "keywords": [
+    "AI agents",
+    "agent benchmark",
+    "agent evaluation",
+    "LLM evaluation",
+    "high-performance computing",
+    "HPC operations",
+    "role-based access control",
+    "RBAC",
+    "tool use",
+    "SLURM",
+    "AIOps",
+    "reproducibility",
+    "AI governance",
+    "Marconi100",
+    "ExaData"
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Mohsen",
+      "familyName": "Seyedkazemi Ardebili",
+      "email": "mohsen.seyedkazemi@gmail.com",
+      "@id": "https://orcid.org/0000-0002-1166-6559",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Department of Electrical, Electronic and Information Engineering \"Guglielmo Marconi\" (DEI), University of Bologna",
+        "url": "https://www.unibo.it/"
+      }
+    },
+    {
+      "@type": "Person",
+      "givenName": "Andrea",
+      "familyName": "Bartolini",
+      "email": "a.bartolini@unibo.it",
+      "@id": "https://orcid.org/0000-0002-1148-2450",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Department of Electrical, Electronic and Information Engineering \"Guglielmo Marconi\" (DEI), University of Bologna",
+        "url": "https://www.unibo.it/"
+      }
+    }
+  ],
+  "maintainer": {
+    "@type": "Person",
+    "givenName": "Mohsen",
+    "familyName": "Seyedkazemi Ardebili",
+    "@id": "https://orcid.org/0000-0002-1166-6559"
+  },
+  "referencePublication": {
+    "@type": "ScholarlyArticle",
+    "name": "M100 ExaData: a data collection campaign on the CINECA's Marconi100 Tier-0 supercomputer",
+    "identifier": "https://doi.org/10.1038/s41597-023-02174-3",
+    "description": "The public operational dataset that grounds AOBench's Marconi100 environments and tasks."
+  },
+  "softwareRequirements": [
+    "Python >= 3.10"
+  ]
+}

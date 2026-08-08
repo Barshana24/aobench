@@ -4,13 +4,43 @@
 
 ```bash
 git clone https://github.com/MSKazemi/aobench
-cd AOBench
+cd aobench
 make install        # creates .venv and installs all deps
 make validate       # verifies benchmark data loads cleanly
-make test           # 58 tests should pass
+make test           # ~1470 tests should pass
 ```
 
 Requires [uv](https://github.com/astral-sh/uv). Python 3.11+.
+
+If `make` is unavailable, the equivalent commands are:
+
+```bash
+uv sync --all-extras
+uv run aobench validate benchmark
+uv run python -m pytest tests/
+```
+
+These are the same commands CI runs. Before opening a PR, also run:
+
+```bash
+uv run ruff check src tests
+uv run ruff format src tests
+uv run mypy src/aobench       # advisory — not all findings block a PR
+```
+
+---
+
+## What to expect from us
+
+- **First response within 3 working days.** A first response may just be "seen,
+  I'll look properly on Friday" — that still counts, and you will get one.
+- If a PR of yours goes quiet for more than a week, ping it. That is a
+  maintainer failure, not rudeness on your part.
+- **Prefer PRs under ~300 changed lines.** Larger work is welcome, but open an
+  issue first so we can agree the approach before you write it.
+- **Open an issue before starting** anything that changes the task schema, the
+  scoring weights, the RBAC model, or a public CLI signature. Bug fixes, docs,
+  tests, examples and new CLI flags need no prior discussion — just send them.
 
 ---
 

@@ -49,3 +49,23 @@ jobs:
 
       - name: Set default version to latest
         run: uv run mike set-default --push latest
+
+      # llms.txt is only useful if it sits at a path a crawler will actually try.
+      # mike publishes docs under /aobench/<version>/, so docs/llms.txt lands at
+      # /aobench/latest/llms.txt and the discoverable /aobench/llms.txt 404s.
+      # Copy it to the gh-pages root so both paths resolve.
+      - name: Publish llms.txt at the docs root
+        run: |
+          git fetch origin gh-pages
+          git worktree add /tmp/ghp gh-pages
+          cp docs/llms.txt /tmp/ghp/llms.txt
+          cd /tmp/ghp
+          git add llms.txt
+          if git diff --cached --quiet; then
+            echo "llms.txt unchanged — nothing to publish"
+          else
+            git -c user.name="github-actions[bot]" \
+                -c user.email="github-actions[bot]@users.noreply.github.com" \
+                commit -m "docs: publish llms.txt at the docs root"
+            git push origin gh-pages
+          fi
