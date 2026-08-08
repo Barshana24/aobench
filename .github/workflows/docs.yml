@@ -68,13 +68,22 @@ jobs:
           git fetch origin gh-pages
           git worktree add /tmp/ghp gh-pages
           cp docs/llms.txt /tmp/ghp/llms.txt
-          cd /tmp/ghp
-          git add llms.txt
-          if git diff --cached --quiet; then
-            echo "llms.txt unchanged — nothing to publish"
+          git -C /tmp/ghp add llms.txt
+          if git -C /tmp/ghp diff --cached --quiet; then
+            echo "llms.txt unchanged — nothing new to commit"
           else
-            git -c user.name="github-actions[bot]" \
+            git -C /tmp/ghp \
+                -c user.name="github-actions[bot]" \
                 -c user.email="github-actions[bot]@users.noreply.github.com" \
                 commit -m "docs: publish llms.txt at the docs root"
-            git push origin gh-pages
           fi
+          # Push from the MAIN worktree, never from /tmp/ghp. actions/checkout v6+ no
+          # longer writes the token into .git/config; it injects it via
+          #   includeIf.gitdir:<repo>/.git.path = $RUNNER_TEMP/git-credentials-*.config
+          # and that condition does NOT match a linked worktree's gitdir
+          # (<repo>/.git/worktrees/ghp), so a push issued from inside /tmp/ghp is
+          # unauthenticated. Refs are shared between worktrees, so the commit made above
+          # is pushed from here. Running the push unconditionally also means a broken
+          # token fails the run immediately instead of lying dormant until the next time
+          # llms.txt happens to change.
+          git push origin gh-pages
