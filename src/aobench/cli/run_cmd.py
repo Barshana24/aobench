@@ -29,7 +29,7 @@ _MODEL_REGISTRY: dict[str, tuple[str, str]] = {
     "mistral:7b":                ("OpenAIAdapter",   "mistral:7b"),
     "qwen2.5:72b":               ("OpenAIAdapter",   "qwen2.5:72b"),
     "deepseek-r1:70b":           ("OpenAIAdapter",   "deepseek-r1:70b"),
-    # University Ollama server (delta.dei.unibo.it via tunnel)
+    # Served by a self-hosted Ollama instance (see scripts/ollama_tunnel.py)
     "mistral-small:24b":         ("OpenAIAdapter",   "mistral-small:24b"),
     "mistral-medium-3.5:latest": ("OpenAIAdapter",   "mistral-medium-3.5:latest"),
     "mistral-nemo:latest":       ("OpenAIAdapter",   "mistral-nemo:latest"),

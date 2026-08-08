@@ -1,15 +1,15 @@
-"""ollama_tunnel.py — SSH tunnel to the university Ollama server.
+"""ollama_tunnel.py — SSH tunnel to a remote Ollama server.
 
 Opens a local port forward: localhost:LOCAL_PORT → REMOTE_HOST:REMOTE_PORT
-via the SSH jump host (default: mc).
+via an SSH host you configure.
 
 Usage:
     python scripts/ollama_tunnel.py            # foreground, blocks until Ctrl-C
     python scripts/ollama_tunnel.py --check    # verify tunnel then exit
 
-Environment variables (loaded from .env):
-    MC_SSH_HOST     SSH host (default: mc)
-    MC_SSH_USER     SSH username (default: current user)
+Environment variables (loaded from .env) — MC_SSH_HOST is required:
+    MC_SSH_HOST     SSH host (required; no default)
+    MC_SSH_USER     SSH username (default: current local user)
     MC_SSH_PORT     SSH port (default: 22)
     MC_PASSWORD     SSH password
     OLLAMA_REMOTE_HOST  Host on the remote side (default: localhost)
@@ -44,10 +44,22 @@ except ImportError:
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-SSH_HOST        = os.environ.get("MC_SSH_HOST", "delta.dei.unibo.it")
-SSH_USER        = os.environ.get("MC_SSH_USER", "msardebili")
-SSH_PORT        = int(os.environ.get("MC_SSH_PORT", "2223"))
+# No site-specific defaults: this script is published, so a hard-coded host,
+# username or port would expose a real SSH target. Configure these in .env.
+SSH_HOST        = os.environ.get("MC_SSH_HOST", "")
+SSH_USER        = os.environ.get("MC_SSH_USER", "") or getpass.getuser()
+SSH_PORT        = int(os.environ.get("MC_SSH_PORT", "22"))
 SSH_PASSWORD    = os.environ.get("MC_PASSWORD", "")
+
+if not SSH_HOST:
+    sys.exit(
+        "MC_SSH_HOST is not set.\n"
+        "This script needs the SSH host of your own Ollama server. Set it in .env:\n"
+        "    MC_SSH_HOST=your-ssh-host\n"
+        "    MC_SSH_USER=your-username     # optional, defaults to your local user\n"
+        "    MC_SSH_PORT=22                # optional\n"
+        "The full variable list is in this file's module docstring."
+    )
 
 REMOTE_HOST     = os.environ.get("OLLAMA_REMOTE_HOST", "localhost")
 REMOTE_PORT     = int(os.environ.get("OLLAMA_REMOTE_PORT", "11434"))
