@@ -2,15 +2,50 @@
 
 from __future__ import annotations
 
-from typing import Any
+import difflib
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated, Any, NoReturn, Optional
 
 import typer
 
 from aobench.utils.logging import configure_logging
 
 run_app = typer.Typer(help="Run benchmark tasks.")
+
+
+def _available_task_ids(benchmark_root: str) -> list[str]:
+    """All runnable task IDs: the ``*.json`` stems under ``tasks/specs``."""
+    specs_dir = Path(benchmark_root) / "tasks" / "specs"
+    if not specs_dir.is_dir():
+        return []
+    return sorted(p.stem for p in specs_dir.glob("*.json"))
+
+
+def _available_env_ids(benchmark_root: str) -> list[str]:
+    """All environment bundle IDs: directory names under ``environments``."""
+    env_root = Path(benchmark_root) / "environments"
+    if not env_root.is_dir():
+        return []
+    return sorted(p.name for p in env_root.iterdir() if p.is_dir())
+
+
+def _close_matches(bad_id: str, available: list[str]) -> list[str]:
+    return difflib.get_close_matches(bad_id, available, n=3, cutoff=0.5)
+
+
+def exit_unknown_id(*, kind: str, bad_id: str, available: list[str]) -> NoReturn:
+    """Report a mistyped task/env ID with suggestions, no traceback (exit code 2)."""
+    typer.echo(f"Error: no {kind} with ID '{bad_id}'.", err=True)
+    matches = _close_matches(bad_id, available)
+    if matches:
+        typer.echo("Did you mean one of these?", err=True)
+        for match in matches:
+            typer.echo(f"  {match}", err=True)
+    typer.echo(
+        f"{len(available)} {kind}s are available. List them with: aobench validate benchmark",
+        err=True,
+    )
+    raise typer.Exit(2)
 
 # ---------------------------------------------------------------------------
 # Model registry — maps short token → (AdapterClass, model_name)
@@ -516,6 +551,22 @@ def run_task(
             err=True,
         )
         raise typer.Exit(1)
+
+    # Friendly errors for the most common first-run mistake: a mistyped ID.
+    task_spec_path = Path(benchmark_root) / "tasks" / "specs" / f"{task_id}.json"
+    if not task_spec_path.exists():
+        exit_unknown_id(
+            kind="task",
+            bad_id=task_id,
+            available=_available_task_ids(benchmark_root),
+        )
+    environment_dir = Path(benchmark_root) / "environments" / env_id
+    if not environment_dir.is_dir():
+        exit_unknown_id(
+            kind="environment",
+            bad_id=env_id,
+            available=_available_env_ids(benchmark_root),
+        )
 
     # Apply system-prompt prefix if provided
     if system_prompt_prefix is not None and hasattr(adapter_obj, "_system_prompt"):

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Fixed — CLI
+
+- `aobench run task` no longer dumps a Python traceback when the `--task` or `--env` ID is
+  mistyped. It now prints a clean one-line error with close-match suggestions and exits with
+  code 2 (`tests/cli/test_error_messages.py`). Loader functions still raise their original
+  exceptions when used as a library.
+
 ### Changed — CI
 
 - `actions/checkout` 4 → 7 and `astral-sh/setup-uv` 4 → **`v9.0.0`** across `ci.yml` and
