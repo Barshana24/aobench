@@ -14,6 +14,7 @@ report_app = typer.Typer(help="Generate reports from a benchmark run directory."
 def report_json(
     run_dir: Annotated[str, typer.Argument(help="Path to the run directory (e.g. data/runs/run_…)")],
     output: Annotated[str | None, typer.Option("--output", "-o", help="Output file path (default: <run_dir>/run_summary.json)")] = None,
+    as_json: Annotated[bool, typer.Option("--json", help="Emit JSON instead of a table.")] = False,
 ) -> None:
     """Write a JSON summary of all results in a run directory."""
     from aobench.reports.json_report import write_run_summary
@@ -24,12 +25,17 @@ def report_json(
         shutil.copy(out_path, output)
         out_path = Path(output)
 
-    typer.echo(f"Report written: {out_path}")
-
-    # Print a quick summary to stdout
     import json
     with out_path.open() as fh:
         summary = json.load(fh)
+
+    if as_json:
+        typer.echo(json.dumps(summary))
+        return
+
+    typer.echo(f"Report written: {out_path}")
+
+    # Print a quick summary to stdout
     typer.echo(f"\nRun ID  : {summary['run_id']}")
     typer.echo(f"Tasks   : {summary['task_count']}")
     typer.echo(f"Mean score : {summary['mean_aggregate_score']}")

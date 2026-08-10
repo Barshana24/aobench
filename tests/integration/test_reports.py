@@ -79,3 +79,37 @@ def test_html_report_written_to_disk(tmp_path):
     assert "AOBench" in content
     assert run_id in content
     assert "<table" in content
+
+
+def test_report_json_flag_emits_clean_json_on_stdout(tmp_path):
+    from typer.testing import CliRunner
+
+    from aobench.cli.main import app
+
+    run_id = _run_all_tasks(tmp_path)
+    run_dir = tmp_path / run_id
+
+    runner = CliRunner()
+    result = runner.invoke(app, ["report", "json", str(run_dir), "--json"])
+    assert result.exit_code == 0, result.output
+
+    # No "Report written:" banner, no human summary lines, no trailing blank line.
+    assert result.output.count("\n") == 1
+    data = json.loads(result.output)
+    assert data["run_id"] == run_id
+    assert data["task_count"] >= 10
+
+
+def test_report_json_default_output_unchanged(tmp_path):
+    from typer.testing import CliRunner
+
+    from aobench.cli.main import app
+
+    run_id = _run_all_tasks(tmp_path)
+    run_dir = tmp_path / run_id
+
+    runner = CliRunner()
+    result = runner.invoke(app, ["report", "json", str(run_dir)])
+    assert result.exit_code == 0, result.output
+    assert "Report written:" in result.output
+    assert f"Run ID  : {run_id}" in result.output
