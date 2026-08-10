@@ -70,6 +70,16 @@ they worked on; the line underneath says it in words.
   <span class="wall-role">Contributor</span>
   <span class="wall-tag">Side-by-side comparison</span>
 </li>
+<li>
+  <span class="wall-avatar">
+    <img src="https://github.com/atiqur-rahman-pro.png?size=144" alt="" loading="lazy">
+    <span class="wall-badge" aria-hidden="true">⚖️</span>
+  </span>
+  <span class="wall-name">Atiqur Rahman</span>
+  <span class="wall-handle"><a href="https://github.com/atiqur-rahman-pro">@atiqur-rahman-pro</a></span>
+  <span class="wall-role">Contributor</span>
+  <span class="wall-tag">Lint gate for scripts/</span>
+</li>
 </ul>
 
 | Contributor | What they added | |
@@ -77,6 +87,7 @@ they worked on; the line underneath says it in words.
 | [@erensh27](https://github.com/erensh27) | An actionable one-line error, with tests, in place of the traceback you used to get from a mistyped `--task` or `--env` | [#25](https://github.com/MSKazemi/aobench/pull/25) |
 | [@Barshana24](https://github.com/Barshana24) | `--json` on `report json` and `compare runs`, so AOBench's numbers can be piped into `jq` instead of scraped | [#43](https://github.com/MSKazemi/aobench/pull/43) |
 | [@LobsterQBA](https://github.com/LobsterQBA) | `examples/05_compare_two_adapters.py` — two systems side by side with per-dimension deltas, offline | [#44](https://github.com/MSKazemi/aobench/pull/44) |
+| [@atiqur-rahman-pro](https://github.com/atiqur-rahman-pro) | `ruff check` over `scripts/` — the 55 generators behind the catalogs, RBAC pages and paper tables, previously outside every gate | [#45](https://github.com/MSKazemi/aobench/pull/45) |
 
 This is a young project and that is a short list. It is worth reading anyway, because one
 of those three contributions has already paid for itself: the CLI tests in #25 failed

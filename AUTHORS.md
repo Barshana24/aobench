@@ -40,6 +40,15 @@ Added when a first PR merges, newest last.
   rather than re-deriving the deltas, and registers itself in the example smoke tests, so
   the README's promise that a broken example breaks the build stays true.
 
+- **Atiqur Rahman** ([@atiqur-rahman-pro](https://github.com/atiqur-rahman-pro)) — noticed
+  that `scripts/` was the one Python directory sitting outside every quality gate, and did
+  the unglamorous read across 31 of its files
+  ([PR #45](https://github.com/MSKazemi/aobench/pull/45)). Those 55 scripts generate the
+  docs catalogs, the RBAC policy pages and the frozen paper tables, so `ruff check` now
+  covers them in CI. Narrowing their blanket `except Exception` handlers also exposed a
+  latent crash in the tool-docs generator that an empty `metadata.yaml` had been able to
+  abort since the script was written.
+
 <!-- Add yourself in your first PR: - **Your Name** (@handle) — what you contributed -->
 
 ## Acknowledgements
