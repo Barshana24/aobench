@@ -2,11 +2,14 @@
 """Measure the ranking impact of fixing the numeric_match wiring bug.
 Rescore the 4 numeric_match dev tasks across all 16 models from frozen traces
 (no LLM). Corrected numeric_match behaves like 'numeric' mode."""
-import json, statistics as st
+import json
+import statistics as st
 from pathlib import Path
-from aobench.schemas.task import TaskSpec
-from aobench.scorers.outcome_scorer import _numeric_match, _fuzzy_score
+
 import yaml
+
+from aobench.schemas.task import TaskSpec
+from aobench.scorers.outcome_scorer import _fuzzy_score, _numeric_match
 
 ROOT=Path(__file__).resolve().parents[1]
 SPECS=ROOT/"benchmark/tasks/specs"

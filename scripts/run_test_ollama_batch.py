@@ -20,7 +20,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from ollama_tunnel import open_tunnel  # noqa: E402
+from ollama_tunnel import open_tunnel
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 
@@ -69,11 +69,12 @@ def run_model(model: str, dry_run: bool = False) -> int:
     print(f"\n{'[DRY-RUN] ' if dry_run else ''}Running: {' '.join(cmd)}", flush=True)
     if dry_run:
         return 0
-    result = subprocess.run(cmd, env=env)
+    result = subprocess.run(cmd, env=env, check=False)
     return result.returncode
 
 
 def wait_for_ollama(port: int = 11434, timeout: int = 10) -> bool:
+    import urllib.error
     import urllib.request
     deadline = time.time() + timeout
     while time.time() < deadline:
@@ -81,7 +82,7 @@ def wait_for_ollama(port: int = 11434, timeout: int = 10) -> bool:
             with urllib.request.urlopen(f"http://localhost:{port}/api/tags", timeout=3) as r:
                 if r.status == 200:
                     return True
-        except Exception:
+        except (urllib.error.URLError, OSError):
             time.sleep(0.5)
     return False
 

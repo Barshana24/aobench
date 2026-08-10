@@ -45,8 +45,8 @@ def _detect_role(env_dir: Path) -> str | None:
         roles = meta.get("supported_roles", [])
         if isinstance(roles, list) and len(roles) == 1:
             return roles[0]
-    except Exception:
-        pass
+    except (OSError, yaml.YAMLError):
+        return None
     return None
 
 

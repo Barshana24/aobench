@@ -109,7 +109,7 @@ counts_a: dict[str, dict[str, int]] = {t: defaultdict(int) for t in tiers_a}
 for row in rob_rows:
     counts_a[row["pass8_tier"]][row["qcat"]] += 1
 
-print(f"\n**Cross-tab:**\n")
+print("\n**Cross-tab:**\n")
 header_a = "| Tier | " + " | ".join(all_qcats_a) + " | Total |"
 sep_a    = "|" + "|".join(["---"] * (len(all_qcats_a) + 2)) + "|"
 print(header_a)

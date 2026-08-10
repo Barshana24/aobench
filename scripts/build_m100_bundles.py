@@ -44,7 +44,7 @@ import pandas as pd
 
 # Reuse the canonical bundle I/O helpers and RBAC policies from the existing generator.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_bundles import (  # noqa: E402
+from generate_bundles import (
     RBAC_FACILITY,
     RBAC_SYSADMIN_FULL,
     _write_json,

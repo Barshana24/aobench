@@ -10,7 +10,7 @@ import datetime
 from pathlib import Path
 
 ENVS_ROOT = Path(__file__).parent.parent / "benchmark" / "environments"
-TODAY = datetime.date.today().isoformat()
+TODAY = datetime.datetime.now(tz=datetime.timezone.utc).date().isoformat()
 
 TEMPLATE = """\
 # AOBench HPC Facility — RBAC and Access Policy

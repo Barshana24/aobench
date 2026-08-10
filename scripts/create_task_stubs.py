@@ -25,7 +25,6 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-
 TASK_DIR = "benchmark/tasks/specs"
 ENV_DIR = "benchmark/environments"
 
@@ -252,7 +251,7 @@ def create_stub(path: Path, dry_run: bool = False) -> None:
     # Fallback: empty file
     path.parent.mkdir(parents=True, exist_ok=True)
     path.touch()
-    print(f"    (unknown type — created empty file)")
+    print("    (unknown type — created empty file)")
 
 
 # ---------------------------------------------------------------------------
@@ -267,7 +266,7 @@ def run(task_dir: Path, env_dir: Path, dry_run: bool = False) -> int:
     for task_path in sorted(task_dir.glob("*.json")):
         try:
             spec = json.loads(task_path.read_text(encoding="utf-8"))
-        except Exception as exc:
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
             print(f"ERROR reading {task_path.name}: {exc}", file=sys.stderr)
             errors += 1
             continue

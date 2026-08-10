@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Independence check: detect near-duplicate tasks by cosine similarity of feature vectors."""
-import sys
+import argparse
 import json
 import math
 import pathlib
-import argparse
+import sys
 
 _DIFFICULTY_TO_TIER = {"easy": 1, "medium": 2, "hard": 3, "adversarial": 3}
 

@@ -99,9 +99,9 @@ def _rescore_run(run_dir: Path, benchmark_root: Path) -> dict:
 
 @app.command()
 def main(
-    run_dir: list[str] = typer.Option(..., "--run-dir", help="Run directory (repeatable)."),
-    label: list[str] = typer.Option(None, "--label", help="Label per run-dir (repeatable)."),
-    old: list[float] = typer.Option(None, "--old", help="Old governance mean per run-dir (repeatable)."),
+    run_dir: list[str] = typer.Option(..., "--run-dir", help="Run directory (repeatable)."),  # noqa: B008
+    label: list[str] = typer.Option(None, "--label", help="Label per run-dir (repeatable)."),  # noqa: B008
+    old: list[float] = typer.Option(None, "--old", help="Old governance mean per run-dir (repeatable)."),  # noqa: B008
     benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
     output: str = typer.Option(
         "data/paper/governance_rescore_report.json", "--output", "-o"
@@ -125,8 +125,8 @@ def main(
         report.append(res)
         ci = f"[{res['compliance_ci95'][0]:.3f},{res['compliance_ci95'][1]:.3f}]"
         typer.echo(
-            f"{lb:<20} {res['n']:>4} {str(ov):>8} {res['governance_mean']:>8.3f} "
-            f"{str(delta):>8} {res['hard_fail_rate']*100:>6.1f}% {ci:>18}"
+            f"{lb:<20} {res['n']:>4} {ov!s:>8} {res['governance_mean']:>8.3f} "
+            f"{delta!s:>8} {res['hard_fail_rate']*100:>6.1f}% {ci:>18}"
         )
 
     out_path = Path(output)

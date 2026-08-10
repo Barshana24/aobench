@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle check: verify each task's gold answer is derivable from snapshot data."""
-import sys
+import argparse
 import json
 import pathlib
-import argparse
+import sys
 
 
 def check_task(task_path: pathlib.Path, env_dir: str) -> tuple[str, bool, str]:

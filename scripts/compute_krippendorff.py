@@ -25,11 +25,9 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional
 
 try:
     import krippendorff
-    import numpy as np
     import pandas as pd
 except ImportError as exc:
     sys.exit(
@@ -102,7 +100,7 @@ def compute_alpha_for_dimension(
     }
 
 
-def main(annotations_path: str, output_path: Optional[str]) -> None:
+def main(annotations_path: str, output_path: str | None) -> None:
     df = pd.read_csv(annotations_path)
 
     required_cols = {"response_id", "rater_id", "rubric_id", "dimension", "raw_score"}

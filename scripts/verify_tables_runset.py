@@ -23,9 +23,9 @@ Usage:
 """
 from __future__ import annotations
 
-import os
 import argparse
 import json
+import os
 import re
 import statistics as st
 import sys
@@ -201,7 +201,7 @@ def recompute() -> tuple[dict, list[str]]:
 
 
 def parse_tex_main(tex: str) -> dict[str, dict]:
-    m = re.search(r"\\label\{tab:main\}(.*?)\\end\{tabular\}", tex, re.S)
+    m = re.search(r"\\label\{tab:main\}(.*?)\\end\{tabular\}", tex, re.DOTALL)
     rows = {}
     for line in (m.group(1).splitlines() if m else []):
         mm = re.match(r"\s*([A-Za-z0-9 .\-\(\)]+?)\s*&\s*([0-9.]+) \[([0-9.]+), ([0-9.]+)\] & ([0-9.]+) & ([0-9.]+) & ([0-9.]+|\\,---) & ([0-9.]+) & ([0-9.]+)", line)
@@ -217,7 +217,7 @@ def parse_tex_main(tex: str) -> dict[str, dict]:
 
 
 def parse_tex_generic(tex: str, label: str, ncols: int) -> dict[str, tuple]:
-    m = re.search(r"\\label\{" + re.escape(label) + r"\}(.*?)\\end\{tabular\}", tex, re.S)
+    m = re.search(r"\\label\{" + re.escape(label) + r"\}(.*?)\\end\{tabular\}", tex, re.DOTALL)
     rows = {}
     for line in (m.group(1).splitlines() if m else []):
         mm = re.match(r"\s*([A-Za-z0-9 .\-\(\)]+?)\s*&\s*(.+?)\\\\", line)
@@ -251,7 +251,7 @@ def main() -> int:
 
     fails: list[str] = list(struct)
     print(f"{'model':26} {'agg':>7} {'out':>7} {'tool':>7} {'assur':>7} {'eff':>7} {'grnd':>7}   inline-agg  Δagg")
-    for m, c in comp.items():
+    for c in comp.values():
         lab = c["label"]
         inl = main_rows.get(lab)
         tag = ""
@@ -259,9 +259,12 @@ def main() -> int:
             for dim in ("aggregate", "outcome", "tool_use", "efficiency", "grounding"):
                 if c[dim] is not None and abs(r3(c[dim]) - inl[dim]) > args.tol:
                     fails.append(f"[T7] {lab}: {dim} frozen={c[dim]:.4f} (->{r3(c[dim])}) != tex {inl[dim]}")
-            if c["assurance"] is not None and inl["assurance"] is not None:
-                if abs(r3(c["assurance"]) - inl["assurance"]) > args.tol:
-                    fails.append(f"[T7] {lab}: assurance frozen={c['assurance']:.4f} != tex {inl['assurance']}")
+            if (
+                c["assurance"] is not None
+                and inl["assurance"] is not None
+                and abs(r3(c["assurance"]) - inl["assurance"]) > args.tol
+            ):
+                fails.append(f"[T7] {lab}: assurance frozen={c['assurance']:.4f} != tex {inl['assurance']}")
             tag = f"  tex={inl['aggregate']:.3f}  Δ={r3(c['aggregate'])-inl['aggregate']:+.3f}"
         # T15 cup rates
         cinl = cup_rows.get(lab)
@@ -283,7 +286,7 @@ def main() -> int:
     # Focused dump of any model whose frozen values diverge (for the fix)
     print("\n-- corrected detail for mismatched rows --")
     flagged = {re.match(r"\[[^]]+\] ([^:]+):", f).group(1) for f in fails if f.startswith("[")}
-    for m, c in comp.items():
+    for c in comp.values():
         if c["label"] in flagged:
             print(f"{c['label']}: agg={c['aggregate']:.4f} CI=[{c['ci'][0]:.4f},{c['ci'][1]:.4f}] "
                   f"outcome={c['outcome']:.4f} E*={c['estar']:.4f} R(tol2)={c['cup']['tolerant_2']:.4f}")

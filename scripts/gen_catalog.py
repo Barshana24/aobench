@@ -83,23 +83,29 @@ def render_task_catalog(tasks: list[dict[str, Any]]) -> str:
     lines = [
         "---",
         'title: "AOBench task catalog — every HPC agent task in the benchmark"',
-        'description: "The complete catalog of AOBench\'s '
-        f'{len(tasks)} HPC operational tasks, grouped by question category, '
-        'with role, benchmark split, target environment, and difficulty for each."',
+        (
+            'description: "The complete catalog of AOBench\'s '
+            f'{len(tasks)} HPC operational tasks, grouped by question category, '
+            'with role, benchmark split, target environment, and difficulty for each."'
+        ),
         "---",
         "",
         GENERATED_NOTE,
         "",
         "# Task catalog",
         "",
-        f"AOBench contains **{len(tasks)} tasks** across "
-        f"**{len(by_qcat)} question categories (QCATs)** and "
-        f"**{len(roles)} operator roles**. "
-        f"**{grounded}** of them are grounded in real Marconi100 ExaData rather than "
-        "synthesised.",
+        (
+            f"AOBench contains **{len(tasks)} tasks** across "
+            f"**{len(by_qcat)} question categories (QCATs)** and "
+            f"**{len(roles)} operator roles**. "
+            f"**{grounded}** of them are grounded in real Marconi100 ExaData rather than "
+            "synthesised."
+        ),
         "",
-        f"Splits: **{splits.get('dev', 0)} dev** (open) and "
-        f"**{splits.get('test', 0)} test** (held out behind `AOBENCH_UNLOCK_TEST=1`).",
+        (
+            f"Splits: **{splits.get('dev', 0)} dev** (open) and "
+            f"**{splits.get('test', 0)} test** (held out behind `AOBENCH_UNLOCK_TEST=1`)."
+        ),
         "",
         "Reproduce this page from your own checkout:",
         "",
@@ -147,10 +153,12 @@ def render_task_catalog(tasks: list[dict[str, Any]]) -> str:
         "",
         "## Adding a task",
         "",
-        "The corpus is versioned JSON — see "
-        "[Adding a task](../guides/adding-a-task.md) for the schema, the fidelity gate a "
-        "new task must pass, and the review checklist. New tasks are genuinely welcome; "
-        "corpus breadth is the main thing limiting what AOBench can measure.",
+        (
+            "The corpus is versioned JSON — see "
+            "[Adding a task](../guides/adding-a-task.md) for the schema, the fidelity gate a "
+            "new task must pass, and the review checklist. New tasks are genuinely welcome; "
+            "corpus breadth is the main thing limiting what AOBench can measure."
+        ),
         "",
     ]
     return "\n".join(lines)
@@ -163,24 +171,30 @@ def render_env_catalog(envs: list[dict[str, Any]], tasks: list[dict[str, Any]]) 
     lines = [
         "---",
         'title: "AOBench environment catalog — every HPC snapshot bundle"',
-        'description: "The complete catalog of AOBench\'s '
-        f'{len(envs)} deterministic HPC environment snapshot bundles, including the '
-        f'{len(grounded)} built from real CINECA Marconi100 ExaData."',
+        (
+            'description: "The complete catalog of AOBench\'s '
+            f'{len(envs)} deterministic HPC environment snapshot bundles, including the '
+            f'{len(grounded)} built from real CINECA Marconi100 ExaData."'
+        ),
         "---",
         "",
         GENERATED_NOTE,
         "",
         "# Environment catalog",
         "",
-        f"AOBench ships **{len(envs)} deterministic environment snapshot bundles**: "
-        f"**{len(envs) - len(grounded)} synthetic** and **{len(grounded)} built from real "
-        "operational data** from CINECA's 980-node Marconi100 Tier-0 supercomputer, via the "
-        "public [M100 ExaData release](../guides/m100_environments.md).",
+        (
+            f"AOBench ships **{len(envs)} deterministic environment snapshot bundles**: "
+            f"**{len(envs) - len(grounded)} synthetic** and **{len(grounded)} built from real "
+            "operational data** from CINECA's 980-node Marconi100 Tier-0 supercomputer, via the "
+            "public [M100 ExaData release](../guides/m100_environments.md)."
+        ),
         "",
-        "A bundle is a directory of frozen files — SLURM state, telemetry time series, "
-        "documentation, RBAC policy, incident metadata — that the mock tools read from. "
-        "Nothing in a run touches a live system, which is what makes a result reproducible "
-        "on someone else's laptop years later.",
+        (
+            "A bundle is a directory of frozen files — SLURM state, telemetry time series, "
+            "documentation, RBAC policy, incident metadata — that the mock tools read from. "
+            "Nothing in a run touches a live system, which is what makes a result reproducible "
+            "on someone else's laptop years later."
+        ),
         "",
         "Reproduce this page from your own checkout:",
         "",
@@ -210,8 +224,10 @@ def render_env_catalog(envs: list[dict[str, Any]], tasks: list[dict[str, Any]]) 
         "",
         "## Grounded environments in detail",
         "",
-        "These six bundles replay real Marconi100 telemetry and Slurm records. The "
-        "scenarios below actually happened on the machine.",
+        (
+            "These six bundles replay real Marconi100 telemetry and Slurm records. The "
+            "scenarios below actually happened on the machine."
+        ),
         "",
     ]
     for env in grounded:
@@ -232,11 +248,13 @@ def render_env_catalog(envs: list[dict[str, Any]], tasks: list[dict[str, Any]]) 
     lines += [
         "## Adding an environment",
         "",
-        "See [Adding an environment](../guides/adding-an-environment.md) for the bundle "
-        "layout, the manifest format, and the fidelity checks a new snapshot must pass. "
-        "Bundles grounded in real facility data are especially valuable — if you operate a "
-        "cluster and can publish a sanitised snapshot, please "
-        "[open a discussion](https://github.com/MSKazemi/aobench/discussions).",
+        (
+            "See [Adding an environment](../guides/adding-an-environment.md) for the bundle "
+            "layout, the manifest format, and the fidelity checks a new snapshot must pass. "
+            "Bundles grounded in real facility data are especially valuable — if you operate a "
+            "cluster and can publish a sanitised snapshot, please "
+            "[open a discussion](https://github.com/MSKazemi/aobench/discussions)."
+        ),
         "",
     ]
     return "\n".join(lines)

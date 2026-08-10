@@ -3,6 +3,7 @@
 No LLM, no rerun: feed fixed answers and read the deterministic Outcome score."""
 import json
 from pathlib import Path
+
 from aobench.schemas.task import TaskSpec
 from aobench.schemas.trace import Trace
 from aobench.scorers.outcome_scorer import OutcomeScorer
@@ -44,6 +45,7 @@ controls = {
 
 # also record evaluation_mode distribution
 from collections import Counter
+
 modes = Counter(getattr(specs[t], "evaluation_mode", None) for t in task_ids)
 print("evaluation_mode distribution (58 dev):", dict(modes))
 

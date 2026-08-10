@@ -24,7 +24,6 @@ import json
 import sys
 from pathlib import Path
 
-
 DEFAULT_FIDELITY_INDEX = "data/fidelity/index.json"
 
 DEFAULT_RUN_DIRS = [
@@ -77,16 +76,16 @@ def find_results(run_dir: str) -> list[dict]:
         for f in sorted(latest.glob("results/*.json")):
             try:
                 results.append(json.loads(f.read_text(encoding="utf-8")))
-            except Exception:
-                pass
+            except (OSError, json.JSONDecodeError, ValueError):
+                continue
         if results:
             return results
     # Fallback: flat results/ directly under run_dir
     for f in sorted(base.glob("results/*.json")):
         try:
             results.append(json.loads(f.read_text(encoding="utf-8")))
-        except Exception:
-            pass
+        except (OSError, json.JSONDecodeError, ValueError):
+            continue
     return results
 
 
@@ -133,8 +132,8 @@ def load_robustness(rob_dir: str) -> dict[str, dict[str, dict]]:
                 if task_id in ROBUSTNESS_TASKS:
                     try:
                         result[task_id][slug] = json.loads(f.read_text(encoding="utf-8"))
-                    except Exception:
-                        pass
+                    except (OSError, json.JSONDecodeError, ValueError):
+                        continue
                 break
     return result
 
@@ -154,14 +153,16 @@ def gate_v0(fidelity_index_path: Path) -> dict:
             "passed": True,
             "warning_only": True,
             "issues": [
-                f"index not found at {fidelity_index_path} — skipped "
-                "(run 'aobench validate snapshots' first)"
+                (
+                    f"index not found at {fidelity_index_path} — skipped "
+                    "(run 'aobench validate snapshots' first)"
+                )
             ],
         }
 
     try:
         index = json.loads(fidelity_index_path.read_text(encoding="utf-8"))
-    except Exception as exc:
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
         return {
             "gate": "V0",
             "name": "Fidelity precondition",

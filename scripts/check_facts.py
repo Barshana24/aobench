@@ -125,7 +125,7 @@ def _verify_weight_tables() -> list[str]:
     comparing two papers needs them to be right — and they are exactly the kind of
     table that rots silently after a profile is retuned.
     """
-    import yaml  # noqa: PLC0415 - keep the import local; only this check needs it
+    import yaml
 
     config = ROOT / "benchmark" / "configs" / "scoring_profiles.yaml"
     if not config.is_file():

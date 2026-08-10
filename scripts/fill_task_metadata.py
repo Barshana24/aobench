@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fill missing metadata fields in all task spec JSON files."""
-import json
 import glob
+import json
 
 KSS_MAP = {
     ("scientific_user", "JOB"):    ["USR_DOC", "WIKI"],

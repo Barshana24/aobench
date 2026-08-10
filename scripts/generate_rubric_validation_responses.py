@@ -11,7 +11,6 @@ Usage:
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -1215,7 +1214,7 @@ def write_responses() -> None:
         f.write('  "task_question": "...",\n')
         f.write('  "agent_response": "...",\n')
         f.write('  "quality_tier": "poor | moderate | good"\n}\n```\n')
-    print(f"  wrote README.md")
+    print("  wrote README.md")
 
 
 if __name__ == "__main__":

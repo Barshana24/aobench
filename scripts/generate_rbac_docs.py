@@ -18,7 +18,6 @@ from typing import Any
 
 import yaml
 
-
 DEFAULT_ENV_BASE = "benchmark/environments"
 
 
@@ -131,7 +130,7 @@ def generate_for_env(env_dir: Path, dry_run: bool = False) -> bool:
 
     try:
         policy = yaml.safe_load(yaml_path.read_text(encoding="utf-8"))
-    except Exception as exc:
+    except (OSError, yaml.YAMLError) as exc:
         print(f"  ERROR {env_dir.name}: failed to parse YAML: {exc}", file=sys.stderr)
         return False
 

@@ -31,7 +31,6 @@ import sys
 import time
 from pathlib import Path
 from statistics import mean, stdev
-from typing import Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
@@ -102,7 +101,7 @@ def main(
     sample: list[str],
     judge_model: str,
     n_runs: int,
-    output_path: Optional[str],
+    output_path: str | None,
 ) -> None:
     rdir = Path(responses_dir)
     results = {}

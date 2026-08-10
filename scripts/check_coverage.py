@@ -70,7 +70,7 @@ def main() -> None:
 
     # ── Difficulty breakdown ───────────────────────────────────────────────────
     print(f"\n  {'─'*40}")
-    print(f"  Difficulty breakdown")
+    print("  Difficulty breakdown")
     print(f"  {'─'*40}")
     for d in DIFFS:
         n = sum(1 for t in tasks if t.difficulty == d)
@@ -79,7 +79,7 @@ def main() -> None:
 
     # ── Scoring readiness ─────────────────────────────────────────────────────
     print(f"\n  {'─'*40}")
-    print(f"  Scoring readiness")
+    print("  Scoring readiness")
     print(f"  {'─'*40}")
     for r in READINESS:
         n = sum(1 for t in tasks if t.scoring_readiness == r)
@@ -93,7 +93,7 @@ def main() -> None:
         splits[key] = splits.get(key, 0) + 1
     if splits:
         print(f"\n  {'─'*40}")
-        print(f"  Benchmark splits")
+        print("  Benchmark splits")
         print(f"  {'─'*40}")
         for s, n in sorted(splits.items()):
             print(f"  {s:<14} {n:>3}  {_bar(n, total)}")

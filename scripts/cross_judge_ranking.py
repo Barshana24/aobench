@@ -24,9 +24,7 @@ import csv
 import json
 import os
 import sys
-import time
 from pathlib import Path
-from typing import Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
@@ -86,7 +84,7 @@ def main(
     responses_dir: str,
     primary_judge: str,
     secondary_judge: str,
-    output_path: Optional[str],
+    output_path: str | None,
 ) -> None:
     from scipy.stats import kendalltau  # type: ignore[import]
 

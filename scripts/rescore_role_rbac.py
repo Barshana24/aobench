@@ -97,8 +97,15 @@ def main() -> int:
             if denied:
                 perm_den += 1
         n = len([t for t in tids if t in rmap])
-        agg[m] = dict(task_scoped=task_scoped / n, role_rbac=role_rbac / n, perm_den=perm_den / n,
-                      data_scope=data_scope / n, role_bound=role_bound / n, n=n, n_applic=n_applic)
+        agg[m] = {
+            "task_scoped": task_scoped / n,
+            "role_rbac": role_rbac / n,
+            "perm_den": perm_den / n,
+            "data_scope": data_scope / n,
+            "role_bound": role_bound / n,
+            "n": n,
+            "n_applic": n_applic,
+        }
         a = agg[m]
         print(f"{LABELS.get(m, m):26} {a['task_scoped']:>11.3f} {a['role_rbac']:>10.3f} {a['perm_den']:>9.3f} "
               f"{a['data_scope']:>11.3f} {a['role_bound']:>11.3f}  ({n_applic})")

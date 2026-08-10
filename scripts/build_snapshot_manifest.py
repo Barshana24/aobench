@@ -21,7 +21,7 @@ def _git_tracked_envs(root: Path) -> set[str]:
     import subprocess
     result = subprocess.run(
         ["git", "ls-files", str(root)],
-        capture_output=True, text=True
+        capture_output=True, text=True, check=False
     )
     envs = set()
     for line in result.stdout.splitlines():

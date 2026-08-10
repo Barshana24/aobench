@@ -12,7 +12,10 @@ Denominator/consistency assertions (per reviewer request):
   * per-model difficulty-tier weighted mean ~= headline aggregate (tol 1e-3)
 """
 from __future__ import annotations
-import json, glob, os, random, statistics as st
+
+import json
+import random
+import statistics as st
 from datetime import datetime, timezone
 from pathlib import Path
 

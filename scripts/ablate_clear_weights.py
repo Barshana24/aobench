@@ -132,8 +132,9 @@ def _spearman_rho(x: list[float], y: list[float]) -> float:
         return 0.0
 
     try:
-        from scipy.stats import spearmanr  # type: ignore[import]
         import math as _math
+
+        from scipy.stats import spearmanr  # type: ignore[import]
         result = spearmanr(x, y)
         rho = float(result.statistic) if hasattr(result, "statistic") else float(result[0])
         # spearmanr returns nan when input is constant (zero variance)

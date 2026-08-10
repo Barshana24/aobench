@@ -93,17 +93,17 @@ def main() -> int:
     results: list[dict] = []
     for f in sorted(results_dir.glob("*.json")):
         try:
-            results.append(json.loads(f.read_text()))
-        except Exception as e:
+            results.append(json.loads(f.read_text(encoding="utf-8")))
+        except (OSError, json.JSONDecodeError, ValueError) as e:
             print(f"Warning: could not read {f}: {e}", file=sys.stderr)
 
     summary_path = run_dir / "run_summary.json"
     summary: dict = {}
     if summary_path.exists():
         try:
-            summary = json.loads(summary_path.read_text())
-        except Exception:
-            pass
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, ValueError):
+            summary = {}
 
     requested = set(args.gates.split(","))
     gate_fns = {

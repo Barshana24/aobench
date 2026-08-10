@@ -22,10 +22,8 @@ Scores must be normalized to [0, 1].
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from pathlib import Path
-from typing import Optional
 
 try:
     import pandas as pd
@@ -77,7 +75,7 @@ def compute_icc(df: pd.DataFrame, label: str) -> dict:
     }
 
 
-def main(annotations_path: str, output_path: Optional[str]) -> None:
+def main(annotations_path: str, output_path: str | None) -> None:
     ann_df = pd.read_csv(annotations_path)
 
     required_cols = {"response_id", "rater_id", "score", "rubric_id"}
@@ -108,7 +106,7 @@ def main(annotations_path: str, output_path: Optional[str]) -> None:
             status = "PASS" if res["pass"] else ("BORDERLINE" if res["borderline"] else "FAIL")
             print(f"  {rubric_id}: ICC(A,1)={res['icc_A1']} "
                   f"95%CI=[{res['ci_low']}, {res['ci_high']}]  → {status}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — print error and continue
             print(f"  ERROR computing ICC for {rubric_id}: {e}")
 
     # Pooled ICC (all templates combined)
@@ -122,7 +120,7 @@ def main(annotations_path: str, output_path: Optional[str]) -> None:
             status = "PASS" if pooled["pass"] else ("BORDERLINE" if pooled["borderline"] else "FAIL")
             print(f"\n  POOLED: ICC(A,1)={pooled['icc_A1']} "
                   f"95%CI=[{pooled['ci_low']}, {pooled['ci_high']}]  → {status}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — print error and continue
             print(f"  ERROR computing pooled ICC: {e}")
 
     # Write CSV

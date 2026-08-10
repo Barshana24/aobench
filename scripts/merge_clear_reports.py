@@ -15,8 +15,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from aobench.schemas.result import BenchmarkResult
 from aobench.reports.clear_report import build_clear_report
+from aobench.schemas.result import BenchmarkResult
 
 # ── Model definitions ──────────────────────────────────────────────────────────
 
@@ -79,7 +79,7 @@ def load_results(token: str, base: Path) -> list[BenchmarkResult]:
             if data.get("task_id") in EXCLUDE_FROM_SCORING:
                 continue  # known spec/data defect — excluded from primary scoring
             results.append(BenchmarkResult.model_validate(data))
-        except Exception as exc:
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
             print(f"  WARN: could not parse {f.name}: {exc}")
     return results
 
