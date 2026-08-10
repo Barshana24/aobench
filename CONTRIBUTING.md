@@ -260,7 +260,8 @@ Write tests in `tests/unit/test_my_scorer.py`.
 
 By contributing, you agree that your contributions will be licensed under the Apache 2.0 License.
 
-**There is no CLA.** AOBench uses a [Developer Certificate of Origin](DCO.md) — the same one the Linux
+**There is no CLA.** AOBench uses a
+[Developer Certificate of Origin](https://github.com/MSKazemi/aobench/blob/main/DCO.md) — the same one the Linux
 kernel uses. There is nothing to sign, no account to create, and nothing for your employer's legal team
 to review. You simply certify that you wrote the change and are allowed to submit it, by adding one
 line to your commit:
