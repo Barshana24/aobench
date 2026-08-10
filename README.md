@@ -1,4 +1,13 @@
-# AOBench
+<div align="center">
+
+<a href="https://mskazemi.com/aobench/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
+    <img src="docs/assets/banner-light.svg" alt="AOBench — the open-source benchmark for AI agents that operate HPC systems. 88 tasks, 29 environments, 7 scored dimensions, 0 clusters required." width="100%">
+  </picture>
+</a>
+
+<br>
 
 [![CI](https://github.com/MSKazemi/aobench/actions/workflows/ci.yml/badge.svg)](https://github.com/MSKazemi/aobench/actions/workflows/ci.yml)
 [![Docs](https://github.com/MSKazemi/aobench/actions/workflows/docs.yml/badge.svg)](https://mskazemi.com/aobench/)
@@ -9,14 +18,23 @@
 [![Environments](https://img.shields.io/badge/environments-29-0288D1)](https://mskazemi.com/aobench/latest/reference/environment-catalog/)
 [![Good first issues](https://img.shields.io/github/issues/MSKazemi/aobench/good%20first%20issue?label=good%20first%20issues&color=7057ff)](https://github.com/MSKazemi/aobench/labels/good%20first%20issue)
 
-**[Quickstart](https://mskazemi.com/aobench/latest/getting-started/quickstart/)** ·
-**[Docs](https://mskazemi.com/aobench/)** ·
-**[FAQ](https://mskazemi.com/aobench/latest/about/faq/)** ·
-**[vs. other benchmarks](https://mskazemi.com/aobench/latest/about/comparison/)** ·
-**[Limitations](https://mskazemi.com/aobench/latest/about/limitations/)** ·
-**[Task catalog](https://mskazemi.com/aobench/latest/reference/task-catalog/)** ·
-**[Contribute](CONTRIBUTING.md)** ·
-**[Cite](CITATION.bib)**
+<br>
+
+### 📖 &nbsp;[**Read the documentation → mskazemi.com/aobench**](https://mskazemi.com/aobench/)
+
+[**Quickstart**](https://mskazemi.com/aobench/latest/getting-started/quickstart/) ·
+[**Install**](https://mskazemi.com/aobench/latest/getting-started/installation/) ·
+[**CLI reference**](https://mskazemi.com/aobench/latest/reference/commands/) ·
+[**Task catalog**](https://mskazemi.com/aobench/latest/reference/task-catalog/) ·
+[**FAQ**](https://mskazemi.com/aobench/latest/about/faq/) ·
+[**vs. other benchmarks**](https://mskazemi.com/aobench/latest/about/comparison/) ·
+[**Limitations**](https://mskazemi.com/aobench/latest/about/limitations/) ·
+[**Contribute**](CONTRIBUTING.md) ·
+[**Cite**](CITATION.bib)
+
+</div>
+
+---
 
 **Benchmark framework for evaluating AI agent systems in High-Performance Computing (HPC) environments.**
 
@@ -152,6 +170,40 @@ Full walkthrough: **[docs/getting-started/quickstart.md](docs/getting-started/qu
 Other install paths (Docker, Compose, extras):
 **[docs/getting-started/installation.md](docs/getting-started/installation.md)**.
 
+## How it works
+
+```mermaid
+flowchart LR
+    T["📋 Task spec<br/>role · question · gold trace"]
+    E["📦 Environment snapshot<br/>frozen SLURM · telemetry · docs"]
+    R["⚙️ BenchmarkRunner"]
+    A["🤖 Your agent<br/>direct_qa · openai · anthropic · mcp"]
+    TOOLS["🔧 Mock HPC tools<br/>slurm · telemetry · docs · rbac · facility"]
+    TR["🧾 Trace<br/>every call, argument, and answer"]
+    S["📊 12 scorers<br/>7 weighted dimensions"]
+    C["🏆 CLEAR scorecard<br/>Efficacy · Assurance · Reliability · Cost · Latency"]
+
+    T --> R
+    E --> R
+    R --> A
+    A -- "tool calls" --> TOOLS
+    TOOLS -- "role-filtered results" --> A
+    A --> TR
+    TR --> S
+    S --> C
+
+    classDef input fill:#e8eaf6,stroke:#3949ab,stroke-width:2px,color:#1a237e
+    classDef core fill:#1a237e,stroke:#0d1452,stroke-width:2px,color:#ffffff
+    classDef output fill:#fff3e0,stroke:#ff8f00,stroke-width:2px,color:#e65100
+
+    class T,E input
+    class R,A,TOOLS core
+    class TR,S,C output
+```
+
+An **RBAC violation hard-fails the task** — an agent that produces the right answer by
+overstepping its role scores **zero**, no matter how good the answer is.
+
 ## Programmatic access & agent surfaces
 
 Beyond the CLI, AOBench exposes the benchmark **engine** over four machine
@@ -286,31 +338,47 @@ tool-free `direct_qa` baseline for reference.
 
 ## Documentation
 
-| Document | Purpose |
-|----------|---------|
-| [docs/framework/index.md](docs/framework/index.md) | Documentation map |
-| [docs/framework/system-architecture.md](docs/framework/system-architecture.md) | **Authoritative system architecture** — components, data flow, scoring pipeline, CLEAR scorecard |
-| [docs/framework/overview.md](docs/framework/overview.md) | Principles and v0.1 scope |
-| [docs/framework/background.md](docs/framework/background.md) | Motivation and related work |
-| [docs/framework/architecture.md](docs/framework/architecture.md) | Benchmark design (layers, entities, workflow) |
-| [docs/framework/implementation.md](docs/framework/implementation.md) | Developer guide to the codebase |
-| [docs/framework/environments.md](docs/framework/environments.md) | Snapshot format |
-| [docs/framework/evaluation.md](docs/framework/evaluation.md) | Evaluation protocol, trace and result schemas |
-| [docs/framework/taxonomy.md](docs/framework/taxonomy.md) | Roles, QCATs, knowledge sources, RBAC |
-| [docs/framework/scoring-dimensions.md](docs/framework/scoring-dimensions.md) | Per-scorer reference |
-| [docs/reference/commands.md](docs/reference/commands.md) | CLI command reference (incl. `aobench serve`) |
-| [docs/guides/programmatic-access.md](docs/guides/programmatic-access.md) | REST + MCP programmatic access guide |
-| [docs/tutorials/serving-the-benchmark.md](docs/tutorials/serving-the-benchmark.md) | Tutorial — serve the engine and drive it over REST/MCP |
-| [ROADMAP.md](ROADMAP.md) | Surface status and planned work |
-| [docs/reference/environment-catalog.md](docs/reference/environment-catalog.md) | Generated inventory of all 29 environment bundles |
-| [docs/guides/adapters-and-tools.md](docs/guides/adapters-and-tools.md) | Plain-English adapter and tool guide |
-| [docs/reference/architecture-flowchart.md](docs/reference/architecture-flowchart.md) | System diagrams |
-| [docs/guides/langfuse-integration.md](docs/guides/langfuse-integration.md) | Observability backend |
-| [CHANGELOG.md](CHANGELOG.md) | Release notes |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
-| [SECURITY.md](SECURITY.md) | Vulnerability reporting and threat model |
+> ### 📖 &nbsp;**[mskazemi.com/aobench](https://mskazemi.com/aobench/)**
+>
+> The full documentation site — searchable, versioned, and always built from `main`.
+> Everything below is also on it, rendered better.
 
-Full documentation site: <https://mskazemi.com/aobench/>
+**Start here**
+
+| | Page | What it gives you |
+|---|---|---|
+| 🚀 | **[Quickstart](https://mskazemi.com/aobench/latest/getting-started/quickstart/)** | Clean machine → first scored task in five minutes |
+| ⚙️ | [Installation](https://mskazemi.com/aobench/latest/getting-started/installation/) | Package, Docker image, Compose stack, extras |
+| 🤖 | [Evaluate your own agent](https://mskazemi.com/aobench/latest/guides/evaluating-your-own-agent/) | Plug your system in behind an adapter |
+| 💻 | [CLI reference](https://mskazemi.com/aobench/latest/reference/commands/) | Every command and flag |
+
+**Understand the benchmark**
+
+| | Page | What it gives you |
+|---|---|---|
+| 🧭 | [Framework overview](https://mskazemi.com/aobench/latest/framework/overview/) | Principles and scope |
+| 🏗️ | [System architecture](https://mskazemi.com/aobench/latest/reference/system-architecture/) | Components, data flow, scoring pipeline |
+| 📐 | [Scoring dimensions](https://mskazemi.com/aobench/latest/framework/scoring-dimensions/) | What each of the 7 weighted dimensions measures |
+| 🗂️ | [Task catalog](https://mskazemi.com/aobench/latest/reference/task-catalog/) · [Environment catalog](https://mskazemi.com/aobench/latest/reference/environment-catalog/) | Generated inventories of all 88 tasks and 29 environments |
+| 🧪 | [Environments](https://mskazemi.com/aobench/latest/framework/environments/) · [M100 ExaData](https://mskazemi.com/aobench/latest/guides/m100_environments/) | Snapshot format, and the real Marconi100 bundles |
+
+**For researchers**
+
+| | Page | What it gives you |
+|---|---|---|
+| 📋 | [Datasheet](https://mskazemi.com/aobench/latest/about/datasheet/) · [Benchmark card](https://mskazemi.com/aobench/latest/about/benchmark-card/) | Provenance, composition, intended and out-of-scope use |
+| ⚖️ | [Limitations](https://mskazemi.com/aobench/latest/about/limitations/) · [Comparison](https://mskazemi.com/aobench/latest/about/comparison/) | What AOBench cannot measure, and how it differs |
+| 🔁 | [Reproducing results](https://mskazemi.com/aobench/latest/about/reproducing-results/) · [Versioning](https://mskazemi.com/aobench/latest/about/versioning/) | What is pinned, and when scores are comparable |
+| 📚 | [Cite AOBench](https://mskazemi.com/aobench/latest/about/citation/) · [Related work](https://mskazemi.com/aobench/latest/about/related-work/) | BibTeX and the verified bibliography |
+
+**In this repository**
+
+[ROADMAP](ROADMAP.md) ·
+[CHANGELOG](CHANGELOG.md) ·
+[CONTRIBUTING](CONTRIBUTING.md) ·
+[GOVERNANCE](GOVERNANCE.md) ·
+[SECURITY](SECURITY.md) ·
+[Developer guide](docs/framework/implementation.md)
 
 Source: [github.com/MSKazemi/aobench](https://github.com/MSKazemi/aobench) ·
 Mirror: [gitlab.com/mskazemi/aobench](https://gitlab.com/mskazemi/aobench)

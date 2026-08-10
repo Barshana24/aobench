@@ -12,6 +12,8 @@ keywords:
 
 <div class="hero" markdown>
 
+<img class="hero-logo" src="assets/logo.svg" alt="AOBench logo">
+
 <p class="hero-label">Open Source · HPC Benchmarking · AI Evaluation</p>
 
 # AOBench
@@ -36,6 +38,14 @@ role-aware, permission-enforced, tool-using, trace-scored, and reproducible on a
 </div>
 
 </div>
+
+<ul class="stat-strip">
+  <li><span class="stat-value">88</span><span class="stat-label">Tasks</span></li>
+  <li><span class="stat-value">29</span><span class="stat-label">Environments</span></li>
+  <li><span class="stat-value">7</span><span class="stat-label">Scored dimensions</span></li>
+  <li><span class="stat-value">5</span><span class="stat-label">Operator roles</span></li>
+  <li class="stat-accent"><span class="stat-value">0</span><span class="stat-label">Clusters required</span></li>
+</ul>
 
 ---
 

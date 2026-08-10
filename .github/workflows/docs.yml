@@ -59,23 +59,41 @@ jobs:
       - name: Set default version to latest
         run: uv run mike set-default --push latest
 
-      # llms.txt is only useful if it sits at a path a crawler will actually try.
-      # mike publishes docs under /aobench/<version>/, so docs/llms.txt lands at
-      # /aobench/latest/llms.txt and the discoverable /aobench/llms.txt 404s.
-      # Copy it to the gh-pages root so both paths resolve.
-      - name: Publish llms.txt at the docs root
+      # Discovery files are only useful at a path a crawler will actually try.
+      # mike publishes docs under /aobench/<version>/, so anything in docs/ lands at
+      # /aobench/latest/<file> while the discoverable /aobench/<file> 404s. Crawlers
+      # try the un-versioned path, and robots.txt advertises the un-versioned sitemap
+      # URL, so all four are copied to the gh-pages root.
+      #
+      # Note on robots.txt: a crawler only honours it at the HOST root
+      # (https://mskazemi.com/robots.txt, owned by the mskazemi.github.io repo).
+      # The copy here is documentation of intent and a correct file should the docs
+      # ever be served from their own host — it is not what controls crawling today.
+      - name: Publish discovery files at the docs root
         run: |
           git fetch origin gh-pages
           git worktree add /tmp/ghp gh-pages
-          cp docs/llms.txt /tmp/ghp/llms.txt
-          git -C /tmp/ghp add llms.txt
+          cp docs/llms.txt      /tmp/ghp/llms.txt
+          cp docs/llms-full.txt /tmp/ghp/llms-full.txt
+          cp docs/robots.txt    /tmp/ghp/robots.txt
+          # The sitemap is generated, not authored. Take it from the version mike just
+          # published so the root copy lists exactly the URLs whose pages carry the
+          # matching canonical tag — a sitemap and a canonical that disagree is a worse
+          # signal than no sitemap at all.
+          VERSION=$(grep -m1 '^version' pyproject.toml | sed -E 's/.*"(.*)".*/\1/')
+          if [ -f "/tmp/ghp/$VERSION/sitemap.xml" ]; then
+            cp "/tmp/ghp/$VERSION/sitemap.xml" /tmp/ghp/sitemap.xml
+          else
+            echo "::warning::no sitemap at /tmp/ghp/$VERSION/sitemap.xml — root sitemap not refreshed"
+          fi
+          git -C /tmp/ghp add llms.txt llms-full.txt robots.txt sitemap.xml
           if git -C /tmp/ghp diff --cached --quiet; then
-            echo "llms.txt unchanged — nothing new to commit"
+            echo "discovery files unchanged — nothing new to commit"
           else
             git -C /tmp/ghp \
                 -c user.name="github-actions[bot]" \
                 -c user.email="github-actions[bot]@users.noreply.github.com" \
-                commit -m "docs: publish llms.txt at the docs root"
+                commit -m "docs: publish llms.txt, llms-full.txt, robots.txt, sitemap.xml at the docs root"
           fi
           # Push from the MAIN worktree, never from /tmp/ghp. actions/checkout v6+ no
           # longer writes the token into .git/config; it injects it via
