@@ -1,0 +1,134 @@
+name: 📊 Submit a leaderboard result
+description: Publish an AOBench result for an agent or model
+title: "[Result] "
+labels: ["area: reporting", "leaderboard"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **A leaderboard is only as good as the reproducibility of its rows**, so every
+        field below is required — they are what lets someone else re-derive your number.
+
+        **Bad results are welcome and often more informative than good ones.** If your
+        agent scored poorly, that is still a data point the field does not have.
+
+        `aobench report json data/runs/<run_id>` emits most of this for you.
+
+  - type: input
+    id: agent
+    attributes:
+      label: Agent or model
+      placeholder: "gpt-4o-2024-11-20, or: AcmeOps v1.2 (MCP server)"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: AOBench version
+      description: The corpus is part of the version, so a score without it is not comparable.
+      placeholder: "0.4.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: split
+    attributes:
+      label: Split
+      options:
+        - dev
+        - test (by prior arrangement only)
+    validations:
+      required: true
+
+  - type: input
+    id: profile
+    attributes:
+      label: Scoring profile
+      placeholder: "default_hpc_v01"
+    validations:
+      required: true
+
+  - type: input
+    id: adapter
+    attributes:
+      label: Adapter
+      description: Must be re-derivable — a shipped adapter, a public MCP server, or a documented endpoint.
+      placeholder: "openai, or: mcp:stdio:python acme_server.py"
+    validations:
+      required: true
+
+  - type: input
+    id: score
+    attributes:
+      label: Aggregate score
+      placeholder: "0.6412"
+    validations:
+      required: true
+
+  - type: input
+    id: hard_fails
+    attributes:
+      label: RBAC hard fails
+      description: Reported separately from the score, always. Zero is not assumed.
+      placeholder: "0"
+    validations:
+      required: true
+
+  - type: input
+    id: runs
+    attributes:
+      label: Number of independent runs
+      description: Single runs are not evidence. Three or more, please.
+      placeholder: "3"
+    validations:
+      required: true
+
+  - type: input
+    id: judge
+    attributes:
+      label: Judge model (if any rubric-path tasks were scored)
+      placeholder: "gpt-4o-2024-11-20, or: n/a"
+    validations:
+      required: true
+
+  - type: input
+    id: cost
+    attributes:
+      label: Approximate cost of one full run
+      description: So the next person can budget a replication.
+      placeholder: "$4.20"
+
+  - type: textarea
+    id: dimensions
+    attributes:
+      label: Per-dimension scores
+      render: text
+      placeholder: |
+        outcome     0.71
+        tool_use    0.64
+        grounding   0.55
+        governance  0.92
+        robustness  0.48
+        efficiency  0.80
+        workflow    0.61
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything notable
+      description: |
+        Prompting used, where the agent surprised you, which QCATs it failed. This is
+        usually the most useful part of a submission.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmations
+      options:
+        - label: I used a **dated** model snapshot, not a moving alias like `gpt-4o`
+          required: true
+        - label: Someone else could re-derive this result from the information above
+          required: true
+        - label: I am attaching or linking the `run_summary.json`
+          required: true

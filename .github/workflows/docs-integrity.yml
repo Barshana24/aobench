@@ -1,0 +1,101 @@
+name: docs-integrity
+
+# Documentation rots silently: a count drifts, a link dies, an example stops running,
+# and the build stays green while a new user's first experience quietly breaks. These
+# checks make each of those a build failure instead.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "benchmark/**"
+      - "mkdocs.yml"
+      - "scripts/check_facts.py"
+      - "scripts/gen_catalog.py"
+      - "scripts/seo_check.py"
+      - "README.md"
+      - "llms.txt"
+      - "examples/**"
+      - ".github/workflows/docs-integrity.yml"
+  pull_request:
+  schedule:
+    # Weekly, to catch external links that die without anyone touching the repo.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-integrity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v9.0.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --all-extras
+
+      - name: Benchmark facts have not drifted
+        run: uv run python scripts/check_facts.py
+
+      - name: Generated catalogs are up to date
+        run: uv run python scripts/gen_catalog.py --check
+
+      - name: Docs build cleanly (strict — warnings are errors)
+        run: uv run mkdocs build --strict
+
+      - name: Discoverability surfaces are published
+        run: uv run python scripts/seo_check.py
+
+      - name: Examples still run
+        run: uv run python -m pytest tests/test_examples.py -q
+
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v9.0.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --all-extras
+
+      - name: Build the site
+        run: uv run mkdocs build --strict
+
+      - name: Check external links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Internal links are already enforced by `mkdocs build --strict`, so this
+          # pass exists for the outward-facing ones: DOIs, papers, upstream projects.
+          args: >-
+            --no-progress
+            --accept 200,206,429
+            --max-concurrency 4
+            --exclude-path site
+            --exclude '^https://doi\.org/10\.5281/zenodo\.21854863'
+            --exclude 'localhost'
+            --exclude '127\.0\.0\.1'
+            README.md
+            CONTRIBUTING.md
+            GOVERNANCE.md
+            MAINTAINERS.md
+            RESEARCH.md
+            AUTHORS.md
+            'docs/**/*.md'
+          fail: false
+        # Reported, not enforced: the wider web breaks links on its own schedule and a
+        # red build for someone else's 404 trains people to ignore CI.

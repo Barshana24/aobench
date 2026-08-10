@@ -1,7 +1,22 @@
 # AOBench
 
+[![CI](https://github.com/MSKazemi/aobench/actions/workflows/ci.yml/badge.svg)](https://github.com/MSKazemi/aobench/actions/workflows/ci.yml)
+[![Docs](https://github.com/MSKazemi/aobench/actions/workflows/docs.yml/badge.svg)](https://mskazemi.com/aobench/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21854862.svg)](https://doi.org/10.5281/zenodo.21854862)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Tasks](https://img.shields.io/badge/tasks-88-FF6F00)](https://mskazemi.com/aobench/latest/reference/task-catalog/)
+[![Environments](https://img.shields.io/badge/environments-29-0288D1)](https://mskazemi.com/aobench/latest/reference/environment-catalog/)
+[![Good first issues](https://img.shields.io/github/issues/MSKazemi/aobench/good%20first%20issue?label=good%20first%20issues&color=7057ff)](https://github.com/MSKazemi/aobench/labels/good%20first%20issue)
+
+**[Quickstart](https://mskazemi.com/aobench/latest/getting-started/quickstart/)** ·
+**[Docs](https://mskazemi.com/aobench/)** ·
+**[FAQ](https://mskazemi.com/aobench/latest/about/faq/)** ·
+**[vs. other benchmarks](https://mskazemi.com/aobench/latest/about/comparison/)** ·
+**[Limitations](https://mskazemi.com/aobench/latest/about/limitations/)** ·
+**[Task catalog](https://mskazemi.com/aobench/latest/reference/task-catalog/)** ·
+**[Contribute](CONTRIBUTING.md)** ·
+**[Cite](CITATION.bib)**
 
 **Benchmark framework for evaluating AI agent systems in High-Performance Computing (HPC) environments.**
 
@@ -49,14 +64,14 @@ Compose service stack.
 ```
 AOBench/
 ├── src/aobench/           # Python package (installed by `pip install -e .`)
-│   ├── cli/                # `aobench` typer app — 9 sub-commands
+│   ├── cli/                # `aobench` typer app — 15 sub-commands
 │   ├── schemas/            # Pydantic data models (task, trace, snapshot, …)
 │   ├── loaders/, tasks/    # Task discovery, loading, dataset splits, RAG context
 │   ├── environment/        # Snapshot validator, snapshot loader factory
 │   ├── tools/              # Mock SLURM, telemetry, docs, RBAC, facility tools
 │   ├── adapters/           # direct_qa, openai, anthropic, mcp
 │   ├── runners/            # BenchmarkRunner, TraceWriter, ExecutionContext
-│   ├── scorers/            # 12 scorers across 6 dimensions
+│   ├── scorers/            # 12 scorers across 7 weighted dimensions
 │   ├── reports/            # JSON, HTML, slice, CLEAR scorecard reports
 │   ├── exporters/          # Langfuse exporter (optional)
 │   ├── leaderboard/        # FastAPI leaderboard service
@@ -83,7 +98,7 @@ AOBench/
 ├── prompts/judge/          # LLM-judge rubric + error taxonomy templates
 ├── docs/                   # Documentation (see Documentation section)
 ├── scripts/                # Bundle generation, validity gates, rubric tooling
-└── tests/                  # 51 test files (unit + integration)
+└── tests/                  # 83 test files, ~1510 tests (unit + integration)
 ```
 
 ## Quick start
@@ -278,14 +293,14 @@ tool-free `direct_qa` baseline for reference.
 | [docs/framework/evaluation.md](docs/framework/evaluation.md) | Evaluation protocol, trace and result schemas |
 | [docs/framework/taxonomy.md](docs/framework/taxonomy.md) | Roles, QCATs, knowledge sources, RBAC |
 | [docs/framework/scoring-dimensions.md](docs/framework/scoring-dimensions.md) | Per-scorer reference |
-| [docs/COMMANDS.md](docs/reference/commands.md) | CLI command reference (incl. `aobench serve`) |
+| [docs/reference/commands.md](docs/reference/commands.md) | CLI command reference (incl. `aobench serve`) |
 | [docs/guides/programmatic-access.md](docs/guides/programmatic-access.md) | REST + MCP programmatic access guide |
 | [docs/tutorials/serving-the-benchmark.md](docs/tutorials/serving-the-benchmark.md) | Tutorial — serve the engine and drive it over REST/MCP |
 | [ROADMAP.md](ROADMAP.md) | Surface status and planned work |
-| [docs/environments-overview.md](docs/reference/environments-overview.md) | Inventory of all 20 environment bundles |
-| [docs/adapters-and-tools.md](docs/guides/adapters-and-tools.md) | Plain-English adapter and tool guide |
-| [docs/architecture-flowchart.md](docs/reference/architecture-flowchart.md) | System diagrams |
-| [docs/langfuse-integration.md](docs/guides/langfuse-integration.md) | Observability backend |
+| [docs/reference/environment-catalog.md](docs/reference/environment-catalog.md) | Generated inventory of all 29 environment bundles |
+| [docs/guides/adapters-and-tools.md](docs/guides/adapters-and-tools.md) | Plain-English adapter and tool guide |
+| [docs/reference/architecture-flowchart.md](docs/reference/architecture-flowchart.md) | System diagrams |
+| [docs/guides/langfuse-integration.md](docs/guides/langfuse-integration.md) | Observability backend |
 | [CHANGELOG.md](CHANGELOG.md) | Release notes |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting and threat model |
@@ -322,7 +337,7 @@ From clone to green tests in three commands:
 ```bash
 git clone https://github.com/MSKazemi/aobench && cd aobench
 make install     # creates .venv and installs everything
-make test        # ~1470 tests should pass
+make test        # ~1510 tests should pass
 ```
 
 **What you can expect from us:** a first response within 3 working days — even if

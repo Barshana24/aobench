@@ -10,10 +10,11 @@ Work is grouped into [milestones](https://github.com/MSKazemi/aobench/milestones
 
 Legend: ✅ shipped · 🟡 partial (usable core shipped, sub-feature deferred) · ⛔ deferred (external dependency).
 
+<!--roadmap-start-->
 ## Shipped
 
 ### Core benchmark (v0.3)
-- 88 tasks × 29 environment bundles, 5 roles, 10 QCATs, 12 scorers / 6 dimensions.
+- 88 tasks × 29 environment bundles, 5 roles, 10 QCATs, 12 scorers / 7 weighted dimensions.
 - CLEAR scorecard (Cost / Latency / Efficacy / Assurance / Reliability).
 - M100 ExaData-grounded environments and tasks.
 
@@ -60,3 +61,5 @@ Every surface calls the shared `BenchmarkService` façade — identical scores a
 3. **Reporting suite** — report renderers on the data→stats→model→render pipeline — [#16](https://github.com/MSKazemi/aobench/issues/16).
 4. Clean up the pre-existing test failures in `governance_report` / `run_cmd` / ablation scripts — [#8](https://github.com/MSKazemi/aobench/issues/8).
 5. Quality debt: lint `scripts/` — [#6](https://github.com/MSKazemi/aobench/issues/6) · strict typing — [#7](https://github.com/MSKazemi/aobench/issues/7).
+
+<!--roadmap-end-->

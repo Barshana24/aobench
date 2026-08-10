@@ -1,0 +1,14 @@
+# AOBench is university research output and takes no vendor money — see GOVERNANCE.md.
+#
+# There is nothing to sponsor here, and that is deliberate: the value of a benchmark
+# is that no one can buy a position on it. The things that actually help are free:
+#
+#   * Run it on your agent and publish the numbers, good or bad.
+#   * Contribute a task, or an environment from a real facility.
+#   * Cite the version you ran.
+#   * Tell us what it got wrong.
+#
+# If your organisation wants to support this work through the University of Bologna,
+# open a discussion: https://github.com/MSKazemi/aobench/discussions
+
+custom: ["https://mskazemi.com/aobench/latest/about/contributing/"]

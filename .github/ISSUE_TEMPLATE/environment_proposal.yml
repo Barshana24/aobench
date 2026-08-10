@@ -1,0 +1,85 @@
+name: 🖥️ Propose an environment snapshot
+description: Contribute a new HPC environment bundle — especially one built from real facility data
+title: "[Env] "
+labels: ["area: corpus", "enhancement", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **A sanitised snapshot from a real facility is the single most valuable
+        contribution to this project.** Twenty-three of AOBench's twenty-nine
+        environments are synthetic; the six built from real Marconi100 data are the ones
+        that make the benchmark credible.
+
+        Full guide: [Adding an environment](https://mskazemi.com/aobench/latest/guides/adding-an-environment/).
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where does the data come from?
+      options:
+        - "Real facility data I can publish (sanitised)"
+        - "Real facility data — need to check whether I can publish it"
+        - "A public dataset"
+        - "Synthetic — I will author it"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: What is happening on this machine?
+      description: |
+        One coherent scenario an operator could diagnose. What went wrong, what would
+        the evidence look like, and what should a competent operator conclude?
+      placeholder: |
+        A checkpoint storm saturates the parallel filesystem for 40 minutes. Several
+        jobs slow dramatically; two hit their walltime. The metadata server load is
+        the giveaway, but node-level telemetry looks nearly normal.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: sources
+    attributes:
+      label: Which data sources would the bundle contain?
+      options:
+        - label: "slurm — job and node state"
+        - label: "telemetry — time series"
+        - label: "docs — site documentation and runbooks"
+        - label: "rbac — role/permission policy"
+        - label: "incidents — incident metadata"
+        - label: "facility — power, cooling, machine room"
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: What tasks would this environment support?
+      description: |
+        An environment with no tasks is dead weight, and writing the task is how you
+        find out whether the evidence is really there. One or two ideas is enough.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: sanitisation
+    attributes:
+      label: Sanitisation (real-data bundles only)
+      description: |
+        HPC operational data leaks identity in more places than people expect. A
+        maintainer will read every file before merging — this list is what we check.
+      options:
+        - label: Usernames and UIDs replaced consistently
+        - label: Project and allocation names removed or generalised
+        - label: Job names and script paths checked (these routinely contain people's names)
+        - label: Hostnames generalised if site topology is sensitive
+        - label: Documentation scrubbed of contact names and numbers
+        - label: Free-text incident notes reviewed (highest-risk field)
+        - label: Timestamps checked against public outage notices for re-identification
+        - label: I have my institution's clearance to publish this
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Constraints, licensing, size, or questions about the format.
