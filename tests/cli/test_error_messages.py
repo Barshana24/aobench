@@ -34,6 +34,12 @@ def test_unknown_env_id_is_friendly():
 
 
 def test_close_match_is_suggested():
+    """A truncated ID must suggest the family it prefixes, starting at 001.
+
+    This is the case that pure ``difflib`` ranking got wrong: every ``JOB_USR_00N``
+    scores identically against ``JOB_USR_00``, so the three that came back were
+    whichever the heap happened to surface — 005, 004, 003 — with 001 missing.
+    """
     result = runner.invoke(
         app,
         ["run", "task", "--task", "JOB_USR_00", "--env", "env_01", "--adapter", "direct_qa"],
