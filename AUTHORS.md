@@ -32,6 +32,14 @@ Added when a first PR merges, newest last.
   that the issue named a `report summary` command that does not exist, and said so
   instead of inventing one.
 
+- **LeoZhaoo** ([@LobsterQBA](https://github.com/LobsterQBA)) — took
+  [issue #31](https://github.com/MSKazemi/aobench/issues/31) and wrote
+  `examples/05_compare_two_adapters.py`, the side-by-side comparison the benchmark exists
+  for and the one thing the first four examples never showed
+  ([PR #44](https://github.com/MSKazemi/aobench/pull/44)). It reuses `aobench compare runs`
+  rather than re-deriving the deltas, and registers itself in the example smoke tests, so
+  the README's promise that a broken example breaks the build stays true.
+
 <!-- Add yourself in your first PR: - **Your Name** (@handle) — what you contributed -->
 
 ## Acknowledgements
