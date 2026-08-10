@@ -1,0 +1,48 @@
+title: "[Research] "
+labels: ["research"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For research questions, study designs, methodology disagreements, and
+        collaboration proposals.
+
+        [RESEARCH.md](https://github.com/MSKazemi/aobench/blob/main/RESEARCH.md) lists
+        sixteen open questions AOBench can now answer empirically — several are good MSc
+        or PhD projects. **We are happy for you to publish first-author**, and
+        co-supervision is possible for students at any institution.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of post is this?
+      options:
+        - "A research question I want to work on"
+        - "A study design I would like feedback on"
+        - "A result I found (including a negative one)"
+        - "I think AOBench's methodology is wrong about something"
+        - "A collaboration proposal"
+    validations:
+      required: true
+
+  - type: textarea
+    id: body
+    attributes:
+      label: The question or proposal
+    validations:
+      required: true
+
+  - type: textarea
+    id: relation
+    attributes:
+      label: How does it relate to AOBench?
+      description: |
+        Which dimension, QCAT, environment, or design decision does it touch? If it maps
+        onto one of the RESEARCH.md questions (R1–R16), say which.
+
+  - type: markdown
+    attributes:
+      value: |
+        **Methodology disagreements are welcome and taken seriously.** The scoring
+        weights, the hard-fail rule, and the synthetic RBAC policies are all judgement
+        calls we would rather have argued about in public than defended quietly.

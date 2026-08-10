@@ -39,6 +39,11 @@ facility), so results are reproducible, portable, and safe to publish.
 - AOBench differs from general-purpose LLM-agent benchmarks because it is domain-specific to HPC operations, enforces role-based access control (RBAC), and scores the full execution trace rather than only the final answer.
 - AOBench is not intended for measuring general-purpose reasoning, software-engineering, or web-browsing agents, and it does not execute against real production clusters.
 
+> **Name collision:** `aobench` is also a long-standing *ambient-occlusion ray-tracing*
+> microbenchmark by Syoyo Fujita ([syoyo/aobench](https://github.com/syoyo/aobench)),
+> unrelated to this project. This AOBench is the **Agent Operations Benchmark**. If you
+> came here looking for the renderer, that is the link.
+
 ## Requirements
 
 - **Python** ≥ 3.10 (3.12 is used in the Docker image and CI, and is recommended).

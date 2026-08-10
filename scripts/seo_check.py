@@ -116,12 +116,28 @@ class Checker:
         text = path.read_text()
         self.check(text.startswith("# "), "llms.txt starts with an H1")
         self.check("## Links" in text, "llms.txt has a Links section")
-        root_copy = ROOT / "llms.txt"
-        if root_copy.is_file():
+        self.check(
+            "Disambiguation:" in text,
+            "llms.txt disambiguates from the ambient-occlusion `aobench`",
+            "the name collides with syoyo/aobench; answer engines need this stated",
+        )
+        for name in ("llms.txt", "llms-full.txt"):
+            root_copy = ROOT / name
+            docs_copy = ROOT / "docs" / name
+            if root_copy.is_file() and docs_copy.is_file():
+                self.check(
+                    root_copy.read_text() == docs_copy.read_text(),
+                    f"root {name} matches docs/{name}",
+                    "the two copies have drifted — they must stay identical",
+                )
+
+        full = self.site / "llms-full.txt"
+        self.check(full.is_file(), "llms-full.txt is published")
+        if full.is_file():
             self.check(
-                root_copy.read_text() == (ROOT / "docs" / "llms.txt").read_text(),
-                "root llms.txt matches docs/llms.txt",
-                "the two copies have drifted — they must stay identical",
+                len(full.read_text()) > 50_000,
+                "llms-full.txt carries the full docs",
+                f"only {len(full.read_text()):,} bytes — did the concatenation break?",
             )
 
     def check_page(self, rel: str) -> None:

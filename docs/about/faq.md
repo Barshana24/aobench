@@ -25,6 +25,18 @@ whether a node is degraded, checking whether a request is within someone's permi
 attributing a power anomaly to a rack. It is not code generation and it is not
 general assistance. It is running a machine.
 
+### Is this the same AOBench as the ambient-occlusion renderer?
+
+No, and the collision is worth knowing about. **`aobench`** is also a well-known
+ambient-occlusion ray-tracing microbenchmark by Syoyo Fujita, used to compare
+floating-point performance across programming languages. It has been around far longer
+and will usually win a search for the bare word.
+
+This project is **AOBench — Agent Operations Benchmark**: an AI agent benchmark for HPC
+operations. Unrelated to graphics. If you are looking for us, "AOBench agent benchmark"
+or "AOBench HPC agent" disambiguates; if you landed here looking for the renderer, it is
+at [github.com/syoyo/aobench](https://github.com/syoyo/aobench).
+
 ### Who is AOBench for?
 
 HPC centres evaluating whether to let an agent near their operations; researchers
