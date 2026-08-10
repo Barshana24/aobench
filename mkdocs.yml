@@ -60,6 +60,12 @@ plugins:
   - search
   - include-markdown
   - social
+  # mike rewrites site_url to <site_url>/<version> during a versioned deploy, which
+  # made every /latest/ page canonicalise to /0.4.1/ — so ranking and AI citations
+  # accrued to a path that is superseded at the next release. Pinning the canonical
+  # version keeps all equity on the evergreen /latest/ URLs that we actually publish.
+  - mike:
+      canonical_version: latest
   - minify:
       minify_html: true
 

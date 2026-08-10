@@ -1,6 +1,6 @@
 ---
-title: "AOBench — an open-source benchmark for AI agents that operate HPC systems"
-description: "AOBench is an open-source Python benchmark for evaluating AI agents that operate HPC systems: 88 tasks, 29 deterministic environment snapshots, RBAC-enforced, trace-scored, reproducible without a live cluster."
+title: "Benchmark for AI agents that operate HPC systems"
+description: "Open-source benchmark for AI agents operating HPC systems: 88 tasks, 29 deterministic snapshots, RBAC-enforced, trace-scored. No cluster needed."
 keywords:
   - HPC agent benchmark
   - AI agent evaluation
@@ -86,10 +86,16 @@ from CINECA's 980-node Marconi100 Tier-0 supercomputer (the public
 No API key and no cluster access are needed for the first run.
 
 ```bash
-git clone https://github.com/MSKazemi/aobench.git && cd aobench
-uv sync --all-extras          # or: pip install -e ".[dev]"
+git clone https://github.com/MSKazemi/aobench.git && cd aobench && make install
 
-aobench validate benchmark    # check all 88 tasks and 29 environments load
+aobench quickstart            # one command, no arguments, no API key
+```
+
+`aobench quickstart` locates the benchmark corpus, picks a representative task, runs it,
+and explains every number it prints. To drive it yourself:
+
+```bash
+aobench doctor                # is the install healthy?
 aobench list tasks --qcat JOB # browse the corpus
 aobench run task --task JOB_USR_001 --env env_01 --adapter direct_qa
 ```
