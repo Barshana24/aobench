@@ -25,6 +25,13 @@ Added when a first PR merges, newest last.
   ranking bug in the maintainer's own overlapping implementation, which is why
   `aobench run task --task JOB_USR_00` suggests `JOB_USR_001` today.
 
+- **Barshana Chatterjee** ([@Barshana24](https://github.com/Barshana24)) — took
+  [issue #29](https://github.com/MSKazemi/aobench/issues/29) and gave `report json` and
+  `compare runs` a `--json` flag, so AOBench can be wired into CI without scraping
+  formatted tables ([PR #43](https://github.com/MSKazemi/aobench/pull/43)). Also spotted
+  that the issue named a `report summary` command that does not exist, and said so
+  instead of inventing one.
+
 <!-- Add yourself in your first PR: - **Your Name** (@handle) — what you contributed -->
 
 ## Acknowledgements
