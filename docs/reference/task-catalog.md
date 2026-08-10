@@ -200,4 +200,4 @@ Security posture and access questions
 
 ## Adding a task
 
-The corpus is versioned JSON — see [Adding a task](../guides/adding-a-task.md) for the schema, the fidelity gate a new task must pass, and the review checklist. New tasks are genuinely welcome; corpus breadth is the main thing limiting what AOBench can measure.
+The corpus is versioned JSON — see [CONTRIBUTING](../about/contributing.md) for the schema, the fidelity gate a new task must pass, and the review checklist. New tasks are genuinely welcome; corpus breadth is the main thing limiting what AOBench can measure.

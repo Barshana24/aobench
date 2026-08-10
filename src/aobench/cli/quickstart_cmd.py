@@ -43,8 +43,8 @@ def _pick_task(root: Path) -> tuple[str, str, str]:
     candidates = [preferred] if preferred.is_file() else []
     others = sorted(p for p in specs_dir.glob("*.json") if p != preferred)
 
-    dev_first = []
-    rest = []
+    dev_first: list[Path] = []
+    rest: list[Path] = []
     for path in others:
         try:
             data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))

@@ -103,6 +103,64 @@ def _rules(facts: dict[str, object]) -> list[tuple[str, str, str]]:
     ]
 
 
+#: Surfaces that quote per-dimension weights and must agree with the YAML.
+_WEIGHT_SURFACES = ("docs/framework/scoring-dimensions.md", "README.md")
+
+#: Column order used by the Markdown weight tables on those surfaces.
+_WEIGHT_ORDER = (
+    "outcome",
+    "tool_use",
+    "grounding",
+    "governance",
+    "robustness",
+    "efficiency",
+    "workflow",
+)
+
+
+def _verify_weight_tables() -> list[str]:
+    """Check that documented scoring weights match ``scoring_profiles.yaml``.
+
+    The weights are the most consequential numbers AOBench publishes — a reader
+    comparing two papers needs them to be right — and they are exactly the kind of
+    table that rots silently after a profile is retuned.
+    """
+    import yaml  # noqa: PLC0415 - keep the import local; only this check needs it
+
+    config = ROOT / "benchmark" / "configs" / "scoring_profiles.yaml"
+    if not config.is_file():
+        return [f"{config.relative_to(ROOT)}: missing — cannot verify weight tables"]
+
+    profiles = (yaml.safe_load(config.read_text()) or {}).get("profiles", {})
+    failures: list[str] = []
+
+    for name, profile in profiles.items():
+        weights = profile.get("weights", {})
+        total = sum(weights.values())
+        if abs(total - 1.0) > 1e-6:
+            failures.append(f"scoring_profiles.yaml: profile '{name}' weights sum to {total}, not 1.0")
+
+    default = profiles.get("default_hpc_v01", {}).get("weights", {})
+    if not default:
+        return [*failures, "scoring_profiles.yaml: no default_hpc_v01 profile"]
+
+    # Match the exact table row rather than the individual numbers: every one of these
+    # weights appears somewhere in both documents by coincidence, so a presence check
+    # would pass on a table that is wrong in every cell.
+    expected_row = " | ".join(f"{default.get(dim, 0.0):.2f}" for dim in _WEIGHT_ORDER)
+    for rel in _WEIGHT_SURFACES:
+        path = ROOT / rel
+        if not path.exists():
+            failures.append(f"{rel}: missing file")
+        elif expected_row not in path.read_text():
+            failures.append(
+                f"{rel}: no default_hpc_v01 weight row matching the YAML. "
+                f"Expected a table row containing: {expected_row}"
+            )
+
+    return failures
+
+
 def verify(facts: dict[str, object]) -> list[str]:
     failures: list[str] = []
     for rel, pattern, explanation in _rules(facts):
@@ -113,16 +171,22 @@ def verify(facts: dict[str, object]) -> list[str]:
         if not re.search(pattern, path.read_text()):
             failures.append(f"{rel}: {explanation} (no match for /{pattern}/)")
 
-    # The package version must not drift from the project version.
+    # The package version must not drift from the project version. Deriving it from
+    # installed distribution metadata makes drift structurally impossible, so that
+    # form is accepted without comparing literals.
     init_text = (ROOT / "src" / "aobench" / "__init__.py").read_text()
-    match = re.search(r'__version__\s*=\s*"([^"]+)"', init_text)
-    if not match:
-        failures.append("src/aobench/__init__.py: no __version__")
-    elif match.group(1) != facts["version"]:
-        failures.append(
-            f"src/aobench/__init__.py: __version__ is {match.group(1)!r}, "
-            f"pyproject says {facts['version']!r}"
-        )
+    if "importlib.metadata" not in init_text:
+        match = re.search(r'__version__\s*=\s*"([^"]+)"', init_text)
+        if not match:
+            failures.append("src/aobench/__init__.py: no __version__")
+        elif match.group(1) != facts["version"]:
+            failures.append(
+                f"src/aobench/__init__.py: __version__ is {match.group(1)!r}, "
+                f"pyproject says {facts['version']!r} — prefer deriving it from "
+                "importlib.metadata so the two cannot drift"
+            )
+
+    failures.extend(_verify_weight_tables())
 
     if FACTS_PATH.exists():
         stored = json.loads(FACTS_PATH.read_text())

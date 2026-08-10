@@ -91,14 +91,18 @@ aobench doctor
 Required
   PASS  Python 3.12.3 (requires >= 3.10)
   PASS  aobench package metadata readable (version 0.4.1)
+  PASS  core dependencies importable
   PASS  Benchmark corpus found at /path/to/aobench/benchmark
   PASS  88 task specs load
   PASS  29 environment bundles present
   PASS  scoring_profiles.yaml present
 
 Optional
-  PASS  optional `openai` importable — unlocks the `openai:` adapter
+  WARN  `openai` not installed — would unlock the `openai:` adapter
+        → Optional. Install with `pip install 'aobench[openai]'` if you need the `openai:` adapter.
   ...
+
+AOBench looks healthy. 5 optional extra(s) not installed — that is fine unless you need them.
 ```
 
 Required failures mean AOBench will not run. Optional warnings are fine unless you
@@ -207,9 +211,19 @@ Every score is auditable. The trace records each tool call, its arguments, its r
 and the agent's messages, in order.
 
 ```bash
-cat data/runs/<run_id>/trace.json | head -40
-open data/runs/<run_id>/report.html      # the human-readable version
+ls data/runs/<run_id>
+#  COMPUTE.json  MANIFEST.json  report.html  results/  run_summary.json  traces/
+
+# one trace per task, named after the task
+cat data/runs/<run_id>/traces/JOB_USR_001_trace.json
+
+# the same run as a human-readable page
+open data/runs/<run_id>/report.html
 ```
+
+`report.html` and `run_summary.json` come from the reporting step, which
+`aobench run task` performs by default and `aobench quickstart` skips. Produce them
+for a quickstart run with `aobench report json data/runs/<run_id>`.
 
 ## 8. Run a real model (optional, costs money)
 
@@ -232,10 +246,13 @@ aobench clear run data/runs/<run_id>
 
 | You want to… | Go to |
 |---|---|
+| Install another way (Docker, Compose, extras) | [Installation](installation.md) |
 | Plug your own agent in | [Evaluate your own agent](../guides/evaluating-your-own-agent.md) |
+| Gate CI on a score | [CI integration](../guides/ci-integration.md) |
 | Understand the scoring | [Scoring dimensions](../framework/scoring-dimensions.md) |
 | Browse every task | [Task catalog](../reference/task-catalog.md) |
 | Use real Marconi100 data | [M100 ExaData environments](../guides/m100_environments.md) |
-| Gate your CI on a score | [CI integration](../guides/ci-integration.md) |
-| Add a task | [Adding a task](../guides/adding-a-task.md) |
-| Publish a result | [Leaderboard](../leaderboard.md) · [Cite AOBench](../about/citation.md) |
+| Drive it from code or over HTTP | [Programmatic access](../guides/programmatic-access.md) |
+| Every command and flag | [CLI reference](../reference/commands.md) |
+| Add a task | [CONTRIBUTING](../about/contributing.md) |
+| Publish a result | [Reproducing results](../about/reproducing-results.md) · [Cite AOBench](../about/citation.md) |
