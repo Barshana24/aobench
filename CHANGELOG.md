@@ -2,12 +2,44 @@
 
 ## Unreleased
 
-### Fixed — CLI
+### Added — onboarding
 
-- `aobench run task` no longer dumps a Python traceback when the `--task` or `--env` ID is
-  mistyped. It now prints a clean one-line error with close-match suggestions and exits with
-  code 2 (`tests/cli/test_error_messages.py`). Loader functions still raise their original
-  exceptions when used as a library.
+- **`aobench quickstart`** — a zero-argument first run. It resolves the benchmark
+  corpus, picks a representative task, runs it with the tool-free `direct_qa` adapter,
+  prints the per-dimension scorecard with a plain-English gloss for each dimension, and
+  names the next commands. No API key, no network, no cluster.
+- **`aobench doctor`** / **`aobench info`** — installation diagnostics. `doctor` checks
+  Python, package metadata, core imports, corpus resolution and size, and optional
+  extras, with a suggested fix per failure; it exits non-zero only on *required*
+  failures, so a laptop with no provider SDK still passes. `info --json` is the blob to
+  paste into a bug report.
+- **`aobench list`** — `tasks`, `envs`, `qcats`, `roles`, `adapters`, `profiles`, and
+  `scorers`, all with `--json`, and `--ids-only` on `tasks`/`envs` for shell pipelines.
+  Previously the only way to learn a valid task ID was to `ls` the corpus by hand.
+- **`python -m aobench`** as an alias for the console script, for environments where it
+  is not on `PATH`.
+- `make quickstart`, `make doctor`, and `make install-dev`; `make install-core` now
+  really installs core-only (`uv sync --no-dev`).
+- Mistyped `--task` / `--env` values now print the closest matching IDs and a pointer to
+  `aobench list`, instead of a stack trace.
+
+### Fixed — installed-package usage
+
+- **The documented quick start crashed on a non-checkout install.** `aobench.paths`
+  (which resolves `$AOBENCH_BENCHMARK_ROOT` → checkout → corpus bundled in the wheel)
+  was wired into `validate benchmark` only. Every other entry point treated the literal
+  string `"benchmark"` as a CWD-relative path, so `aobench run task …` died with
+  `FileNotFoundError: benchmark/tasks/specs/JOB_USR_001.json` outside a checkout.
+  `run task`, `run all`, `robustness task`, `robustness all`, `rescore`, `rbac ingest`,
+  and `validate tasks|snapshots|authoring` now all resolve the corpus.
+- `tools/catalog_loader` and `tasks/context_builder` located `hpc_tool_catalog.yaml` and
+  `tasks/guidelines/` by walking up from `__file__`, which only ever resolves in a source
+  checkout. Both now use the shared resolver.
+- `utils/fs.resolve_benchmark_root` was a second, divergent resolver that could not see
+  bundled package data; it now delegates to `aobench.paths`.
+- `aobench doctor` split its checks into required/optional **by list position**, so the
+  four checks that disappear when the corpus is missing silently reclassified optional
+  extras as required failures — exactly the path a broken install takes.
 
 ### Changed — CI
 

@@ -88,21 +88,49 @@ AOBench/
 
 ## Quick start
 
+**Two commands to your first scored HPC agent task.** No cluster, no API key, no
+configuration — the `direct_qa` baseline runs offline against a frozen snapshot.
+
 ```bash
-pip install -e ".[dev]"
+git clone https://github.com/MSKazemi/aobench.git && cd aobench && make install
 
-# 1. Validate every task spec and environment bundle
-aobench validate benchmark
+aobench quickstart
+```
 
-# 2. Run one task end-to-end with the zero-tool baseline
+`aobench quickstart` takes no arguments: it locates the benchmark corpus, picks a
+representative task, runs it, and explains every number it prints.
+
+```text
+Aggregate score: 0.3340   (0 = worst, 1 = best)
+
+Per dimension:
+  outcome      0.2400   did the answer match the gold answer
+  tool_use     0.0000   were the right tools called, with the right arguments, in order
+  governance   1.0000   did the agent stay inside its RBAC role
+  grounding    0.0000   was the answer supported by the snapshot evidence
+  efficiency   1.0000   how much work was spent getting there
+```
+
+That `0.334` is the tool-free floor a real agent has to beat. From there:
+
+```bash
+aobench doctor                 # is my install healthy?
+aobench list tasks --qcat JOB  # what else can I run? (also: list envs / roles / adapters)
+aobench validate benchmark     # do all 88 tasks and 29 environments load?
 aobench run task --task JOB_USR_001 --env env_01 --adapter direct_qa
+```
 
-# 3. Run a real adapter and emit a CLEAR scorecard
+Evaluate a real model and produce a CLEAR scorecard:
+
+```bash
 export OPENAI_API_KEY=sk-…
 aobench run all --adapter openai:gpt-4o --split dev
-aobench report json data/runs/<run_id>
 aobench clear run data/runs/<run_id>
 ```
+
+Full walkthrough: **[docs/getting-started/quickstart.md](docs/getting-started/quickstart.md)**.
+Other install paths (Docker, Compose, extras):
+**[docs/getting-started/installation.md](docs/getting-started/installation.md)**.
 
 ## Programmatic access & agent surfaces
 
@@ -142,16 +170,22 @@ walkthroughs, and [ROADMAP.md](ROADMAP.md) for surface status and what's next.
 | Scoring profiles | `alpha0_minimal`, `alpha1_grounding`, `default_hpc_v01` | `benchmark/configs/scoring_profiles.yaml` |
 | Tests | ~1470 passing | `tests/` |
 
-The 6 evaluation dimensions and their `default_hpc_v01` weights:
+The 7 evaluation dimensions and their `default_hpc_v01` weights — verified against
+`benchmark/configs/scoring_profiles.yaml` in CI, and printable with
+`aobench list profiles`:
 
 | Dimension | Weight | Scorer |
 |-----------|--------|--------|
 | Outcome correctness | 0.30 | `OutcomeScorer` (or `HybridScorer`) |
-| Tool-use correctness | 0.20 | `ToolUseScorer` (BFCL-decomposed) |
 | Governance / RBAC | 0.20 | `GovernanceScorer` |
-| Grounding | 0.15 | `GroundingScorer` |
+| Tool-use correctness | 0.15 | `ToolUseScorer` (BFCL-decomposed) |
+| Grounding | 0.10 | `GroundingScorer` |
 | Robustness (pass^k) | 0.10 | `RobustnessScorer` |
+| Workflow (WorfEval) | 0.10 | `WorfEvalScorer` |
 | Efficiency | 0.05 | `EfficiencyScorer` |
+
+Row form for machine comparison: `0.30 | 0.15 | 0.10 | 0.20 | 0.10 | 0.05 | 0.10`
+(outcome, tool_use, grounding, governance, robustness, efficiency, workflow).
 
 The CLEAR scorecard (`aobench clear run`) aggregates Efficacy, Assurance,
 Reliability, Cost, and Latency into a single comparable score per model.

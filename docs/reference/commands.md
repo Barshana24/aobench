@@ -6,6 +6,12 @@ Reference for all AOBench CLI commands and Makefile targets.
 
 | Command | Description |
 |---------|-------------|
+| `aobench quickstart` | **Start here.** Run one scored task with no arguments and no API key |
+| `aobench doctor` | Check the install: Python, corpus, extras, credentials — with a fix per failure |
+| `aobench info` | Version, corpus location, extras, env vars (`--json` for bug reports) |
+| `aobench list tasks` | List task IDs, filterable by `--qcat` / `--role` / `--split` / `--env` |
+| `aobench list envs` | List environment bundles and their grounding |
+| `aobench list qcats` \| `roles` \| `adapters` \| `profiles` \| `scorers` | Other views over the corpus |
 | `aobench validate benchmark` | Validate all task specs and environment bundles |
 | `aobench run task` | Run a single benchmark task against an environment |
 | `aobench run all` | Run all benchmark tasks (one run dir, one trace per task) |
@@ -22,6 +28,11 @@ Reference for all AOBench CLI commands and Makefile targets.
 | `aobench serve mcp` | Start the FastMCP server over stdio, exposing the engine as MCP tools/resources (`mcp` extra) |
 | `aobench validate tasks` | Run T1–T10 validity checks with a human-readable pass/fail summary table |
 | `aobench validate snapshots` | Run F1–F7 fidelity validators on all `env_*/` bundles; write `data/fidelity/` |
+| `make quickstart` | Check the install, then run one scored task (no API key needed) |
+| `make doctor` | Diagnose the install |
+| `make install` | Install the dev group **and** all optional extras |
+| `make install-dev` | Install the dev group only (pytest, ruff, mypy) |
+| `make install-core` | Install just enough to run the benchmark |
 | `make lite-select` | Run Lite selection pipeline (Stages 1–3) and write the Lite manifest |
 | `make generate-tool-docs` | Write `hpc_tools_guide.md` into all env `docs/` dirs from `hpc_tool_catalog.yaml` |
 | `make validate-tasks` | Run T1–T10 task validity checks on `benchmark/tasks/task_set_v1.json` |
@@ -46,6 +57,83 @@ Reference for all AOBench CLI commands and Makefile targets.
 | `make paper-table1` | Generate Table 1 (main results) from `data/runs/v01_dev_*` summaries |
 | `make paper-table4` | Generate Table 4 (pass^k reliability) from `data/robustness/v01_*.json` |
 | `make check-validity-gates` | Run V1–V6 pre-publication validity gates and write `data/reports/validity_gates.json` |
+
+---
+
+## Getting started
+
+### `aobench quickstart`
+
+Run one benchmark task end-to-end and explain the result. Takes no arguments: it
+resolves the benchmark corpus, picks a representative task, runs it with the tool-free
+`direct_qa` adapter, prints the per-dimension scorecard, and names the next commands.
+No API key, no network, and no cluster are required.
+
+```bash
+aobench quickstart                       # zero-argument first run
+aobench quickstart --task MON_SYS_001    # a task you choose
+aobench quickstart --adapter openai:gpt-4o   # a real model (needs a key)
+aobench quickstart --output /tmp/runs    # write the run elsewhere
+```
+
+### `aobench doctor`
+
+Diagnose the installation. Checks the Python version, that the package metadata is
+readable, that the core dependencies import, that the benchmark corpus resolves and is
+non-empty, and which optional extras are installed. Every failure prints a suggested fix.
+
+Exits **1** only when a *required* check fails. Missing optional extras are warnings and
+exit 0, because the `direct_qa` baseline needs none of them. Pass `--strict` to fail on
+those warnings too — useful in CI that expects a full install.
+
+```bash
+aobench doctor
+aobench doctor --strict
+```
+
+### `aobench info`
+
+Print the version, corpus location and size, optional-extra status, and the relevant
+environment variables. `--json` emits the same content as a machine-readable blob; that
+is the thing to paste into a bug report.
+
+```bash
+aobench info
+aobench info --json
+```
+
+### `aobench list`
+
+Discover what is in the corpus without reading JSON by hand. Every sub-command accepts
+`--json`; `list tasks` and `list envs` also accept `--ids-only` for shell pipelines.
+
+```bash
+aobench list tasks                       # all 88 tasks
+aobench list tasks --qcat JOB --role sysadmin
+aobench list tasks --split dev --ids-only
+aobench list tasks --grounded            # only real-Marconi100 tasks
+aobench list envs --grounded             # the 6 ExaData-grounded bundles
+aobench list qcats                       # the 10 categories, with task counts
+aobench list roles                       # the 5 operator roles, with task counts
+aobench list adapters                    # what you can evaluate, and what each needs
+aobench list profiles                    # scoring weight profiles and their weights
+aobench list scorers                     # the scorers behind each dimension
+```
+
+```bash
+# Pipe IDs straight into a loop
+for t in $(aobench list tasks --qcat SEC --ids-only); do
+  aobench run task --task "$t" --env env_01 --adapter direct_qa
+done
+```
+
+### Locating the benchmark corpus
+
+Every command that reads the corpus resolves it in this order: `$AOBENCH_BENCHMARK_ROOT`,
+then a `benchmark/` directory found by walking up from the current directory, then the
+copy bundled inside the installed package. `--benchmark /path/to/benchmark` overrides it
+for one invocation. A mistyped `--task` or `--env` prints the closest matching IDs
+instead of a traceback.
 
 ---
 

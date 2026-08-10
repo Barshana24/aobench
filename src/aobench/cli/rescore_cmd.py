@@ -37,9 +37,11 @@ def rescore(
     scorer stack, and writes new ``*_result.json`` files (serialized
     ``BenchmarkResult``) to ``OUTPUT/results/``. No agent calls are made.
     """
+    from aobench.cli._common import resolve_root
+
     run_path = Path(run_dir)
     out_path = Path(output)
-    broot = Path(benchmark_root)
+    broot = resolve_root(benchmark_root)
 
     if not run_path.is_dir():
         typer.echo(f"Error: run_dir '{run_dir}' is not a directory.", err=True)

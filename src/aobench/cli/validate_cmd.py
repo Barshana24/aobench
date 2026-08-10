@@ -11,6 +11,15 @@ import typer
 
 validate_app = typer.Typer(help="Validate benchmark data.")
 
+# Built-in defaults for corpus-relative options. They are only used verbatim when
+# they exist relative to the CWD; otherwise they are rebuilt from the resolved
+# benchmark corpus (see aobench.cli._common.corpus_path).
+_D_TASK_FILE = "benchmark/tasks/task_set_v1.json"
+_D_SNAPSHOT_DIR = "benchmark/environments/"
+_D_CATALOG = "benchmark/configs/hpc_tool_catalog.yaml"
+_D_ENVIRONMENTS = "benchmark/environments"
+_D_TASK_SPECS = "benchmark/tasks/specs"
+
 
 @validate_app.command("benchmark")
 def validate_benchmark(
@@ -35,9 +44,9 @@ def validate_benchmark(
 
 @validate_app.command("tasks")
 def validate_tasks_cmd(
-    task_file: Annotated[str, typer.Option("--task-file", help="Task corpus JSON")] = "benchmark/tasks/task_set_v1.json",
-    snapshot_dir: Annotated[str, typer.Option("--snapshot-dir", help="Environments directory")] = "benchmark/environments/",
-    catalog: Annotated[str, typer.Option("--catalog", help="Tool catalog YAML")] = "benchmark/configs/hpc_tool_catalog.yaml",
+    task_file: Annotated[str, typer.Option("--task-file", help="Task corpus JSON")] = _D_TASK_FILE,
+    snapshot_dir: Annotated[str, typer.Option("--snapshot-dir", help="Environments directory")] = _D_SNAPSHOT_DIR,
+    catalog: Annotated[str, typer.Option("--catalog", help="Tool catalog YAML")] = _D_CATALOG,
     checks: Annotated[str, typer.Option("--checks", help="Comma-separated checks, e.g. t1,t3 (default: all)")] = "all",
     output: Annotated[str, typer.Option("--output", "-o", help="Output report path (default: stdout)")] = "-",
     fmt: Annotated[str, typer.Option("--format", help="Output format: json | text | csv")] = "json",
@@ -48,7 +57,12 @@ def validate_tasks_cmd(
 
     Wraps validate_tasks.py and adds a human-readable T1–T10 summary table.
     """
+    from aobench.cli._common import corpus_path
     from aobench.cli.validate_tasks import main as _validate_main
+
+    task_file = str(corpus_path(task_file, _D_TASK_FILE, "tasks/task_set_v1.json"))
+    snapshot_dir = str(corpus_path(snapshot_dir, _D_SNAPSHOT_DIR, "environments"))
+    catalog = str(corpus_path(catalog, _D_CATALOG, "configs/hpc_tool_catalog.yaml"))
 
     argv: list[str] = [
         "--task-file", task_file,
@@ -175,7 +189,7 @@ def _print_t1_t10_summary(
 
 @validate_app.command("snapshots")
 def validate_snapshots(
-    environments_root: Annotated[str, typer.Option("--environments", help="Environments directory")] = "benchmark/environments",
+    environments_root: Annotated[str, typer.Option("--environments", help="Environments directory")] = _D_ENVIRONMENTS,
     output_root: Annotated[str, typer.Option("--output", "-o", help="Output directory for fidelity reports")] = "data/fidelity",
 ) -> None:
     """Run F1–F7 fidelity validators on all env_*/ snapshot bundles.
@@ -183,9 +197,10 @@ def validate_snapshots(
     Writes per-environment Markdown reports and an aggregate REPORT.md and
     index.json to the output directory.
     """
+    from aobench.cli._common import corpus_path
     from aobench.environment.fidelity_report import FidelityReport
 
-    env_root = Path(environments_root)
+    env_root = corpus_path(environments_root, _D_ENVIRONMENTS, "environments")
     out_root = Path(output_root)
     out_root.mkdir(parents=True, exist_ok=True)
 
@@ -292,13 +307,16 @@ def _oracle_check_task(task_path: Path, env_dir: str) -> tuple[str, bool, str]:
 
 @validate_app.command("authoring")
 def validate_authoring(
-    task_dir: str = typer.Option("benchmark/tasks/specs", help="Task spec directory"),
-    env_dir: str = typer.Option("benchmark/environments", help="Environment directory"),
+    task_dir: str = typer.Option(_D_TASK_SPECS, help="Task spec directory"),
+    env_dir: str = typer.Option(_D_ENVIRONMENTS, help="Environment directory"),
 ) -> None:
     """Run oracle_check and independence_check on all tasks."""
     import math
 
-    task_dir_path = Path(task_dir)
+    from aobench.cli._common import corpus_path
+
+    task_dir_path = corpus_path(task_dir, _D_TASK_SPECS, "tasks/specs")
+    env_dir = str(corpus_path(env_dir, _D_ENVIRONMENTS, "environments"))
     if not task_dir_path.exists():
         typer.echo(f"ERROR: task-dir does not exist: {task_dir_path}", err=True)
         raise typer.Exit(2)

@@ -1,6 +1,16 @@
 # Installation & Running AOBench
 
 This page is the single, canonical guide to **installing AOBench and running it**.
+
+!!! tip "In a hurry?"
+    ```bash
+    git clone https://github.com/MSKazemi/aobench.git && cd aobench && make install
+    aobench quickstart
+    ```
+    That is the whole happy path — see the **[Quickstart](quickstart.md)** for what the
+    output means. This page is the reference for everything else: the other install
+    paths, the optional extras, and the container images.
+
 There are three supported paths — pick the one that matches how you want to use the
 benchmark:
 
@@ -77,19 +87,35 @@ Install only the surfaces/adapters you need. Extras compose (list several togeth
     `uv sync --extra rest --extra mcp --extra langfuse`. Or just use
     `uv sync --all-extras`.
 
+### Choosing an install target
+
+| Makefile target | Installs | Use when |
+|---|---|---|
+| `make install` | dev group **and** every optional extra | You are contributing, or you want every adapter available |
+| `make install-dev` | dev group only (pytest, ruff, mypy) | You are contributing but do not need the provider SDKs |
+| `make install-core` | just enough to run the benchmark | You only want to *use* AOBench |
+
 ### Verify the install
 
 ```bash
-aobench --help                     # CLI is on PATH
-aobench validate benchmark         # validates every task spec + environment bundle
+aobench --version                  # CLI is on PATH
+aobench doctor                     # Python, corpus, extras, credentials — with fixes
 ```
 
-Or via the Makefile: `make install` (creates `.venv` and installs everything).
+`aobench doctor` exits non-zero only when a **required** check fails. Missing optional
+extras and absent API keys are reported as warnings, because the `direct_qa` baseline
+genuinely needs neither. `aobench info --json` prints the same picture as a JSON blob —
+paste that into a bug report.
+
+If the `aobench` console script is not on your `PATH`, `python -m aobench` is equivalent.
 
 ### First run
 
 ```bash
-# Zero-tool baseline — no API key required
+# The whole thing in one command — no arguments, no API key, no network
+aobench quickstart
+
+# The same run, spelled out
 aobench run task --task JOB_USR_001 --env env_01 --adapter direct_qa
 
 # A real adapter (needs a key)
@@ -98,6 +124,23 @@ aobench run all --adapter openai:gpt-4o --split dev
 aobench report json data/runs/<run_id>
 aobench clear run data/runs/<run_id>
 ```
+
+See the **[Quickstart](quickstart.md)** for a narrated walkthrough of that first run
+and how to read the six-dimension scorecard.
+
+### Where the benchmark corpus comes from
+
+Every command needs the corpus (task specs, environment snapshots, scoring configs).
+AOBench finds it automatically, in this order:
+
+1. `$AOBENCH_BENCHMARK_ROOT`, if set — an explicit override.
+2. A `benchmark/` directory found by walking **up** from the current directory, so a
+   source checkout works from any subdirectory.
+3. The copy bundled inside the installed package — so a wheel install works from any
+   directory at all, with no checkout present.
+
+Every command also accepts `--benchmark /path/to/benchmark` to override it for a single
+invocation. If none of the three resolve, the error names all the locations tried.
 
 See the [CLI command reference](../reference/commands.md) for every subcommand, and
 [Serve the Benchmark](../tutorials/serving-the-benchmark.md) to drive it over REST/MCP.

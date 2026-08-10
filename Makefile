@@ -39,14 +39,33 @@ VALIDITY_GATE_OUTPUT ?= data/reports/validity_gates.json
 
 LANGFUSE_DIR := docker/langfuse
 
+##@ Getting started
+
+# No install- prerequisite on purpose: `uv run` provisions .venv on demand, whereas
+# depending on install-core would prune a developer's already-installed extras.
+.PHONY: quickstart
+quickstart:  ## FIRST TIME? Check the install, then run one scored task (no API key needed)
+	@printf '\n\033[1;33m→ Checking the installation\033[0m\n'
+	@$(AOBENCH) doctor
+	@printf '\n\033[1;33m→ Running your first benchmark task\033[0m\n'
+	@$(AOBENCH) quickstart
+
+.PHONY: doctor
+doctor:  ## Diagnose the install (Python, corpus, extras, credentials)
+	$(AOBENCH) doctor
+
 ##@ Setup
 
 .PHONY: install
-install:  ## Create .venv and install all dependencies (including dev + optional extras)
+install:  ## Create .venv and install everything (dev group + all optional extras)
 	uv sync --all-extras
 
 .PHONY: install-core
-install-core:  ## Install core dependencies only (no dev/openai/anthropic)
+install-core:  ## Install just enough to run the benchmark (no dev tools, no adapters)
+	uv sync --no-dev
+
+.PHONY: install-dev
+install-dev:  ## Install the dev group (pytest, ruff, mypy) without the optional extras
 	uv sync
 
 ##@ Quality

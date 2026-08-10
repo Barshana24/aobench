@@ -2,50 +2,15 @@
 
 from __future__ import annotations
 
-import difflib
+from typing import Any
 from pathlib import Path
-from typing import Annotated, Any, NoReturn, Optional
+from typing import Annotated, Optional
 
 import typer
 
 from aobench.utils.logging import configure_logging
 
 run_app = typer.Typer(help="Run benchmark tasks.")
-
-
-def _available_task_ids(benchmark_root: str) -> list[str]:
-    """All runnable task IDs: the ``*.json`` stems under ``tasks/specs``."""
-    specs_dir = Path(benchmark_root) / "tasks" / "specs"
-    if not specs_dir.is_dir():
-        return []
-    return sorted(p.stem for p in specs_dir.glob("*.json"))
-
-
-def _available_env_ids(benchmark_root: str) -> list[str]:
-    """All environment bundle IDs: directory names under ``environments``."""
-    env_root = Path(benchmark_root) / "environments"
-    if not env_root.is_dir():
-        return []
-    return sorted(p.name for p in env_root.iterdir() if p.is_dir())
-
-
-def _close_matches(bad_id: str, available: list[str]) -> list[str]:
-    return difflib.get_close_matches(bad_id, available, n=3, cutoff=0.5)
-
-
-def exit_unknown_id(*, kind: str, bad_id: str, available: list[str]) -> NoReturn:
-    """Report a mistyped task/env ID with suggestions, no traceback (exit code 2)."""
-    typer.echo(f"Error: no {kind} with ID '{bad_id}'.", err=True)
-    matches = _close_matches(bad_id, available)
-    if matches:
-        typer.echo("Did you mean one of these?", err=True)
-        for match in matches:
-            typer.echo(f"  {match}", err=True)
-    typer.echo(
-        f"{len(available)} {kind}s are available. List them with: aobench validate benchmark",
-        err=True,
-    )
-    raise typer.Exit(2)
 
 # ---------------------------------------------------------------------------
 # Model registry — maps short token → (AdapterClass, model_name)
@@ -452,7 +417,10 @@ def run_all(
     """
     configure_logging("DEBUG" if verbose else "WARNING")
 
+    from aobench.cli._common import resolve_root
     from aobench.loaders.task_loader import load_tasks_from_dir
+
+    root = resolve_root(benchmark_root)
 
     # Determine which model tokens to iterate over.
     # --models takes precedence over --adapter when provided.
@@ -471,13 +439,13 @@ def run_all(
             raise typer.Exit(1)
         model_tokens = None  # signal: use legacy adapter path
 
-    specs_dir = Path(benchmark_root) / "tasks" / "specs"
+    specs_dir = root / "tasks" / "specs"
     all_tasks = load_tasks_from_dir(specs_dir)
     if not all_tasks:
         typer.echo(f"No tasks found in {specs_dir}", err=True)
         raise typer.Exit(1)
 
-    split_ids = _load_split_ids(split, benchmark_root)
+    split_ids = _load_split_ids(split, str(root))
     if split_ids is not None:
         tasks = [t for t in all_tasks if t.task_id in split_ids]
         typer.echo(f"Split '{split}': {len(tasks)}/{len(all_tasks)} tasks selected.")
@@ -501,7 +469,7 @@ def run_all(
                 adapter_label=token,
                 adapter_obj=adapter_obj,
                 tasks=tasks,
-                benchmark_root=benchmark_root,
+                benchmark_root=str(root),
                 output_root=token_output,
                 split=split,
                 langfuse=langfuse,
@@ -515,7 +483,7 @@ def run_all(
             adapter_label=adapter,
             adapter_obj=adapter_obj,
             tasks=tasks,
-            benchmark_root=benchmark_root,
+            benchmark_root=str(root),
             output_root=output_root,
             split=split,
             langfuse=langfuse,
@@ -539,8 +507,13 @@ def run_task(
     """Run a single benchmark task."""
     configure_logging("DEBUG" if verbose else "WARNING")
 
+    from aobench.cli._common import require_env_dir, require_task_spec, resolve_root
     from aobench.loaders.task_loader import load_task
     from aobench.runners.runner import BenchmarkRunner
+
+    root = resolve_root(benchmark_root)
+    require_task_spec(root, task_id)
+    require_env_dir(root, env_id)
 
     try:
         adapter_obj = _build_adapter(adapter)
@@ -552,25 +525,9 @@ def run_task(
         )
         raise typer.Exit(1)
 
-    # Friendly errors for the most common first-run mistake: a mistyped ID.
-    task_spec_path = Path(benchmark_root) / "tasks" / "specs" / f"{task_id}.json"
-    if not task_spec_path.exists():
-        exit_unknown_id(
-            kind="task",
-            bad_id=task_id,
-            available=_available_task_ids(benchmark_root),
-        )
-    environment_dir = Path(benchmark_root) / "environments" / env_id
-    if not environment_dir.is_dir():
-        exit_unknown_id(
-            kind="environment",
-            bad_id=env_id,
-            available=_available_env_ids(benchmark_root),
-        )
-
     # Apply system-prompt prefix if provided
     if system_prompt_prefix is not None and hasattr(adapter_obj, "_system_prompt"):
-        task_spec = load_task(Path(benchmark_root) / "tasks" / "specs" / f"{task_id}.json")
+        task_spec = load_task(root / "tasks" / "specs" / f"{task_id}.json")
         prefix = _load_system_prompt_prefix(system_prompt_prefix, task_spec)
         if prefix:
             adapter_obj._system_prompt = prefix + "\n\n" + adapter_obj._system_prompt
@@ -578,7 +535,7 @@ def run_task(
     exporter = _build_exporter(langfuse)
     runner = BenchmarkRunner(
         adapter=adapter_obj,
-        benchmark_root=Path(benchmark_root),
+        benchmark_root=root,
         output_root=Path(output_root),
         exporter=exporter,
     )

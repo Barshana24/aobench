@@ -1,29 +1,55 @@
+---
+title: "AOBench scoring dimensions — how an HPC agent run is scored"
+description: "Per-scorer reference for AOBench: the seven weighted dimensions (outcome, tool use, grounding, governance, robustness, efficiency, workflow), the weight profiles, and what forces a hard fail."
+keywords:
+  - agent scoring dimensions
+  - benchmark weight profile
+  - RBAC hard fail
+  - pass^k robustness
+---
+
 # Scoring Dimensions Reference
 
 This page is the per-scorer reference for every score that appears in a
 `BenchmarkResult`. All scores are in the range **0.0 – 1.0** unless noted
 otherwise; **higher is always better**.
 
-Authoritative source code: `src/aobench/scorers/`.
+Authoritative source: `src/aobench/scorers/` and
+`benchmark/configs/scoring_profiles.yaml`. The table below is checked against that
+YAML by `scripts/check_facts.py` in CI, so it cannot silently drift.
 
 ---
 
-## The six dimensions
+## The seven weighted dimensions
 
-AOBench evaluates every run on six independent dimensions. They are combined
-into `aggregate_score` using a named **weight profile** from
-`benchmark/configs/scoring_profiles.yaml`.
+AOBench evaluates every run on seven independent dimensions, combined into
+`aggregate_score` by a named **weight profile**.
 
-| Profile | outcome | tool_use | grounding | governance | robustness | efficiency |
-|---------|---------|----------|-----------|------------|------------|------------|
-| `default_hpc_v01` (standard) | 0.30 | 0.20 | 0.15 | 0.20 | 0.10 | 0.05 |
-| `alpha1_grounding` | 0.35 | 0.20 | 0.20 | 0.20 | 0.00 | 0.05 |
-| `alpha0_minimal` | 1.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| Profile | outcome | tool_use | grounding | governance | robustness | efficiency | workflow |
+|---------|---------|----------|-----------|------------|------------|------------|----------|
+| `default_hpc_v01` (standard) | 0.30 | 0.15 | 0.10 | 0.20 | 0.10 | 0.05 | 0.10 |
+| `alpha1_grounding` | 0.35 | 0.20 | 0.20 | 0.20 | 0.00 | 0.05 | 0.00 |
+| `alpha0_minimal` | 0.50 | 0.00 | 0.00 | 0.35 | 0.00 | 0.15 | 0.00 |
+| `clear_v1` | 0.20 | 0.00 | 0.00 | 0.20 | 0.20 | 0.40 | 0.00 |
 
 ```
-aggregate_score = w₁·outcome + w₂·tool_use + w₃·grounding
-                 + w₄·governance + w₅·robustness + w₆·efficiency
+aggregate_score = w₁·outcome  + w₂·tool_use + w₃·grounding + w₄·governance
+                + w₅·robustness + w₆·efficiency + w₇·workflow
 ```
+
+Every profile's weights sum to exactly 1.0. Check them on your own checkout with:
+
+```bash
+aobench list profiles
+```
+
+!!! note "Why `workflow` is often overlooked"
+    The `workflow` dimension (`WorfEvalScorer`) only contributes when a task carries a
+    `ground_truth_workflow`, because it compares two DAGs rather than a task/trace pair.
+    It is a real weighted dimension of `default_hpc_v01` all the same — earlier versions
+    of this documentation described AOBench as having six dimensions, which understated
+    the profile. If you are comparing against a published AOBench number, check which
+    profile it used.
 
 A **hard-fail** forces `aggregate_score = 0.0` regardless of the dimension
 scores (see §7 below).

@@ -1,0 +1,290 @@
+"""``aobench list`` — discover what is inside the benchmark without reading JSON.
+
+Every other sub-command takes a `--task` or `--env` ID. Before this command existed
+the only way to learn a valid ID was to `ls benchmark/tasks/specs/`, which is a poor
+first experience and impossible from an installed wheel. Each sub-command here is a
+read-only view over the corpus resolved by :func:`aobench.cli._common.resolve_root`.
+"""
+
+from __future__ import annotations
+
+import json
+from collections import Counter
+from pathlib import Path
+from typing import Any
+
+import typer
+import yaml
+
+from aobench.cli._common import resolve_root
+
+list_app = typer.Typer(
+    help="List the tasks, environments, roles, QCATs, adapters, scorers, and profiles.",
+    no_args_is_help=True,
+)
+
+# Kept here rather than imported from the adapter package so `aobench list adapters`
+# never pays the import cost (or the ImportError) of an optional provider SDK.
+_ADAPTERS: list[tuple[str, str, str]] = [
+    ("direct_qa", "none", "Tool-free reference baseline. No API key, fully offline."),
+    ("openai", "openai", "Any OpenAI-compatible chat model, e.g. `openai:gpt-4o`."),
+    ("anthropic", "anthropic", "Anthropic models, e.g. `anthropic:claude-3-5-sonnet-20241022`."),
+    ("mcp", "mcp", "Any MCP server, e.g. `mcp:stdio:python my_server.py`."),
+]
+
+_QCAT_DESCRIPTIONS: dict[str, str] = {
+    "JOB": "Job submission, scheduling, and queue reasoning",
+    "MON": "Monitoring and telemetry interpretation",
+    "ENERGY": "Power and energy reasoning",
+    "PERF": "Performance analysis and bottleneck attribution",
+    "DATA": "Data movement, storage, and filesystem operations",
+    "SEC": "Security posture and access questions",
+    "FAC": "Facility and cooling operations",
+    "ARCH": "Architecture and capability questions",
+    "AIOPS": "Anomaly detection and incident response",
+    "DOCS": "Documentation lookup and policy grounding",
+}
+
+_ROLE_DESCRIPTIONS: dict[str, str] = {
+    "scientific_user": "Runs science on the cluster; no administrative rights",
+    "sysadmin": "Operates the cluster; broad but audited tool access",
+    "facility_admin": "Owns power, cooling, and the machine room",
+    "researcher": "Studies the system itself; read-mostly analytical access",
+    "system_designer": "Plans future systems; architecture and capacity questions",
+}
+
+
+def _load_specs(root: Path) -> list[dict[str, Any]]:
+    spec_dir = root / "tasks" / "specs"
+    if not spec_dir.is_dir():
+        typer.echo(f"No task specs found under {spec_dir}", err=True)
+        raise typer.Exit(code=2)
+    specs = []
+    for path in sorted(spec_dir.glob("*.json")):
+        try:
+            specs.append(json.loads(path.read_text()))
+        except json.JSONDecodeError as exc:
+            typer.echo(f"Skipping malformed spec {path.name}: {exc}", err=True)
+    return specs
+
+
+def _load_env_metadata(root: Path) -> list[dict[str, Any]]:
+    env_root = root / "environments"
+    if not env_root.is_dir():
+        typer.echo(f"No environments found under {env_root}", err=True)
+        raise typer.Exit(code=2)
+    envs = []
+    # Only `env_*` directories are environments; siblings such as `_m100_reference`
+    # are shared source material, not runnable bundles.
+    for path in sorted(p for p in env_root.iterdir() if p.is_dir() and p.name.startswith("env_")):
+        meta_path = path / "metadata.yaml"
+        meta: dict[str, Any] = {"environment_id": path.name}
+        if meta_path.is_file():
+            loaded = yaml.safe_load(meta_path.read_text()) or {}
+            if isinstance(loaded, dict):
+                meta.update(loaded)
+        envs.append(meta)
+    return envs
+
+
+def _emit(rows: list[dict[str, Any]], columns: list[str], as_json: bool) -> None:
+    """Print ``rows`` either as machine-readable JSON or an aligned text table."""
+    if as_json:
+        typer.echo(json.dumps(rows, indent=2))
+        return
+    if not rows:
+        typer.echo("(nothing matched)")
+        return
+    widths = {c: max(len(c), *(len(str(r.get(c, ""))) for r in rows)) for c in columns}
+    typer.echo("  ".join(c.upper().ljust(widths[c]) for c in columns).rstrip())
+    for row in rows:
+        typer.echo("  ".join(str(row.get(c, "")).ljust(widths[c]) for c in columns).rstrip())
+    typer.echo(f"\n{len(rows)} row{'s' if len(rows) != 1 else ''}.")
+
+
+@list_app.command("tasks")
+def list_tasks(
+    qcat: str = typer.Option(None, "--qcat", help="Filter by question category, e.g. JOB."),
+    role: str = typer.Option(None, "--role", help="Filter by role, e.g. sysadmin."),
+    split: str = typer.Option(None, "--split", help="Filter by benchmark split: dev or test."),
+    env: str = typer.Option(None, "--env", help="Filter by the environment the task targets."),
+    grounded: bool = typer.Option(
+        False, "--grounded", help="Only tasks grounded in real Marconi100 ExaData."
+    ),
+    ids_only: bool = typer.Option(False, "--ids-only", help="Print bare task IDs, one per line."),
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+    benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
+) -> None:
+    """List benchmark tasks, optionally filtered."""
+    root = resolve_root(benchmark_root)
+    specs = _load_specs(root)
+
+    def keep(spec: dict[str, Any]) -> bool:
+        if qcat and str(spec.get("qcat", "")).upper() != qcat.upper():
+            return False
+        if role and str(spec.get("role", "")) != role:
+            return False
+        if split and str(spec.get("benchmark_split", "")) != split:
+            return False
+        if env and str(spec.get("environment_id", "")) != env:
+            return False
+        return not (grounded and not str(spec.get("task_id", "")).startswith("M100_"))
+
+    rows = [
+        {
+            "task_id": s.get("task_id", ""),
+            "qcat": s.get("qcat", ""),
+            "role": s.get("role", ""),
+            "split": s.get("benchmark_split", ""),
+            "env": s.get("environment_id", ""),
+            "difficulty": s.get("difficulty_tier", s.get("difficulty", "")),
+            "title": s.get("title", ""),
+        }
+        for s in specs
+        if keep(s)
+    ]
+
+    if ids_only:
+        for row in rows:
+            typer.echo(row["task_id"])
+        return
+    _emit(rows, ["task_id", "qcat", "role", "split", "env", "difficulty", "title"], as_json)
+
+
+@list_app.command("envs")
+def list_envs(
+    grounded: bool = typer.Option(
+        False, "--grounded", help="Only environments built from real Marconi100 ExaData."
+    ),
+    role: str = typer.Option(None, "--role", help="Only environments supporting this role."),
+    ids_only: bool = typer.Option(False, "--ids-only", help="Print bare environment IDs."),
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+    benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
+) -> None:
+    """List environment snapshot bundles."""
+    root = resolve_root(benchmark_root)
+    envs = _load_env_metadata(root)
+
+    def keep(meta: dict[str, Any]) -> bool:
+        env_id = str(meta.get("environment_id", ""))
+        if grounded and not env_id.startswith("env_m100_"):
+            return False
+        return not (role and role not in (meta.get("supported_roles") or []))
+
+    rows = [
+        {
+            "env_id": m.get("environment_id", ""),
+            "cluster": m.get("cluster_name", ""),
+            "scenario": m.get("scenario_type", ""),
+            "grounding": (
+                "real-M100"
+                if str(m.get("environment_id", "")).startswith("env_m100_")
+                else "synthetic"
+            ),
+            "sources": ",".join(m.get("included_sources") or []),
+            "name": m.get("snapshot_name", ""),
+        }
+        for m in envs
+        if keep(m)
+    ]
+
+    if ids_only:
+        for row in rows:
+            typer.echo(row["env_id"])
+        return
+    _emit(rows, ["env_id", "cluster", "scenario", "grounding", "sources", "name"], as_json)
+
+
+@list_app.command("qcats")
+def list_qcats(
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+    benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
+) -> None:
+    """List the question categories (QCATs) with a task count each."""
+    specs = _load_specs(resolve_root(benchmark_root))
+    counts = Counter(str(s.get("qcat", "")) for s in specs)
+    rows = [
+        {
+            "qcat": qcat,
+            "tasks": count,
+            "description": _QCAT_DESCRIPTIONS.get(qcat, ""),
+        }
+        for qcat, count in sorted(counts.items())
+        if qcat
+    ]
+    _emit(rows, ["qcat", "tasks", "description"], as_json)
+
+
+@list_app.command("roles")
+def list_roles(
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+    benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
+) -> None:
+    """List the operator roles with a task count each."""
+    specs = _load_specs(resolve_root(benchmark_root))
+    counts = Counter(str(s.get("role", "")) for s in specs)
+    rows = [
+        {
+            "role": role,
+            "tasks": count,
+            "description": _ROLE_DESCRIPTIONS.get(role, ""),
+        }
+        for role, count in sorted(counts.items())
+        if role
+    ]
+    _emit(rows, ["role", "tasks", "description"], as_json)
+
+
+@list_app.command("adapters")
+def list_adapters(
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+) -> None:
+    """List the agent adapters and the extra each one needs."""
+    rows = [
+        {"adapter": name, "extra": extra, "description": desc} for name, extra, desc in _ADAPTERS
+    ]
+    _emit(rows, ["adapter", "extra", "description"], as_json)
+
+
+@list_app.command("profiles")
+def list_profiles(
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+    benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
+) -> None:
+    """List the scoring weight profiles and their per-dimension weights."""
+    root = resolve_root(benchmark_root)
+    config = root / "configs" / "scoring_profiles.yaml"
+    if not config.is_file():
+        typer.echo(f"No scoring profiles at {config}", err=True)
+        raise typer.Exit(code=2)
+    profiles = (yaml.safe_load(config.read_text()) or {}).get("profiles", {})
+
+    rows = []
+    for name, profile in sorted(profiles.items()):
+        weights = profile.get("weights", {})
+        row: dict[str, Any] = {"profile": name, "version": profile.get("version", "")}
+        row.update({dim: f"{value:.2f}" for dim, value in weights.items()})
+        rows.append(row)
+
+    dims = sorted({d for r in rows for d in r if d not in {"profile", "version"}})
+    _emit(rows, ["profile", "version", *dims], as_json)
+
+
+@list_app.command("scorers")
+def list_scorers(
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+) -> None:
+    """List the scorers wired into the aggregate score, with their dimension."""
+    from aobench.scorers.aggregate import AggregateScorer  # noqa: PLC0415
+
+    rows = [
+        {
+            "dimension": scorer.dimension,
+            "scorer": type(scorer).__name__,
+            "description": (type(scorer).__doc__ or "").strip().splitlines()[0]
+            if type(scorer).__doc__
+            else "",
+        }
+        for scorer in AggregateScorer.scorers()
+    ]
+    _emit(rows, ["dimension", "scorer", "description"], as_json)

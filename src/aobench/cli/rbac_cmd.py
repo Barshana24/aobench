@@ -52,7 +52,9 @@ def rbac_ingest(
         typer.echo(f"Error: Invalid YAML in policy file: {e}", err=True)
         raise typer.Exit(1)
 
-    benchmark_dir = Path(benchmark_root)
+    from aobench.cli._common import resolve_bundle_root
+
+    benchmark_dir = resolve_bundle_root(benchmark_root)
     envs_dir = benchmark_dir / "environments"
     base_env_dir = envs_dir / base_env
     if not base_env_dir.is_dir():

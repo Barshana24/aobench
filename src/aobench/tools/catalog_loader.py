@@ -28,11 +28,19 @@ import yaml
 
 _log = logging.getLogger(__name__)
 
-# Default catalog path relative to the project root
-_DEFAULT_CATALOG = (
-    Path(__file__).parent.parent.parent.parent
-    / "benchmark" / "configs" / "hpc_tool_catalog.yaml"
-)
+# Path of the tool catalog inside whichever benchmark corpus is in use.
+_CATALOG_RELPATH = Path("configs") / "hpc_tool_catalog.yaml"
+
+
+def default_catalog_path() -> Path:
+    """Locate ``configs/hpc_tool_catalog.yaml`` in the resolved benchmark corpus.
+
+    Works from a source checkout, from an installed wheel (corpus bundled as
+    package data), and from ``$AOBENCH_BENCHMARK_ROOT``.
+    """
+    from aobench.paths import resolve_benchmark_root
+
+    return resolve_benchmark_root() / _CATALOG_RELPATH
 
 # Valid BFCL difficulty tiers
 _VALID_DIFFICULTIES = {"simple", "sequential", "parallel", "chained"}
@@ -252,10 +260,10 @@ class ToolCatalog:
 def load_catalog(catalog_path: str | Path | None = None) -> ToolCatalog:
     """Load and validate hpc_tool_catalog.yaml.
 
-    Defaults to ``benchmark/configs/hpc_tool_catalog.yaml`` relative to the
-    project root (resolved from this file's location).
+    Defaults to ``configs/hpc_tool_catalog.yaml`` inside the resolved benchmark
+    corpus (see :mod:`aobench.paths`).
     """
-    path = Path(catalog_path) if catalog_path is not None else _DEFAULT_CATALOG
+    path = Path(catalog_path) if catalog_path is not None else default_catalog_path()
     if not path.exists():
         raise FileNotFoundError(f"Catalog not found: {path}")
 

@@ -21,12 +21,23 @@ from aobench.schemas.task import HPCTaskSpec
 # ---------------------------------------------------------------------------
 # Default guidelines directory (relative to this file's package root)
 # ---------------------------------------------------------------------------
-_DEFAULT_GUIDELINES_DIR = (
-    Path(__file__).resolve().parent.parent.parent.parent
-    / "benchmark"
-    / "tasks"
-    / "guidelines"
-)
+_GUIDELINES_RELPATH = Path("tasks") / "guidelines"
+
+
+def _default_guidelines_dir() -> Path:
+    """Locate ``tasks/guidelines/`` in the resolved benchmark corpus.
+
+    Works from a source checkout, from an installed wheel (corpus bundled as
+    package data), and from ``$AOBENCH_BENCHMARK_ROOT``.
+    """
+    from aobench.paths import BenchmarkDataNotFound, resolve_benchmark_root
+
+    try:
+        return resolve_benchmark_root() / _GUIDELINES_RELPATH
+    except BenchmarkDataNotFound:
+        # Guidelines are optional context; a missing corpus must not break
+        # construction. Reads from the returned path degrade gracefully.
+        return Path("benchmark") / _GUIDELINES_RELPATH
 
 # ---------------------------------------------------------------------------
 # Role prompt templates
@@ -444,13 +455,13 @@ class HPCContextBuilder:
     ----------
     guidelines_dir:
         Path to the directory containing ``*_guidelines.md`` files.
-        Defaults to ``benchmark/tasks/guidelines/`` relative to the
-        repository root (auto-detected from this module's location).
+        Defaults to ``tasks/guidelines/`` inside the resolved benchmark
+        corpus (see :mod:`aobench.paths`).
     """
 
     def __init__(self, guidelines_dir: Optional[Path] = None) -> None:
         self._guidelines_dir: Path = (
-            Path(guidelines_dir) if guidelines_dir else _DEFAULT_GUIDELINES_DIR
+            Path(guidelines_dir) if guidelines_dir else _default_guidelines_dir()
         )
         self._guidelines_cache: dict[str, str] = {}
 
