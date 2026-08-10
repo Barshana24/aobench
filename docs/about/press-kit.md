@@ -100,8 +100,23 @@ If you have room for exactly one differentiator, this is it:
 
 ## Assets
 
-- **Social preview image:** [`docs/assets/social-preview.png`](https://github.com/MSKazemi/aobench/blob/main/docs/assets/social-preview.png)
-- **Architecture diagram:** [`docs/reference/architecture-diagram.svg`](https://github.com/MSKazemi/aobench/blob/main/docs/reference/architecture-diagram.svg)
+<img src="../../assets/logo.svg" alt="AOBench logo" width="96">
+
+| Asset | File | Use it for |
+|---|---|---|
+| **Logo mark** | [`docs/assets/logo.svg`](https://github.com/MSKazemi/aobench/blob/main/docs/assets/logo.svg) | Favicon, avatar, slide corner. Scales to any size. |
+| **Banner (light)** | [`docs/assets/banner-light.svg`](https://github.com/MSKazemi/aobench/blob/main/docs/assets/banner-light.svg) | Light backgrounds — README header, slide title |
+| **Banner (dark)** | [`docs/assets/banner-dark.svg`](https://github.com/MSKazemi/aobench/blob/main/docs/assets/banner-dark.svg) | Dark backgrounds and dark-mode READMEs |
+| **Social preview** | [`docs/assets/social-preview.png`](https://github.com/MSKazemi/aobench/blob/main/docs/assets/social-preview.png) (1280×640) | Link previews on GitHub, X, LinkedIn, Slack |
+| **Social preview source** | [`docs/assets/social-preview.svg`](https://github.com/MSKazemi/aobench/blob/main/docs/assets/social-preview.svg) | Regenerate the PNG after a numbers change |
+| **Architecture diagram** | [`docs/reference/architecture-diagram.svg`](https://github.com/MSKazemi/aobench/blob/main/docs/reference/architecture-diagram.svg) | Explaining the evaluation pipeline |
+
+**Brand colours.** Deep navy `#1a237e` (primary), indigo `#3949ab` (secondary), amber
+`#ff8f00` (accent — the agent trace in the logo). The mark is a 3×3 grid of compute
+nodes with an agent's ordered trace running through it, ending at the scored state.
+
+**Please don't** recolour the mark, stretch it, or place it on a background that
+removes the contrast between the amber trace and the navy tile.
 - **Sample output** (real, from `aobench quickstart`):
 
 ```text

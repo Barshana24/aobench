@@ -2,6 +2,45 @@
 
 ## Unreleased
 
+### Added — visual identity
+
+- **A logo and brand system.** `docs/assets/logo.svg` — a 3×3 grid of compute nodes
+  with an agent's ordered trace running through it to the scored end state. Deep navy
+  `#1a237e`, indigo `#3949ab`, amber `#ff8f00` for the trace. Wired in as the docs-site
+  logo and favicon.
+- **README hero banner**, light and dark (`banner-light.svg` / `banner-dark.svg`),
+  served through `<picture>` so it follows the reader's GitHub theme, and linked
+  straight to the documentation site.
+- **A "How it works" diagram** in the README — task spec + snapshot → runner → agent ↔
+  mock tools → trace → 12 scorers → CLEAR scorecard, rendered natively by GitHub.
+- **Rebuilt social preview card** (1280×640) in the new brand, with
+  `social-preview.svg` kept alongside it so the PNG can be regenerated when the numbers
+  change. Brand assets, colours, and usage rules are documented in the press kit.
+- Docs site polish: gradient hero with the logo, a corpus stat strip, hover-lifted
+  cards, sticky navigation tabs, code-copy buttons, search suggestions, and Inter /
+  JetBrains Mono.
+
+### Fixed — the docs site was unreadable in dark mode
+
+- The homepage hero hard-coded a light background (`#e8eaf6`) and navy text, and the
+  table header row did the same, so both inverted badly under the slate (dark) theme.
+  Every colour is now a CSS custom property defined for **both** schemes.
+- The `.stat-strip` and contributor-`.wall` grids never applied: Material ships
+  `.md-typeset ul:not([hidden]) { display: flow-root }`, whose `:not([attr])` component
+  outranks a plain `.md-typeset .wall` selector, so both rendered as plain bulleted
+  lists. The selectors now match Material's own shape and win.
+- The navy brand colour never reached the header or links — Material's
+  `[data-md-color-primary=indigo]` rules beat the `:root` overrides in `extra.css`. The
+  palette is now `primary: custom`, which is the supported way to make those overrides
+  apply.
+
+### Documentation link placement
+
+- The README now opens with the banner linking to <https://mskazemi.com/aobench/>, a
+  headline **"Read the documentation"** line, and a one-line nav row; the Documentation
+  section is a grouped hub (start here / understand the benchmark / for researchers)
+  pointing at the live site rather than at raw `docs/*.md` paths.
+
 ### Fixed — the documented scoring weights were wrong
 
 - **AOBench scores seven weighted dimensions, not six.** The README, the docs site,

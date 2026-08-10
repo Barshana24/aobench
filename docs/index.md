@@ -42,9 +42,8 @@ role-aware, permission-enforced, tool-using, trace-scored, and reproducible on a
 <ul class="stat-strip">
   <li><span class="stat-value">88</span><span class="stat-label">Tasks</span></li>
   <li><span class="stat-value">29</span><span class="stat-label">Environments</span></li>
-  <li><span class="stat-value">7</span><span class="stat-label">Scored dimensions</span></li>
-  <li><span class="stat-value">5</span><span class="stat-label">Operator roles</span></li>
-  <li class="stat-accent"><span class="stat-value">0</span><span class="stat-label">Clusters required</span></li>
+  <li><span class="stat-value">7</span><span class="stat-label">Dimensions</span></li>
+  <li><span class="stat-value">5</span><span class="stat-label">Roles</span></li>
 </ul>
 
 ---
