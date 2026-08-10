@@ -89,8 +89,9 @@ did.
 operational data — Slurm records, node telemetry, facility measurements — from
 CINECA's 980-node Tier-0 supercomputer. It is the source of AOBench's six grounded
 environments and the reason the benchmark can claim any real-world fidelity at all.
+*Disclosure: both AOBench maintainers are among the authors of that dataset paper.*
 
-**Anomaly detection on HPC telemetry** [@borghesi2019anomaly; @molan2023graafe] is the
+**Anomaly detection on HPC telemetry** [@borghesi2019anomaly; @molan2024graafe] is the
 line of work that establishes which signals matter operationally — thermal, power,
 node-health — and therefore which scenarios are worth building tasks around.
 

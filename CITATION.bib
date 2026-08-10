@@ -1,0 +1,59 @@
+% BibTeX entries for AOBench.
+%
+% Cite the version you actually ran — the task corpus and scoring profiles change
+% between minor versions, so "AOBench" without a version is not a reproducible
+% reference. Machine-readable equivalents: CITATION.cff, codemeta.json, .zenodo.json.
+%
+% Alongside any score, report: AOBench version, split (dev/test), scoring profile,
+% and adapter + dated model snapshot. See
+% https://mskazemi.com/aobench/latest/about/versioning/
+
+% ---------------------------------------------------------------------------
+% The software, in general (concept DOI — always resolves to the latest release)
+% ---------------------------------------------------------------------------
+@software{aobench,
+  author       = {Seyedkazemi Ardebili, Mohsen and Bartolini, Andrea},
+  title        = {{AOBench}: A Trace-Driven, Role-Aware Benchmark for Agent
+                  Operations in Realistic Environments},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.21854862},
+  url          = {https://github.com/MSKazemi/aobench},
+  license      = {Apache-2.0},
+  organization = {University of Bologna},
+  keywords     = {AI agents, agent evaluation, benchmark, HPC, LLM evaluation,
+                  tool use, RBAC, SLURM, reproducibility}
+}
+
+% ---------------------------------------------------------------------------
+% A specific version — use this one when you report a score
+% ---------------------------------------------------------------------------
+@software{aobench_v0_4_1,
+  author       = {Seyedkazemi Ardebili, Mohsen and Bartolini, Andrea},
+  title        = {{AOBench}: A Trace-Driven, Role-Aware Benchmark for Agent
+                  Operations in Realistic Environments},
+  version      = {0.4.1},
+  year         = {2026},
+  month        = {8},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.21854863},
+  url          = {https://github.com/MSKazemi/aobench/releases/tag/v0.4.1},
+  license      = {Apache-2.0}
+}
+
+% ---------------------------------------------------------------------------
+% The benchmark corpus as a dataset — cite this if you use the tasks or the
+% environment snapshots as data, rather than running the framework.
+% ---------------------------------------------------------------------------
+@misc{aobench_corpus,
+  author       = {Seyedkazemi Ardebili, Mohsen and Bartolini, Andrea},
+  title        = {The {AOBench} benchmark corpus: 88 {HPC} operational tasks and
+                  29 deterministic environment snapshots},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.21854862},
+  url          = {https://mskazemi.com/aobench/latest/reference/task-catalog/},
+  note         = {Six environments and eight tasks are derived from the public
+                  Marconi100 ExaData release; cite that dataset as well when
+                  reporting results on the grounded subset.}
+}

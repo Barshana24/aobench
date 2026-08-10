@@ -117,4 +117,4 @@ Real-M100-grounded snapshot. The failed job is an ACTUAL Marconi100 OUT_OF_MEMOR
 
 ## Adding an environment
 
-See [the environment format](../framework/environments.md) for the bundle layout, the manifest format, and the fidelity checks a new snapshot must pass. Bundles grounded in real facility data are especially valuable — if you operate a cluster and can publish a sanitised snapshot, please [open a discussion](https://github.com/MSKazemi/aobench/discussions).
+See [Adding an environment](../guides/adding-an-environment.md) for the bundle layout, the manifest format, and the fidelity checks a new snapshot must pass. Bundles grounded in real facility data are especially valuable — if you operate a cluster and can publish a sanitised snapshot, please [open a discussion](https://github.com/MSKazemi/aobench/discussions).

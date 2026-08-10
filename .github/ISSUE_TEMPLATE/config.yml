@@ -2,7 +2,16 @@ blank_issues_enabled: false
 contact_links:
   - name: 💬 Questions & Discussions
     url: https://github.com/MSKazemi/aobench/discussions
-    about: Ask questions, share ideas, and discuss AOBench with the community.
+    about: Ask questions, share ideas, show what you built. Questions are welcome and expected.
+  - name: 🚀 Start here — where to contribute
+    url: https://github.com/MSKazemi/aobench/issues/20
+    about: New here? This issue maps every open area to a first task.
   - name: 📖 Documentation
-    url: https://mskazemi.github.io/aobench/
-    about: Read the docs before opening an issue — many questions are answered there.
+    url: https://mskazemi.com/aobench/
+    about: Quickstart, FAQ, task catalog, and the full CLI reference.
+  - name: 🔬 Open research questions
+    url: https://github.com/MSKazemi/aobench/blob/main/RESEARCH.md
+    about: Sixteen answerable research questions, several of them good student projects.
+  - name: 🔒 Report a security issue
+    url: https://github.com/MSKazemi/aobench/security/advisories/new
+    about: Please do not open a public issue for vulnerabilities.

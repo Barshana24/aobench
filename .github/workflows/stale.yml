@@ -1,0 +1,55 @@
+name: stale
+
+# Tuned to be honest rather than tidy.
+#
+# The default stale-bot configuration closes issues that are still real, which tells a
+# contributor their report was noise. This one:
+#   * never touches issues labelled `help wanted`, `good first issue`, `blocked: upstream`,
+#     `type: epic`, or `pinned` — those are *supposed* to sit open until someone picks them up
+#   * never marks pull requests stale at all. A PR going quiet is the maintainer's
+#     failure, not the contributor's, and CONTRIBUTING.md says so.
+#   * gives a long window and says plainly that a comment reopens the conversation.
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-issue-stale: 120
+          days-before-issue-close: 30
+          # -1 disables PR staleness entirely. Deliberate — see the note above.
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          exempt-issue-labels: >-
+            help wanted,
+            good first issue,
+            blocked: upstream,
+            type: epic,
+            pinned,
+            leaderboard,
+            area: corpus
+          stale-issue-label: "stale"
+          stale-issue-message: |
+            This issue has had no activity for 120 days, so it is being marked stale to
+            keep the tracker honest about what is actually being worked on.
+
+            **This is not a judgement on whether it matters.** If it is still relevant,
+            a single comment removes the label and reopens the conversation — no
+            justification needed. If nobody comments, it will close in 30 days and can
+            be reopened at any time.
+          close-issue-message: |
+            Closing after 30 days with no further activity. This is bookkeeping, not a
+            decision that the issue was invalid — please reopen or comment if it is
+            still relevant, and it will be picked back up.
+          operations-per-run: 60
+          ascending: true

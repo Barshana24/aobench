@@ -68,9 +68,19 @@ markdown_extensions:
 extra:
   version:
     provider: mike
-  analytics:
-    provider: google
-    property: G-XXXXXXXXXX
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/MSKazemi/aobench
+      name: AOBench on GitHub
+    - icon: fontawesome/brands/gitlab
+      link: https://gitlab.com/mskazemi/aobench
+      name: Source mirror on GitLab
+    - icon: fontawesome/solid/quote-left
+      link: https://doi.org/10.5281/zenodo.21854862
+      name: Cite AOBench (DOI)
+  # Analytics is intentionally not configured. The previous `G-XXXXXXXXXX`
+  # placeholder emitted a broken gtag call on every page. Set a real property
+  # here (or delete this comment) when one exists.
 
 nav:
   - Home: index.md
@@ -82,6 +92,7 @@ nav:
     - Overview: framework/overview.md
     - Background: framework/background.md
     - Architecture: framework/architecture.md
+    - System Architecture: framework/system-architecture.md
     - Paper Architecture: framework/paper-architecture.md
     - Environments: framework/environments.md
     - Evaluation: framework/evaluation.md
@@ -94,6 +105,8 @@ nav:
     - Programmatic Access (REST & MCP): guides/programmatic-access.md
     - Langfuse Integration: guides/langfuse-integration.md
     - Marconi100 ExaData Environments: guides/m100_environments.md
+    - Adding a Task: guides/adding-a-task.md
+    - Adding an Environment: guides/adding-an-environment.md
   - Leaderboard: leaderboard.md
   - Reference:
     - CLI Commands: reference/commands.md
@@ -105,8 +118,12 @@ nav:
     - System Architecture: reference/system-architecture.md
     - Architecture Flowchart: reference/architecture-flowchart.md
     - Environments Overview: reference/environments-overview.md
-  - Contributing:
+  - Community:
+    - Get Involved: community/index.md
     - How to Contribute: about/contributing.md
+    - Contributors: about/contributors.md
+    - Adopters: community/adopters.md
+    - Roadmap: about/roadmap.md
     - Developer Guide: framework/implementation.md
   - About:
     - FAQ: about/faq.md
@@ -117,6 +134,7 @@ nav:
     - Benchmark Card: about/benchmark-card.md
     - Datasheet: about/datasheet.md
     - Ethics: about/ethics.md
+    - Press Kit: about/press-kit.md
     - Versioning Policy: about/versioning.md
     - Cite AOBench: about/citation.md
     - Reproducing Results: about/reproducing-results.md

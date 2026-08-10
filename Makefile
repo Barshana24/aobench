@@ -83,7 +83,39 @@ typecheck:  ## Run mypy type checker
 	$(MYPY) src/aobench/
 
 .PHONY: check
-check: lint typecheck test  ## Run lint + typecheck + tests (full CI suite)
+check: lint typecheck facts-check catalog-check test  ## Run lint + typecheck + fact/catalog drift + tests
+
+##@ Documentation
+
+.PHONY: facts-check
+facts-check:  ## Fail if a documented benchmark count drifts from the corpus
+	$(PYTHON) scripts/check_facts.py
+
+.PHONY: facts-update
+facts-update:  ## Refresh benchmark/BENCHMARK_FACTS.json from the corpus
+	$(PYTHON) scripts/check_facts.py --write
+
+.PHONY: catalog
+catalog:  ## Regenerate the task and environment catalog pages from the corpus
+	$(PYTHON) scripts/gen_catalog.py
+
+.PHONY: catalog-check
+catalog-check:  ## Fail if the generated catalog pages are out of date
+	$(PYTHON) scripts/gen_catalog.py --check
+
+.PHONY: docs-build
+docs-build: catalog  ## Build the documentation site (strict — warnings are errors)
+	uv run mkdocs build --strict
+
+.PHONY: docs-serve
+docs-serve: catalog  ## Serve the docs locally with live reload on :8000
+	uv run mkdocs serve
+
+.PHONY: seo-check
+seo-check: docs-build  ## Verify the built site's SEO/AI-crawler surfaces
+	$(PYTHON) scripts/seo_check.py
+
+##@ Testing
 
 .PHONY: test
 test:  ## Run all tests

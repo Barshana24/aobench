@@ -2,6 +2,103 @@
 
 ## Unreleased
 
+### Fixed — the documented scoring weights were wrong
+
+- **AOBench scores seven weighted dimensions, not six.** The README, the docs site,
+  `llms.txt`, and `docs/framework/scoring-dimensions.md` all described six dimensions
+  and quoted `default_hpc_v01` as `outcome 0.30 · tool_use 0.20 · grounding 0.15 ·
+  governance 0.20 · robustness 0.10 · efficiency 0.05`. The actual profile in
+  `benchmark/configs/scoring_profiles.yaml` is `outcome 0.30 · tool_use 0.15 ·
+  grounding 0.10 · governance 0.20 · robustness 0.10 · efficiency 0.05 · **workflow
+  0.10**` — the `workflow` (WorfEval) dimension was omitted entirely and three of the
+  six documented weights were wrong. **No scores change**: the code always used the YAML.
+  What changes is that the documentation now matches what was computed, which matters to
+  anyone who reproduced or compared a published AOBench number from the documented
+  weights. The `alpha0_minimal`, `alpha1_grounding`, and `clear_v1` rows were also
+  wrong and are corrected; `clear_v1` was undocumented.
+- `scripts/check_facts.py` now asserts the documented weight row against the YAML, so
+  this class of drift fails CI instead of surviving four releases.
+
+### Fixed — corpus counts and stale surfaces
+
+- `llms.txt` claimed 80 tasks and 26 environments; `docs/index.md` badges claimed
+  version 0.1.0, 30 tasks, and 20 environments. All now read 88 / 29 / 0.4.1, checked
+  in CI by `scripts/check_facts.py`.
+- `src/aobench/__init__.__version__` was pinned at `0.1.0.dev0` while `pyproject.toml`
+  said `0.4.1`. It now derives from installed distribution metadata, so the two cannot
+  drift again — and `aobench --version` reports the real version.
+- `aobench list envs` / `info` / `doctor` counted `benchmark/environments/_m100_reference`
+  as an environment, reporting 30 bundles instead of 29.
+- `aobench rbac ingest` required a full task corpus to resolve its root, so it failed
+  against a directory containing only `environments/` — which is exactly what the
+  command is for. It now resolves leniently via `resolve_bundle_root`.
+- The docs site emitted a broken `gtag` call on every page from a `G-XXXXXXXXXX`
+  analytics placeholder, and the announcement bar advertised v0.1.0 with a
+  `/AOBench/`-prefixed link that 404s.
+- README documentation table pointed at four paths that had moved
+  (`docs/COMMANDS.md`, `docs/environments-overview.md`, and two others), and claimed
+  9 sub-commands / 51 test files / 20 environments.
+
+### Added — documentation for researchers
+
+- **[Datasheet](https://mskazemi.com/aobench/latest/about/datasheet/)** (Gebru et al.
+  structure) and **[benchmark card](https://mskazemi.com/aobench/latest/about/benchmark-card/)**
+  (Mitchell et al.) — full provenance, composition, intended use, and out-of-scope use.
+- **[Limitations](https://mskazemi.com/aobench/latest/about/limitations/)** — an explicit
+  account of what AOBench cannot measure, including that a high score does **not**
+  license production deployment.
+- **[Comparison](https://mskazemi.com/aobench/latest/about/comparison/)** with SWE-bench,
+  τ-bench, BFCL, AgentBench, GAIA, MLAgentBench, and OSWorld, including where AOBench
+  is worse.
+- **[Related work](https://mskazemi.com/aobench/latest/about/related-work/)** with a
+  verified `docs/references.bib` (author lists, venues, pages, and DOIs checked against
+  the publisher or arXiv record).
+- **[Versioning and score-comparability policy](https://mskazemi.com/aobench/latest/about/versioning/)**,
+  **[responsible use](https://mskazemi.com/aobench/latest/about/ethics/)**,
+  **[FAQ](https://mskazemi.com/aobench/latest/about/faq/)**,
+  **[use cases](https://mskazemi.com/aobench/latest/about/use-cases/)**,
+  **[glossary](https://mskazemi.com/aobench/latest/reference/glossary/)**, and a
+  **[press kit](https://mskazemi.com/aobench/latest/about/press-kit/)**.
+- **Generated [task catalog](https://mskazemi.com/aobench/latest/reference/task-catalog/)
+  and [environment catalog](https://mskazemi.com/aobench/latest/reference/environment-catalog/)**,
+  derived from the corpus by `scripts/gen_catalog.py` and drift-checked in CI, so an
+  inventory page can never again disagree with the corpus.
+- **[Leaderboard](https://mskazemi.com/aobench/latest/leaderboard/)** page with explicit
+  submission requirements — version, split, profile, dated model snapshot, run count,
+  and hard fails reported separately.
+
+### Added — contributor and governance surfaces
+
+- `GOVERNANCE.md` (decision process, how to become a maintainer, scientific-integrity
+  commitments), `MAINTAINERS.md` (including an honest list of unowned areas),
+  `AUTHORS.md`, `RESEARCH.md` (16 open research questions), `CITATION.bib`,
+  `.github/FUNDING.yml`.
+- Issue templates for proposing a task, proposing an environment (with a sanitisation
+  checklist for real facility data), and submitting a leaderboard result.
+- Guides: [evaluate your own agent](https://mskazemi.com/aobench/latest/guides/evaluating-your-own-agent/),
+  [CI integration](https://mskazemi.com/aobench/latest/guides/ci-integration/),
+  [adding a task](https://mskazemi.com/aobench/latest/guides/adding-a-task/),
+  [adding an environment](https://mskazemi.com/aobench/latest/guides/adding-an-environment/).
+- `examples/` with four runnable scripts (issue #4) — all offline, all executed by
+  `tests/test_examples.py` so a broken example fails the build.
+- `.devcontainer/devcontainer.json` for one-click Codespaces onboarding.
+
+### Added — discoverability
+
+- `docs/robots.txt` explicitly allowing search and AI crawlers (Googlebot, Bingbot,
+  OAI-SearchBot, ChatGPT-User, PerplexityBot, ClaudeBot, GPTBot, and others), with the
+  sitemap declared.
+- JSON-LD structured data on every page — `SoftwareSourceCode`, `Dataset`, `Person`
+  (with ORCID `sameAs`), `WebSite` + `SearchAction`, `TechArticle`, `BreadcrumbList` —
+  plus Google Scholar `citation_*` metadata so the docs resolve as a scholarly artifact.
+- `llms.txt` expanded into a full documentation map, and kept byte-identical between the
+  repository root and `docs/`.
+- `scripts/seo_check.py` (88 assertions over 9 key pages) and a `docs-integrity`
+  workflow running fact drift, catalog drift, strict docs build, SEO surfaces, example
+  execution, and a weekly external-link sweep.
+- `make facts-check`, `facts-update`, `catalog`, `catalog-check`, `docs-build`,
+  `docs-serve`, `seo-check`; `make check` now includes the drift checks.
+
 ### Added — onboarding
 
 - **`aobench quickstart`** — a zero-argument first run. It resolves the benchmark

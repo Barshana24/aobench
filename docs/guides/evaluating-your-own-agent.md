@@ -144,10 +144,6 @@ For the exact `TraceStep` field shapes the shipped adapters use, read
 [`openai_adapter.py`](https://github.com/MSKazemi/aobench/blob/main/src/aobench/adapters/openai_adapter.py)
 around its tool-calling loop — it is the reference implementation.
 
-The shipped [`DirectQAAdapter`](https://github.com/MSKazemi/aobench/blob/main/src/aobench/adapters/direct_qa_adapter.py)
-is the smallest complete example — under 50 lines including imports — and
-[`openai_adapter.py`](https://github.com/MSKazemi/aobench/blob/main/src/aobench/adapters/openai_adapter.py)
-is the realistic one with a tool-calling loop.
 
 ### Register it
 

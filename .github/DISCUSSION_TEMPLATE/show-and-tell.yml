@@ -1,0 +1,43 @@
+title: "[Show and tell] "
+labels: ["show-and-tell"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Ran AOBench on something? Tell us — including if it went badly.**
+
+        Bad results are often more informative than good ones, and this project will
+        link them rather than bury them. There is no bar for posting here.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What did you run?
+      description: The agent or model, and roughly how you wired it up.
+    validations:
+      required: true
+
+  - type: textarea
+    id: result
+    attributes:
+      label: What happened?
+      description: |
+        Scores if you have them. More interesting: where the agent surprised you, what
+        it got wrong, and whether the benchmark measured what you expected.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: AOBench version
+      placeholder: "0.4.1"
+
+  - type: textarea
+    id: friction
+    attributes:
+      label: What was annoying?
+      description: |
+        Genuinely the most useful field on this form. Anything that was confusing,
+        undocumented, or harder than it should have been — that is a bug in the project,
+        not in you.

@@ -1,0 +1,107 @@
+name: 🧪 Propose a benchmark task
+description: Suggest a new HPC operational task for the AOBench corpus
+title: "[Task] "
+labels: ["area: corpus", "enhancement", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Corpus breadth is the main thing limiting what AOBench can measure, so this is
+        one of the most valuable things you can contribute.**
+
+        You do not need to write the JSON to open this issue — a good description is
+        enough, and we will help with the schema. If you want to go straight to a PR,
+        the guide is [Adding a task](https://mskazemi.com/aobench/latest/guides/adding-a-task/).
+
+  - type: textarea
+    id: question
+    attributes:
+      label: The operational question
+      description: What would the operator actually ask? Write it as they would say it.
+      placeholder: "My job 12345 died last night. What happened and what should I change?"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Which role is asking?
+      description: The same question from a different role is a different task.
+      options:
+        - scientific_user
+        - sysadmin
+        - facility_admin
+        - researcher
+        - system_designer
+    validations:
+      required: true
+
+  - type: dropdown
+    id: qcat
+    attributes:
+      label: Question category (QCAT)
+      options:
+        - "JOB — job submission, scheduling, queue reasoning"
+        - "MON — monitoring and telemetry interpretation"
+        - "ENERGY — power and energy reasoning"
+        - "PERF — performance analysis and bottleneck attribution"
+        - "DATA — data movement, storage, filesystem"
+        - "SEC — security posture and access"
+        - "FAC — facility and cooling"
+        - "ARCH — architecture and capability"
+        - "AIOPS — anomaly detection and incident response"
+        - "DOCS — documentation lookup and policy grounding"
+    validations:
+      required: true
+
+  - type: textarea
+    id: answer
+    attributes:
+      label: What is the correct answer, and how would an operator work it out?
+      description: |
+        The reasoning matters as much as the answer — it becomes the gold trajectory.
+        Which tools would they call, in what order, and what would they conclude?
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Which environment does this need?
+      description: |
+        An existing bundle ID from the
+        [environment catalog](https://mskazemi.com/aobench/latest/reference/environment-catalog/),
+        or "new" if the evidence does not exist in any current bundle.
+      placeholder: "env_01, or: new — needs a filesystem-pressure snapshot"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: What evidence in the snapshot supports the answer?
+      description: |
+        Every gold answer must be derivable from data actually present in the bundle.
+        If it is not, the task measures memorisation rather than diagnosis.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: quality
+    attributes:
+      label: Quality checks
+      description: These are what a reviewer will ask, so it saves a round trip.
+      options:
+        - label: A tool-free agent (`direct_qa`) should NOT be able to answer this
+          required: true
+        - label: A competent agent with the right tools SHOULD be able to answer it
+          required: true
+        - label: I checked the [task catalog](https://mskazemi.com/aobench/latest/reference/task-catalog/) and this is not a duplicate
+          required: true
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Would you like to write it yourself?
+      options:
+        - label: Yes, I would like to submit the PR (we will help with the schema)
