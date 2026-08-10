@@ -2,21 +2,11 @@
 
 ## Unreleased
 
-### Changed — `scripts/` is now under the lint gate
+### Fixed — ICC reliability gate selection
 
-- **`ruff check` now covers `scripts/`** in the Makefile `lint` target, in CI, and in
-  `CONTRIBUTING.md`. The 55 maintenance and analysis scripts were the one Python
-  directory no gate looked at, and they had accumulated 54 findings: unused imports,
-  f-strings with no placeholders, multi-import lines, and compound statements. All 54
-  are resolved and the directory is clean.
-- **`scripts/generate_tool_docs.py` no longer crashes on an empty `metadata.yaml`.**
-  `_detect_role()` read `supported_roles` off the parsed YAML inside its `try`, so a
-  file that parses to `None` raised `AttributeError` instead of returning `None`. The
-  mapping check is now explicit.
-- **`scripts/trace_diff.py`** compares types with `is not` rather than `!=`.
-- `ruff format` deliberately still covers only `src/` and `tests/`: `scripts/` is
-  lint-clean but not format-clean (46 of 51 files would be rewritten), so that
-  reformat is left to land as its own reviewable change.
+- **`rubric_scorer.py`** now explicitly selects Pingouin's `ICC2` (two-way random effects, absolute agreement, single rater), matching `compute_icc.py` and the documented `ICC(A,1)` McGraw & Wong convention.
+
+### Changed — `scripts/` is now under the lint gate
 
 ### Added — comparison example
 
