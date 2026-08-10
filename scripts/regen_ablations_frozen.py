@@ -70,25 +70,34 @@ def weighted(rec, w):
     for d, wt in w.items():
         v = ds.get(d)
         if v is not None:
-            wsum += wt*float(v); tot += wt
+            wsum += wt*float(v)
+            tot += wt
     return wsum/tot if tot else None
 
 def bootstrap_ci(vals, n=10000, seed=42):
-    rng = random.Random(seed); k = len(vals)
+    rng = random.Random(seed)
+    k = len(vals)
     boots = sorted(sum(vals[rng.randint(0,k-1)] for _ in range(k))/k for _ in range(n))
     return (round(boots[int(0.025*n)],4), round(boots[int(0.975*n)-1],4))
 
 def spearman(x, y):
     def ranks(a):
-        idx = sorted(range(len(a)), key=lambda i: a[i]); r=[0.0]*len(a); i=0
+        idx = sorted(range(len(a)), key=lambda i: a[i])
+        r=[0.0]*len(a)
+        i=0
         while i < len(a):
             j=i
-            while j<len(a) and a[idx[j]]==a[idx[i]]: j+=1
+            while j<len(a) and a[idx[j]]==a[idx[i]]:
+                j+=1
             avg=(i+j-1)/2+1
-            for k in range(i,j): r[idx[k]]=avg
+            for k in range(i,j):
+                r[idx[k]]=avg
             i=j
         return r
-    rx, ry = ranks(x), ranks(y); n=len(x); mx=sum(rx)/n; my=sum(ry)/n
+    rx, ry = ranks(x), ranks(y)
+    n=len(x)
+    mx=sum(rx)/n
+    my=sum(ry)/n
     num=sum((rx[i]-mx)*(ry[i]-my) for i in range(n))
     den=(sum((rx[i]-mx)**2 for i in range(n))*sum((ry[i]-my)**2 for i in range(n)))**0.5
     return round(num/den,4) if den else float("nan")
@@ -114,7 +123,8 @@ cup = {"generated_at": now, "variants": list(THRESHOLDS), "models": tokens, "pas
 
 # ---- E5 difficulty ----
 tiers = ["easy","medium","hard"]
-mean_scores = {d: {} for d in tiers}; ci_95 = {d: {} for d in tiers}
+mean_scores = {d: {} for d in tiers}
+ci_95 = {d: {} for d in tiers}
 for tok in tokens:
     recs = data[tok]
     by = {d: [] for d in tiers}
@@ -140,7 +150,8 @@ for v, w in WEIGHT_VARIANTS.items():
         scores[v][tok] = round(st.mean(vals), 4) if vals else None
 srho = {}
 for v in ["equal","e_heavy","a_heavy"]:
-    x = [scores[v][t] for t in tokens]; y = [scores["default"][t] for t in tokens]
+    x = [scores[v][t] for t in tokens]
+    y = [scores["default"][t] for t in tokens]
     srho[f"{v}_vs_default"] = spearman(x, y)
 cw = {"generated_at": now, "variants": list(WEIGHT_VARIANTS), "models": tokens, "scores": scores, "spearman_rho": srho}
 (OUT/"clear_weights.json").write_text(json.dumps(cw, indent=2))
@@ -151,13 +162,16 @@ for tok in tokens:
     recs = data[tok]
     head = st.mean([r["aggregate_score"] for r in recs])
     # weighted reconstruction from tier means
-    num = 0.0; den = 0
+    num = 0.0
+    den = 0
     for d in tiers:
         vals = [float(r["aggregate_score"]) for r in recs if diffmap.get(r["task_id"])==d]
-        num += sum(vals); den += len(vals)
+        num += sum(vals)
+        den += len(vals)
     recon = num/den
     ok = abs(head - recon) < 1e-6
     print(f"  {tok:26} headline={head:.4f}  tier-recon={recon:.4f}  {'OK' if ok else 'MISMATCH'}")
 print("\n=== CuP strict pass rates (must be integer/58) ===")
 for tok in tokens:
-    r = pass_rates["strict"][tok]; print(f"  {tok:26} strict={r}  = {round(r*58)}/58")
+    r = pass_rates["strict"][tok]
+    print(f"  {tok:26} strict={r}  = {round(r*58)}/58")

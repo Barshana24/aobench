@@ -23,8 +23,8 @@ uv run python -m pytest tests/
 These are the same commands CI runs. Before opening a PR, also run:
 
 ```bash
-uv run ruff check src tests
-uv run ruff format src tests
+uv run ruff check src tests scripts
+uv run ruff format src tests          # scripts/ is lint-gated but not format-gated
 uv run mypy src/aobench       # advisory — not all findings block a PR
 ```
 
@@ -245,7 +245,7 @@ Write tests in `tests/unit/test_my_scorer.py`.
 ## Code Standards
 
 - Python 3.10+ (3.12 in CI and Docker), Pydantic v2, Typer CLI
-- `uv run ruff check src/ tests/` must pass (no errors)
+- `uv run ruff check src/ tests/ scripts/` must pass (no errors)
 - `uv run mypy src/aobench/` must pass
 - Every new module needs at least basic unit tests
 - Run `make check` before opening a PR

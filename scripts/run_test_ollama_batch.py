@@ -96,7 +96,9 @@ def main() -> None:
 
     if not wait_for_ollama():
         print("[batch-test] ERROR: Ollama not reachable.", file=sys.stderr)
-        stop_event.set(); server_sock.close(); ssh.close()
+        stop_event.set()
+        server_sock.close()
+        ssh.close()
         sys.exit(1)
     print("[batch-test] Tunnel ready. Starting test-split runs.", flush=True)
 

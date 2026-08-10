@@ -157,6 +157,8 @@ def build_distributions_from_dir(
         try:
             df = pd.read_parquet(fp)
         except (OSError, ValueError):
+            # Skip any unreadable node: pyarrow raises ArrowInvalid (a ValueError)
+            # for a corrupt file and ArrowIOError (an OSError) for an absent one.
             continue
         used += 1
         for metric in metric_prefixes(list(df.columns)):

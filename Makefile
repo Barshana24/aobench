@@ -72,9 +72,12 @@ install-dev:  ## Install the dev group (pytest, ruff, mypy) without the optional
 
 .PHONY: lint
 lint:  ## Check code style with ruff
-	$(RUFF) check src/ tests/
+	$(RUFF) check src/ tests/ scripts/
 
 .PHONY: format
+# scripts/ is deliberately absent: it is lint-clean but not yet ruff-format-clean
+# (46 of 51 files would be rewritten). Formatting it is tracked separately so the
+# reformat lands as its own reviewable diff.
 format:  ## Auto-format code with ruff
 	$(RUFF) format src/ tests/
 

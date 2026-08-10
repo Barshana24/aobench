@@ -31,7 +31,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Lint
-        run: uv run ruff check src/ tests/
+        run: uv run ruff check src/ tests/ scripts/
 
       - name: Type check (advisory)
         # mypy runs in --strict mode and currently reports pre-existing type

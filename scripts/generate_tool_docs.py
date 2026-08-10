@@ -42,11 +42,14 @@ def _detect_role(env_dir: Path) -> str | None:
         import yaml
         with metadata.open() as fh:
             meta = yaml.safe_load(fh)
-        roles = meta.get("supported_roles", [])
-        if isinstance(roles, list) and len(roles) == 1:
-            return roles[0]
     except (OSError, yaml.YAMLError):
         return None
+    # An empty or scalar metadata.yaml parses to None/str, not a mapping.
+    if not isinstance(meta, dict):
+        return None
+    roles = meta.get("supported_roles", [])
+    if isinstance(roles, list) and len(roles) == 1:
+        return roles[0]
     return None
 
 

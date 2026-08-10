@@ -34,7 +34,7 @@ def floats_equal(a, b, rel_tol=1e-9):
 def deep_diff(a, b, path=""):
     """Return list of difference descriptions."""
     diffs = []
-    if type(a) != type(b):
+    if type(a) is not type(b):
         # Allow int/float comparison
         if isinstance(a, (int, float)) and isinstance(b, (int, float)):
             if not floats_equal(float(a), float(b)):

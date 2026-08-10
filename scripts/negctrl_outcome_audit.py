@@ -2,6 +2,7 @@
 """Negative-control audit of the frozen OutcomeScorer on the 58 dev tasks.
 No LLM, no rerun: feed fixed answers and read the deterministic Outcome score."""
 import json
+from collections import Counter
 from pathlib import Path
 
 from aobench.schemas.task import TaskSpec
@@ -44,8 +45,6 @@ controls = {
 }
 
 # also record evaluation_mode distribution
-from collections import Counter
-
 modes = Counter(getattr(specs[t], "evaluation_mode", None) for t in task_ids)
 print("evaluation_mode distribution (58 dev):", dict(modes))
 
@@ -55,8 +54,10 @@ for label, fn in controls.items():
     for t in task_ids:
         s = scorer.score(specs[t], mk_trace(specs[t], fn(t))).score
         scores.append(s)
-        if abs(s-0.5) < 1e-9: n05 += 1
-        if s == 0.0: n0 += 1
+        if abs(s-0.5) < 1e-9:
+            n05 += 1
+        if s == 0.0:
+            n0 += 1
     m = sum(scores)/len(scores)
     print(f"  {label:14} mean={m:.4f} min={min(scores):.3f} max={max(scores):.3f} n(=0.5)={n05} n(=0)={n0}")
 

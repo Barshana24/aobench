@@ -101,7 +101,9 @@ def main() -> None:
 
     if not wait_for_ollama():
         print("[batch] ERROR: Ollama not reachable after tunnel open.", file=sys.stderr)
-        stop_event.set(); server_sock.close(); ssh.close()
+        stop_event.set()
+        server_sock.close()
+        ssh.close()
         sys.exit(1)
     print("[batch] Tunnel ready. Starting model runs.", flush=True)
 
