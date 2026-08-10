@@ -201,3 +201,30 @@ def test_compare_runs_json_flag_matches_output_file(tmp_path):
     stdout_data = json.loads(result.output)
     file_data = json.loads(out.read_text())
     assert stdout_data == file_data
+
+
+def test_compare_runs_json_reports_absolute_hard_fail_counts(tmp_path):
+    """--json must carry the absolute hard-fail counts, not only the deltas.
+
+    A hard fail is an RBAC violation and zeroes the task's aggregate score, so
+    "how many are there now" is the number a CI gate keys on. The human table
+    prints it; if the JSON only carried new/resolved deltas it would be a lossy
+    replacement for the output it exists to replace, and the absolute count is
+    not derivable from the task rows.
+    """
+    run_dir_a = _make_run_dir(tmp_path, "run_a", _TASKS_A)
+    run_dir_b = _make_run_dir(tmp_path, "run_b", _TASKS_B)
+
+    runner = CliRunner()
+    data = json.loads(
+        runner.invoke(app, ["compare", "runs", str(run_dir_a), str(run_dir_b), "--json"]).output
+    )
+    assert data["hard_fail_count_a"] == 1
+    assert data["hard_fail_count_b"] == 0
+
+    # Cross-check against the human table rather than only against a literal, so
+    # the two renderings cannot drift apart without a test failing.
+    human = runner.invoke(app, ["compare", "runs", str(run_dir_a), str(run_dir_b)]).output
+    assert (
+        f"Hard-fail count: {data['hard_fail_count_a']} → {data['hard_fail_count_b']}" in human
+    )

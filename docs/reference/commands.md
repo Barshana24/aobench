@@ -578,6 +578,21 @@ aobench compare runs data/runs/run_20260318_130835_abc data/runs/run_20260318_14
 aobench compare runs data/runs/run_20260318_130835_abc data/runs/run_20260318_143040_def --json | jq '.summary'
 ```
 
+**JSON shape (`--json`, and the `--output` file):** the same object either way. Top level
+carries `run_a` / `run_b`, `mean_score_a` / `mean_score_b` / `mean_delta`, `task_count_a` /
+`task_count_b`, `hard_fail_count_a` / `hard_fail_count_b`, the applied filters
+(`filter_qcat`, `filter_role`, `delta_threshold`), per-task `tasks[]` (each with `status`,
+`score_a`, `score_b`, `delta`, `dim_deltas`, `hard_fail_changed`), a `summary` block of
+counts (`improved`, `regressed`, `unchanged`, `new`, `removed`, `new_hard_fails`,
+`resolved_hard_fails`), and `slices_a` / `slices_b` role×QCAT tables.
+
+To gate CI on governance, key on the absolute count rather than the delta — a run can hold
+its hard-fail total steady while swapping which tasks violate RBAC:
+
+```bash
+test "$(aobench compare runs "$BASE" "$NEW" --json | jq '.hard_fail_count_b')" -eq 0
+```
+
 **Output:**
 
 ```text

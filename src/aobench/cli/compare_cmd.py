@@ -142,6 +142,13 @@ def compare_runs(
         "delta_threshold": delta_threshold,
         "task_count_a": len(filtered_tasks_a),
         "task_count_b": len(filtered_tasks_b),
+        # Absolute hard-fail counts, not just the deltas below. A hard fail is an
+        # RBAC violation, which zeroes a task's aggregate score, so "how many are
+        # there right now" is the number a CI gate keys on — and it is printed in
+        # the human table, so the JSON has to carry it too or --json is a lossy
+        # substitute for the thing it replaces.
+        "hard_fail_count_a": hard_fail_count_a,
+        "hard_fail_count_b": hard_fail_count_b,
         "tasks": rows,
         "summary": {
             "improved": improved,

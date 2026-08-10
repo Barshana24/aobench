@@ -10,6 +10,13 @@
   `aobench list` subcommand already uses. Wiring either command into a CI step
   previously meant scraping formatted text; both now pipe cleanly into `jq` or any
   JSON consumer. Default (no flag) output is unchanged.
+- **`compare runs` JSON now carries `hard_fail_count_a` / `hard_fail_count_b`.** The
+  human table has always printed the absolute hard-fail counts, but the diff object
+  carried only the `new_hard_fails` / `resolved_hard_fails` deltas, and the absolute
+  count was not derivable from the task rows. Since a hard fail is an RBAC violation
+  that zeroes a task's aggregate score, that is the field a CI governance gate keys
+  on. Additive — existing keys are unchanged, and this applies to the `--output` file
+  as well as to `--json`.
 
 ### Fixed — `aobench clear run <dir>` did not work as documented
 
