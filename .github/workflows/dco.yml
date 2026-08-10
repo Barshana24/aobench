@@ -34,7 +34,18 @@ jobs:
           # Commits written before the DCO was adopted are exempt. Nobody
           # should get a red check for a rule that did not exist when they
           # wrote the patch, least of all on a first contribution.
-          POLICY_EPOCH=$(date -u -d '2026-08-10T00:00:00Z' +%s)
+          #
+          # The epoch is the exact moment the DCO was adopted: commit 2fcb968,
+          # authored 2026-08-10T20:59:29Z. It was originally set to
+          # 2026-08-10T00:00:00Z — nearly 21 hours BEFORE the policy existed —
+          # so it failed exactly the commits the exemption was written to
+          # protect: PR #45's commit, authored 2026-08-10T19:58:51Z, an hour
+          # before the rule existed, was marked MISS on a first contribution.
+          #
+          # Use the adoption instant rather than a rounded midnight. Rounding
+          # forward to 2026-08-11T00:00:00Z would exempt the three hours of
+          # commits written after the policy was already in force.
+          POLICY_EPOCH=$(date -u -d '2026-08-10T20:59:29Z' +%s)
 
           failed=0
           # --no-merges: a merge commit carries no authored change to certify.
