@@ -152,12 +152,25 @@ jobs:
         # it was found only by curling the live URL. This asserts against what is actually
         # served, which is the only place the bug can exist.
         run: |
-          sleep 30   # allow GitHub Pages to serve the new commit
-          body=$(curl -fsS --retry 5 --retry-delay 10 https://mskazemi.com/aobench/)
-          printf '%s' "$body" | grep -qi 'rel=.\?canonical' \
-            || { echo "::error::published /aobench/ has no canonical"; exit 1; }
-          printf '%s' "$body" | grep -qi 'name=.\?description' \
-            || { echo "::error::published /aobench/ has no meta description"; exit 1; }
-          [ "$(printf '%s' "$body" | wc -c)" -gt 1000 ] \
-            || { echo "::error::published /aobench/ looks like a redirect stub"; exit 1; }
-          echo "published /aobench/ OK — $(printf '%s' "$body" | wc -c) bytes, canonical + description present"
+          # Pages serves the PREVIOUS commit for a while after the push, and it serves it
+          # with a perfectly good 200 — so `curl --retry`, which only retries transport
+          # errors and 5xx, happily returns the stale page and the assertion fails on
+          # content that is already fixed in git. Poll for the new content instead.
+          deadline=$(( SECONDS + 300 ))
+          while :; do
+            body=$(curl -fsS https://mskazemi.com/aobench/ || true)
+            size=$(printf '%s' "$body" | wc -c)
+            if printf '%s' "$body" | grep -qi 'rel=.\?canonical' \
+               && printf '%s' "$body" | grep -qi 'name=.\?description' \
+               && [ "$size" -gt 1000 ]; then
+              echo "published /aobench/ OK — ${size} bytes, canonical + description present"
+              exit 0
+            fi
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              echo "::error::published /aobench/ still looks like a redirect stub after 5 min (${size} bytes)"
+              printf '%s\n' "$body" | head -20
+              exit 1
+            fi
+            echo "waiting for Pages to serve the new root (${size} bytes so far)…"
+            sleep 20
+          done
