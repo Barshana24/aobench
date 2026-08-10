@@ -62,7 +62,8 @@ What we do ask is the same thing we would ask of any contributor:
 - **Please disclose substantial AI assistance in the PR description.** It costs you
   nothing, it is not held against you, and it helps us review well.
 
-If you are pointing a coding agent at this repository, [`AGENTS.md`](AGENTS.md) is
+If you are pointing a coding agent at this repository,
+[`AGENTS.md`](https://github.com/MSKazemi/aobench/blob/main/AGENTS.md) is
 written for it — architecture, commands, invariants, and what must not be changed.
 Point the agent there first.
 
