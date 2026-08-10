@@ -62,7 +62,8 @@ was fit across 120 real nodes from the full ExaData `time_aggregated/` dataset.
 **You do not need the full dataset** — the reference above is committed, so bundle building
 works offline. Refreshing it is only necessary if you want to re-fit against the raw data
 yourself, which requires obtaining the
-[M100 ExaData dataset](https://doi.org/10.1038/s41597-023-02174-3) and setting
+[M100 ExaData dataset](https://doi.org/10.5281/zenodo.7541722) (see
+[Source and citation](#source-and-citation)) and setting
 `EXADATA_DIR` to wherever you extracted it:
 
 ```bash
@@ -130,6 +131,24 @@ refresh the pool from a different month, extract `job_table` from a `raw/` tar o
 
 Each environment includes a `provenance.json` recording the data source, RNG seed,
 scenario, and the exact injected perturbation. The data originates from the CINECA
-Marconi100 ExaData dataset; see the dataset repository's `README.md` for citation.
+Marconi100 ExaData dataset.
 For the design rationale (including how these bundles satisfy the F1–F7 fidelity gate),
-see the [M100 ExaData dataset paper](https://doi.org/10.1038/s41597-023-02174-3).
+see the M100 ExaData dataset paper below.
+
+## Source and citation
+
+The six `env_m100_*` bundles are derived from **M100 ExaData**, the public operational
+dataset of CINECA's Marconi100 Tier-0 supercomputer — 980+ nodes, two and a half years of
+management, workload, facility and infrastructure data, collected with the EXAMON
+monitoring framework.
+
+| | |
+|---|---|
+| **Dataset paper** | Borghesi et al., *M100 ExaData: a data collection campaign on the CINECA's Marconi100 Tier-0 supercomputer*, **Scientific Data** 10, 288 (2023) — [nature.com/articles/s41597-023-02174-3](https://www.nature.com/articles/s41597-023-02174-3) · [doi:10.1038/s41597-023-02174-3](https://doi.org/10.1038/s41597-023-02174-3) |
+| **Data-access code** | [gitlab.com/ecs-lab/exadata](https://gitlab.com/ecs-lab/exadata) — the open-source modules for reading the dataset, plus the node-position documentation |
+| **Dataset** | Published via Zenodo — [doi:10.5281/zenodo.7541722](https://doi.org/10.5281/zenodo.7541722) (49.9 TB uncompressed) |
+
+**If you use the `env_m100_*` environments or the `M100_*` tasks in published work, cite
+the dataset paper as well as AOBench.** The grounding is what makes those results a claim
+about a real machine rather than about a simulator, and that grounding is someone else's
+data-collection campaign. See [Cite AOBench](../about/citation.md) for both entries.

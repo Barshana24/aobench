@@ -15,8 +15,13 @@ CI whether your agent got worse.
 
 ## The three rules
 
-1. **Pin the AOBench version.** `pip install aobench==0.4.1`, never a floating range.
-   The corpus is part of the version; see [versioning](../about/versioning.md).
+1. **Pin the AOBench version.** Never a floating range — the corpus is part of the
+   version; see [versioning](../about/versioning.md). AOBench is not on PyPI yet, so
+   today that means pinning the tag rather than `pip install aobench==0.4.1`:
+
+    ```bash
+    pip install "git+https://github.com/MSKazemi/aobench@v0.4.1"
+    ```
 2. **Pin the model snapshot.** `gpt-4o-2024-11-20`, not `gpt-4o`. A provider updating
    an alias will otherwise look exactly like a regression in your code.
 3. **Use a fixed subset, and avoid rubric-scored tasks in the gate.** A judge model in
