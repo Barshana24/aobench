@@ -64,12 +64,34 @@ def derive_facts() -> dict[str, object]:
         "environments_m100": len(m100_envs),
         "qcats": sorted(qcats),
         "roles": sorted(roles),
-        "scoring_dimensions": 6,
+        "scoring_dimensions": _scoring_dimensions(),
         "adapters": ["direct_qa", "openai", "anthropic", "mcp"],
         "tool_families": ["slurm", "telemetry", "docs", "rbac", "facility"],
         "python_requires": _python_requires(),
         "license": "Apache-2.0",
     }
+
+
+def _scoring_dimensions() -> int:
+    """Count the non-zero weighted dimensions in the default scoring profile.
+
+    This was hard-coded to 6 while ``default_hpc_v01`` has carried 7 weighted
+    dimensions (``workflow`` is the seventh). The number is published in
+    BENCHMARK_FACTS.json, so a hard-coded value is exactly the drift this script
+    exists to prevent — derive it from the YAML like every other fact here.
+    """
+    profiles_path = ROOT / "benchmark" / "configs" / "scoring_profiles.yaml"
+    text = profiles_path.read_text()
+    # Match the default profile's `weights:` block: indented `name: number` lines.
+    block = re.search(
+        r"^  default_hpc_v01:.*?^    weights:\n((?:      \w+:\s*[0-9.]+\n)+)",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    if not block:
+        raise SystemExit("check_facts: could not read default_hpc_v01 weights from scoring_profiles.yaml")
+    weights = re.findall(r"^      (\w+):\s*([0-9.]+)$", block.group(1), re.MULTILINE)
+    return sum(1 for _, value in weights if float(value) > 0)
 
 
 def _project_version() -> str:

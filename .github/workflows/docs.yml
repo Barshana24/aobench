@@ -86,7 +86,47 @@ jobs:
           else
             echo "::warning::no sitemap at /tmp/ghp/$VERSION/sitemap.xml — root sitemap not refreshed"
           fi
-          git -C /tmp/ghp add llms.txt llms-full.txt robots.txt sitemap.xml
+          # mike's `set-default` writes a 374-byte JS redirect with <title>Redirecting</title>
+          # and no body at the gh-pages root. That path is the canonical URL advertised by
+          # pyproject.toml (Homepage/Documentation), the repo homepage field, the README
+          # banner, CITATION.cff, codemeta.json, .zenodo.json and the JSON-LD `url` field —
+          # and AI crawlers run zero JavaScript, so following the project's own advertised
+          # URL yielded nothing. Worse, the stub's <noscript> refresh is `1; url=latest/`,
+          # and a DELAYED meta refresh is not treated as a redirect (only `0` is), so the
+          # stub was eligible to be indexed on its own as a thin page titled "Redirecting".
+          # A 0-delay refresh redirects browsers and crawlers to /latest/ as before, while
+          # zero-JS readers get real content and a canonical that agrees with the JSON-LD.
+          cat > /tmp/ghp/index.html <<'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>AOBench — benchmark for AI agents that operate HPC systems</title>
+          <meta name="description" content="Open-source benchmark for AI agents operating HPC systems: 88 tasks, 29 deterministic snapshots, RBAC-enforced, trace-scored. No cluster needed.">
+          <link rel="canonical" href="https://mskazemi.com/aobench/latest/">
+          <meta http-equiv="refresh" content="0; url=latest/">
+          <script>window.location.replace("latest/" + window.location.search + window.location.hash);</script>
+          </head>
+          <body>
+          <h1>AOBench — Agent Operations Benchmark</h1>
+          <p>AOBench is an open-source benchmark for AI agents that operate High-Performance
+          Computing systems: 88 tasks across 10 question categories and 5 operator roles, 29
+          deterministic environment snapshots — 6 of them rebuilt from real CINECA Marconi100
+          ExaData — role-based access control enforced so that a policy violation hard-fails
+          the task, and 12 scorers over 7 weighted dimensions. It runs offline, with no
+          cluster and no API key.</p>
+          <p>Not to be confused with <em>aobench</em>, the ambient-occlusion ray-tracing
+          microbenchmark by Syoyo Fujita.</p>
+          <ul>
+          <li><a href="latest/">Documentation (current release)</a></li>
+          <li><a href="latest/leaderboard/">Leaderboard</a></li>
+          <li><a href="https://github.com/MSKazemi/aobench">Source on GitHub</a></li>
+          </ul>
+          </body>
+          </html>
+          HTML
+          git -C /tmp/ghp add llms.txt llms-full.txt robots.txt sitemap.xml index.html
           if git -C /tmp/ghp diff --cached --quiet; then
             echo "discovery files unchanged — nothing new to commit"
           else
@@ -105,3 +145,19 @@ jobs:
           # token fails the run immediately instead of lying dormant until the next time
           # llms.txt happens to change.
           git push origin gh-pages
+
+      - name: Verify the published docs root carries real content
+        # `make seo-check` validates the mkdocs output in site/, which never contains the
+        # mike/gh-pages root — so no existing gate could see the redirect-stub defect, and
+        # it was found only by curling the live URL. This asserts against what is actually
+        # served, which is the only place the bug can exist.
+        run: |
+          sleep 30   # allow GitHub Pages to serve the new commit
+          body=$(curl -fsS --retry 5 --retry-delay 10 https://mskazemi.com/aobench/)
+          printf '%s' "$body" | grep -qi 'rel=.\?canonical' \
+            || { echo "::error::published /aobench/ has no canonical"; exit 1; }
+          printf '%s' "$body" | grep -qi 'name=.\?description' \
+            || { echo "::error::published /aobench/ has no meta description"; exit 1; }
+          [ "$(printf '%s' "$body" | wc -c)" -gt 1000 ] \
+            || { echo "::error::published /aobench/ looks like a redirect stub"; exit 1; }
+          echo "published /aobench/ OK — $(printf '%s' "$body" | wc -c) bytes, canonical + description present"
