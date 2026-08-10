@@ -2,6 +2,38 @@
 
 ## Unreleased
 
+### Fixed — `aobench clear run <dir>` did not work as documented
+
+- **`aobench clear run data/runs/<run_id>` errored.** That positional form is what
+  five public documentation pages show — installation, reproducing results, use cases,
+  the leaderboard guide, and the system-architecture reference — but the command only
+  accepted `--run-dir`, so every reader who copy-pasted it hit
+  `Missing option '--run-dir' / '-d'`. Run directories may now be given positionally,
+  with `--run-dir`, or both mixed for multi-model comparison; the forms are equivalent.
+  Invoking it with no run directory at all now prints an actionable message naming both
+  forms and how to list available runs, and exits 2 instead of showing a usage dump.
+  Four regression tests cover it.
+
+### Added — contributor on-ramp
+
+- **`AGENTS.md`** — a public [README for coding agents](https://agents.md/): the
+  architecture map, exact build/test/lint commands, the invariants that must not be
+  broken (determinism, no network in tests, read-only snapshots, RBAC enforcement, the
+  held-out `test` split), and what must not be changed without a design discussion.
+  `.github/copilot-instructions.md` is a thin pointer to it rather than a second copy.
+- **An AI-assistance policy** in `CONTRIBUTING.md`: assistance is welcome, the bar is
+  that you understand the change, have run `make check`, and disclose substantial help.
+- **A demo recording** in the README (`docs/assets/demo.gif`), rendered from verbatim
+  captured output of a real offline run — one Marconi100-grounded task through the
+  zero-tool baseline, then the CLEAR scorecard, with no cluster and no API key.
+- The README contributing section now leads with the two contributions that need no
+  code and no hardware — authoring a task, and submitting an independent evaluation
+  result — and links `AUTHORS.md`, where every merged contribution earns a line.
+
+### Fixed — contributor-facing documentation
+
+- `CONTRIBUTING.md` claimed Python 3.11+; the project requires 3.10+ (`pyproject.toml`).
+
 ### Added — visual identity
 
 - **A logo and brand system.** `docs/assets/logo.svg` — a 3×3 grid of compute nodes

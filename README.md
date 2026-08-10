@@ -45,6 +45,13 @@ running on live clusters, every task is evaluated against a deterministic
 environment snapshot with mock HPC tools (SLURM, telemetry, RBAC, docs,
 facility), so results are reproducible, portable, and safe to publish.
 
+<div align="center">
+  <img src="docs/assets/demo.gif" alt="Terminal recording: aobench runs one Marconi100-grounded task with the zero-tool baseline adapter and prints the per-dimension score breakdown, then aggregates it into a CLEAR scorecard — all offline, with no cluster and no API key." width="100%">
+  <br>
+  <sub><i>Every number in that recording was produced offline on a laptop — no cluster, no API key.
+  Reproduce it with the two commands shown.</i></sub>
+</div>
+
 > **In one line:** AOBench is an AI agent benchmark for HPC — an HPC agent
 > evaluation framework that is role-aware, permission-enforced, tool-using,
 > trace-based, and reproducible.
@@ -395,14 +402,29 @@ task set.
 **Contributions are welcome, and the project is set up so you can start without
 asking permission first.**
 
-Good places to start, easiest first:
+**You do not need a cluster, a GPU, or an API key.** The whole benchmark runs against
+frozen snapshots on a laptop, and the `direct_qa` adapter needs no model provider.
+
+The two most valuable contributions are **data, not code**:
+
+- 📝 [**Write a task**](https://github.com/MSKazemi/aobench/issues/26) — 26 of the 50
+  QCAT × role cells have only one task, so the benchmark cannot tell "understands the
+  category" from "got lucky". One JSON file against an existing snapshot.
+  Guide: [adding a task](https://mskazemi.com/aobench/latest/guides/adding-a-task/).
+- 📊 [**Run a model and submit the numbers**](https://github.com/MSKazemi/aobench/issues/27) —
+  independent results are what make a benchmark credible rather than a claim.
+  **Negative results are more useful than good ones.**
+
+Other places to start, easiest first:
 
 | If you want to… | Start here |
 |---|---|
 | Fix something small and well-specified | [**Good first issues**](https://github.com/MSKazemi/aobench/labels/good%20first%20issue) — each one names the files to touch, the tests to write, and an honest time estimate |
+| See the whole map | [**#20 — Start here: where to contribute**](https://github.com/MSKazemi/aobench/issues/20) |
 | Report a bug or ask for a feature | [Open an issue](https://github.com/MSKazemi/aobench/issues/new/choose) |
 | Ask a question or propose an idea | [Discussions](https://github.com/MSKazemi/aobench/discussions) — questions are welcome and expected |
 | Add a task or an environment | [CONTRIBUTING.md § How to Add a Task](CONTRIBUTING.md) |
+| Point a coding agent at this repo | [AGENTS.md](AGENTS.md) — architecture, commands, invariants |
 | Report a security issue | [SECURITY.md](SECURITY.md) — please don't open a public issue |
 
 From clone to green tests in three commands:
@@ -421,6 +443,10 @@ quiet for over a week, ping it; that's our failure, not rudeness on your part.
 and new CLI flags need no prior discussion — just send them. Open an issue first
 only if you're changing the task schema, the scoring weights, the RBAC model, or
 a public CLI signature.
+
+**Every merged contribution earns a line in [AUTHORS.md](AUTHORS.md)**, whatever its
+size — including reviews, docs, and corpus work. AI assistance is welcome; see
+[CONTRIBUTING.md § Using AI assistance](CONTRIBUTING.md).
 
 You do not need HPC access or a cluster to contribute. The whole benchmark runs
 against frozen snapshots on a laptop, and the `direct_qa` adapter needs no API key.

@@ -102,9 +102,18 @@ def test_clear_cmd_output_contains_all_keys(tmp_path):
 
     report = json.loads(output_path.read_text())
     required_keys = {
-        "clear_score", "C_norm", "L_norm", "E", "A", "R",
-        "mean_cost_usd", "mean_latency_s", "CNA", "CPS",
-        "n_tasks", "n_successful",
+        "clear_score",
+        "C_norm",
+        "L_norm",
+        "E",
+        "A",
+        "R",
+        "mean_cost_usd",
+        "mean_latency_s",
+        "CNA",
+        "CPS",
+        "n_tasks",
+        "n_successful",
     }
     for model_name, model_data in report["models"].items():
         missing = required_keys - model_data.keys()
@@ -136,10 +145,14 @@ def test_clear_cmd_two_models(tmp_path):
     result = runner.invoke(
         app,
         [
-            "clear", "run",
-            "--run-dir", str(run_a),
-            "--run-dir", str(run_b),
-            "--output", str(output_path),
+            "clear",
+            "run",
+            "--run-dir",
+            str(run_a),
+            "--run-dir",
+            str(run_b),
+            "--output",
+            str(output_path),
         ],
     )
 
@@ -179,10 +192,14 @@ def test_clear_cmd_pass_threshold(tmp_path):
     result = runner.invoke(
         app,
         [
-            "clear", "run",
-            "--run-dir", str(run_dir),
-            "--output", str(output_path),
-            "--pass-threshold", "0.9",
+            "clear",
+            "run",
+            "--run-dir",
+            str(run_dir),
+            "--output",
+            str(output_path),
+            "--pass-threshold",
+            "0.9",
         ],
     )
     assert result.exit_code == 0, result.output
@@ -206,3 +223,69 @@ def test_clear_cmd_no_results_dir(tmp_path):
         ["clear", "run", "--run-dir", str(empty_dir), "--output", str(output_path)],
     )
     assert result.exit_code != 0
+
+
+# ── Run directories may be given positionally as well as with --run-dir ────────
+# Regression guard: the public documentation has always shown the positional form
+# (`aobench clear run data/runs/<run_id>`), so it must keep working.
+
+
+def test_clear_run_accepts_positional_run_dir(tmp_path: Path) -> None:
+    """`aobench clear run <dir>` works without --run-dir, as the docs show."""
+    run_dir = _make_run_dir(tmp_path, model_name="gpt-4o")
+    out = tmp_path / "clear.json"
+
+    result = runner.invoke(app, ["clear", "run", str(run_dir), "--output", str(out)])
+
+    assert result.exit_code == 0, result.output
+    assert out.exists()
+    assert "gpt-4o" in result.output
+
+
+def test_clear_run_positional_and_option_are_equivalent(tmp_path: Path) -> None:
+    """The positional form and --run-dir produce the same report."""
+    run_dir = _make_run_dir(tmp_path, model_name="gpt-4o")
+    out_pos = tmp_path / "pos.json"
+    out_opt = tmp_path / "opt.json"
+
+    r_pos = runner.invoke(app, ["clear", "run", str(run_dir), "--output", str(out_pos)])
+    r_opt = runner.invoke(
+        app, ["clear", "run", "--run-dir", str(run_dir), "--output", str(out_opt)]
+    )
+
+    assert r_pos.exit_code == 0, r_pos.output
+    assert r_opt.exit_code == 0, r_opt.output
+
+    pos = json.loads(out_pos.read_text())
+    opt = json.loads(out_opt.read_text())
+    # generated_at is a wall-clock stamp and differs between the two invocations.
+    pos.pop("generated_at", None)
+    opt.pop("generated_at", None)
+    assert pos == opt
+
+
+def test_clear_run_mixes_positional_and_option(tmp_path: Path) -> None:
+    """Both forms may be combined to compare several models."""
+    run_a = _make_run_dir(tmp_path, model_name="gpt-4o", dir_name="run_a")
+    run_b = _make_run_dir(tmp_path, model_name="llama-3", dir_name="run_b")
+    out = tmp_path / "clear.json"
+
+    result = runner.invoke(
+        app,
+        ["clear", "run", str(run_a), "--run-dir", str(run_b), "--output", str(out)],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert "gpt-4o" in result.output
+    assert "llama-3" in result.output
+
+
+def test_clear_run_without_any_run_dir_explains_what_to_do() -> None:
+    """No run directory is a usage error with an actionable message, not a traceback."""
+    result = runner.invoke(app, ["clear", "run"])
+
+    assert result.exit_code == 2
+    combined = result.output + (result.stderr or "")
+    assert "no run directory given" in combined
+    assert "--run-dir" in combined
+    assert "ls data/runs/" in combined

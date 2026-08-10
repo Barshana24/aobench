@@ -20,14 +20,21 @@ clear_app = typer.Typer(
 
 @clear_app.command()
 def run(  # noqa: A001
+    positional_run_dirs: Annotated[
+        list[str] | None,
+        typer.Argument(
+            metavar="[RUN_DIR]...",
+            help="Run directory containing results/ (equivalent to --run-dir).",
+        ),
+    ] = None,
     run_dirs: Annotated[
-        list[str],
+        list[str] | None,
         typer.Option(
             "--run-dir",
             "-d",
             help="Run directory containing results/ (repeat for multiple models).",
         ),
-    ],
+    ] = None,
     output: Annotated[
         str,
         typer.Option("--output", "-o", help="Write CLEAR report to this JSON file"),
@@ -50,8 +57,13 @@ def run(  # noqa: A001
 ) -> None:
     """Compute CLEAR scorecard across one or more run directories.
 
-    Each --run-dir is a benchmark run output (contains results/).
+    Run directories may be given positionally or with --run-dir; the two forms are
+    equivalent and may be mixed. Each is a benchmark run output (contains results/).
     Runs are grouped by model_name (from result.model_name).
+
+    \\b
+        aobench clear run data/runs/run_20260319/
+        aobench clear run --run-dir data/runs/run_20260319/
 
     Example workflow:
 
@@ -78,11 +90,24 @@ def run(  # noqa: A001
     from aobench.reports.clear_report import build_clear_report  # noqa: PLC0415
     from aobench.schemas.result import BenchmarkResult  # noqa: PLC0415
 
+    # ── Accept run dirs positionally or via --run-dir; the forms are equivalent ─
+    all_run_dirs: list[str] = [*(positional_run_dirs or []), *(run_dirs or [])]
+    if not all_run_dirs:
+        typer.echo(
+            "Error: no run directory given.\n\n"
+            "Pass one or more run directories, either positionally or with --run-dir:\n"
+            "    aobench clear run data/runs/<run_id>\n"
+            "    aobench clear run --run-dir data/runs/<run_id>\n\n"
+            "List available runs with:  ls data/runs/",
+            err=True,
+        )
+        raise typer.Exit(code=2)
+
     # ── Load results from all run directories ──────────────────────────────────
     model_results: dict[str, list[BenchmarkResult]] = defaultdict(list)
     total_loaded = 0
 
-    for run_dir_str in run_dirs:
+    for run_dir_str in all_run_dirs:
         run_dir = Path(run_dir_str)
         results_dir = run_dir / "results"
         if not results_dir.exists():
@@ -95,9 +120,7 @@ def run(  # noqa: A001
             continue
 
         for f in result_files:
-            result = BenchmarkResult.model_validate(
-                json.loads(f.read_text(encoding="utf-8"))
-            )
+            result = BenchmarkResult.model_validate(json.loads(f.read_text(encoding="utf-8")))
             key = result.model_name or result.adapter_name
             model_results[key].append(result)
             total_loaded += 1
@@ -106,9 +129,7 @@ def run(  # noqa: A001
         typer.echo("No results loaded. Check the --run-dir paths.", err=True)
         raise typer.Exit(1)
 
-    typer.echo(
-        f"\nLoaded {total_loaded} result(s) across {len(model_results)} model(s)."
-    )
+    typer.echo(f"\nLoaded {total_loaded} result(s) across {len(model_results)} model(s).")
 
     # ── Load optional robustness data ──────────────────────────────────────────
     robustness_by_model: dict[str, dict[str, Any]] | None = None

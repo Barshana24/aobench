@@ -41,6 +41,30 @@ uv run mypy src/aobench       # advisory — not all findings block a PR
 - **Open an issue before starting** anything that changes the task schema, the
   scoring weights, the RBAC model, or a public CLI signature. Bug fixes, docs,
   tests, examples and new CLI flags need no prior discussion — just send them.
+- **If an issue turns out to be already done, say so.** It happens — three of ours
+  were. Flagging it is a real contribution and gets credited in `AUTHORS.md`; it is
+  never something you should feel awkward about raising.
+
+---
+
+## Using AI assistance
+
+**AI assistance is welcome.** We are not going to ask how you wrote your code, and
+"you used an LLM" is not a rejection reason here — it would be a strange one in a
+project about evaluating AI agents.
+
+What we do ask is the same thing we would ask of any contributor:
+
+- **You understand the change and can explain it in review.** If a reviewer asks
+  "why this approach rather than X?", you should be able to answer.
+- **You have run the tests locally.** `make check`, not "it looked right".
+- **You take responsibility for it.** Your name is on the PR.
+- **Please disclose substantial AI assistance in the PR description.** It costs you
+  nothing, it is not held against you, and it helps us review well.
+
+If you are pointing a coding agent at this repository, [`AGENTS.md`](AGENTS.md) is
+written for it — architecture, commands, invariants, and what must not be changed.
+Point the agent there first.
 
 ---
 
@@ -219,7 +243,7 @@ Write tests in `tests/unit/test_my_scorer.py`.
 
 ## Code Standards
 
-- Python 3.11+, Pydantic v2, Typer CLI
+- Python 3.10+ (3.12 in CI and Docker), Pydantic v2, Typer CLI
 - `uv run ruff check src/ tests/` must pass (no errors)
 - `uv run mypy src/aobench/` must pass
 - Every new module needs at least basic unit tests
