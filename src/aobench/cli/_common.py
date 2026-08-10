@@ -90,17 +90,32 @@ def available_env_ids(root: Path) -> list[str]:
 
 
 def suggest(value: str, candidates: list[str], limit: int = 3) -> list[str]:
-    """Return up to ``limit`` candidates closest to ``value`` (case-insensitive)."""
+    """Return up to ``limit`` candidates closest to ``value`` (case-insensitive).
+
+    Ranked in three passes — prefix, then substring, then fuzzy near-miss — because
+    ``difflib`` alone gets a truncated ID badly wrong. ``JOB_USR_00`` is an *equally*
+    good match for all five ``JOB_USR_00N``, so which three come back is decided by
+    ``get_close_matches``' internal heap order rather than by anything the user would
+    recognise: it answered "did you mean JOB_USR_005, JOB_USR_004, JOB_USR_003?" and
+    left out ``JOB_USR_001`` entirely. An ID the user literally typed a prefix of
+    outranks a fuzzy match every time, and ordering within a pass is sorted so the
+    answer is stable rather than an artefact of corpus iteration order.
+    """
     if not candidates:
         return []
-    lowered = {c.lower(): c for c in candidates}
-    matches = difflib.get_close_matches(value.lower(), list(lowered), n=limit, cutoff=0.5)
-    close = [lowered[m] for m in matches]
-    if close:
-        return close
-    # Fall back to a prefix/substring match — helps with e.g. "JOB" → JOB_USR_001.
     needle = value.lower()
-    return [c for c in candidates if needle in c.lower()][:limit]
+    ranked: list[str] = []
+
+    def take(found: list[str]) -> None:
+        ranked.extend(c for c in found if c not in ranked)
+
+    take(sorted(c for c in candidates if c.lower().startswith(needle)))
+    take(sorted(c for c in candidates if needle in c.lower()))
+    lowered = {c.lower(): c for c in candidates}
+    take(
+        [lowered[m] for m in difflib.get_close_matches(needle, list(lowered), n=limit, cutoff=0.5)]
+    )
+    return ranked[:limit]
 
 
 def _fail_unknown(kind: str, value: str, candidates: list[str], hint: str) -> None:

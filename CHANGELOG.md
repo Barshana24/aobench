@@ -120,6 +120,18 @@
 - Mistyped `--task` / `--env` values now print the closest matching IDs and a pointer to
   `aobench list`, instead of a stack trace.
 
+### Fixed — CLI
+
+- **"Did you mean" dropped the likeliest ID.** Suggestions were ranked by `difflib`
+  alone, which scores every member of an ID family identically against a truncated
+  ID — so `--task JOB_USR_00` answered *"did you mean JOB_USR_005, JOB_USR_004,
+  JOB_USR_003?"* and omitted `JOB_USR_001`, with the three winners decided by heap
+  order rather than by anything a user would recognise. Prefix matches now outrank
+  fuzzy ones and each pass is sorted, so the answer is stable and starts where the
+  user was typing. Found by [@erensh27](https://github.com/erensh27) in
+  [#25](https://github.com/MSKazemi/aobench/pull/25), whose end-to-end CLI test
+  (`tests/cli/test_error_messages.py`) is the regression guard.
+
 ### Fixed — installed-package usage
 
 - **The documented quick start crashed on a non-checkout install.** `aobench.paths`

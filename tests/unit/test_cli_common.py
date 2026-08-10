@@ -59,6 +59,22 @@ def test_suggest_falls_back_to_substring_for_a_prefix() -> None:
     assert suggest("MON", ["JOB_USR_001", "MON_SYS_002"]) == ["MON_SYS_002"]
 
 
+def test_suggest_ranks_a_prefixed_family_from_the_start() -> None:
+    """A truncated ID must not lose its own family to `difflib` tie-breaking.
+
+    Every member of the family scores identically against the truncation, so
+    `get_close_matches` returned an arbitrary three of them (005, 004, 003) and
+    dropped the likeliest answer. Prefix hits now outrank fuzzy ones, sorted.
+    """
+    family = [f"JOB_USR_00{n}" for n in range(1, 6)]
+    assert suggest("JOB_USR_00", family) == ["JOB_USR_001", "JOB_USR_002", "JOB_USR_003"]
+
+
+def test_suggest_is_stable_regardless_of_candidate_order() -> None:
+    family = [f"JOB_USR_00{n}" for n in range(1, 6)]
+    assert suggest("JOB_USR_00", family) == suggest("JOB_USR_00", list(reversed(family)))
+
+
 def test_suggest_is_case_insensitive() -> None:
     assert suggest("job_usr_001", ["JOB_USR_001"]) == ["JOB_USR_001"]
 
