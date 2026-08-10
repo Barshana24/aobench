@@ -6,7 +6,7 @@ have been checked by people who were not the person who wrote them. Every fix, e
 question that exposed an unclear page, every "this crashed for me" is that checking. This
 page is where those people are named.
 
-## Maintainer
+## Maintainer and advisor
 
 <ul class="wall">
 <li>
@@ -16,14 +16,22 @@ page is where those people are named.
   </span>
   <span class="wall-name">Mohsen Seyedkazemi Ardebili</span>
   <span class="wall-handle"><a href="https://github.com/MSKazemi">@MSKazemi</a></span>
-  <span class="wall-role">Maintainer</span>
-  <span class="wall-tag">Benchmark, scorers, corpus</span>
+  <span class="wall-role">Creator &amp; maintainer</span>
+  <span class="wall-tag">Design, scoring, corpus, and the research behind them</span>
+</li>
+<li>
+  <span class="wall-avatar">
+    <span class="wall-initials" aria-hidden="true">AB</span>
+    <span class="wall-badge" aria-hidden="true">🎓</span>
+  </span>
+  <span class="wall-name">Andrea Bartolini</span>
+  <span class="wall-handle"><a href="https://orcid.org/0000-0002-1148-2450">ORCID</a></span>
+  <span class="wall-role">Scientific advisor</span>
+  <span class="wall-tag">Co-author</span>
 </li>
 </ul>
 
-Department of Electrical, Electronic and Information Engineering (DEI), University of
-Bologna. AOBench's authors for citation purposes — including co-author Andrea Bartolini —
-are listed in [Cite AOBench](citation.md) and in
+Authors for citation purposes are listed in [Cite AOBench](citation.md) and in
 [`CITATION.cff`](https://github.com/MSKazemi/aobench/blob/main/CITATION.cff).
 
 ## Contributors
