@@ -444,7 +444,8 @@ and new CLI flags need no prior discussion — just send them. Open an issue fir
 only if you're changing the task schema, the scoring weights, the RBAC model, or
 a public CLI signature.
 
-**Every merged contribution earns a line in [AUTHORS.md](AUTHORS.md)**, whatever its
+**Every merged contribution earns a line in [AUTHORS.md](AUTHORS.md)** and a place on the
+[contributor wall](https://mskazemi.com/aobench/latest/about/contributors/), whatever its
 size — including reviews, docs, and corpus work. AI assistance is welcome; see
 [CONTRIBUTING.md § Using AI assistance](CONTRIBUTING.md).
 

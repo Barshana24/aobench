@@ -6,48 +6,85 @@ have been checked by people who were not the person who wrote them. Every fix, e
 question that exposed an unclear page, every "this crashed for me" is that checking. This
 page is where those people are named.
 
-## Maintainers
+## Maintainer and advisor
 
 <ul class="wall">
 <li>
-  <img src="https://github.com/MSKazemi.png?size=144" alt="" loading="lazy">
+  <span class="wall-avatar">
+    <img src="https://github.com/MSKazemi.png?size=144" alt="" loading="lazy">
+    <span class="wall-badge" aria-hidden="true">🛠️</span>
+  </span>
   <span class="wall-name">Mohsen Seyedkazemi Ardebili</span>
   <span class="wall-handle"><a href="https://github.com/MSKazemi">@MSKazemi</a></span>
-  <span class="wall-role">Maintainer</span>
+  <span class="wall-role">Creator &amp; maintainer</span>
+  <span class="wall-tag">Design, scoring, corpus, and the research behind them</span>
 </li>
 <li>
-  <span class="wall-initials" aria-hidden="true">AB</span>
+  <span class="wall-avatar">
+    <span class="wall-initials" aria-hidden="true">AB</span>
+    <span class="wall-badge" aria-hidden="true">🎓</span>
+  </span>
   <span class="wall-name">Andrea Bartolini</span>
   <span class="wall-handle"><a href="https://orcid.org/0000-0002-1148-2450">ORCID</a></span>
-  <span class="wall-role">Maintainer</span>
+  <span class="wall-role">Scientific advisor</span>
+  <span class="wall-tag">Co-author</span>
 </li>
 </ul>
 
-Both at the Department of Electrical, Electronic and Information Engineering (DEI),
-University of Bologna.
+Authors for citation purposes are listed in [Cite AOBench](citation.md) and in
+[`CITATION.cff`](https://github.com/MSKazemi/aobench/blob/main/CITATION.cff).
 
 ## Contributors
 
+Listed in the order their first contribution merged. The badge on each avatar marks what
+they worked on; the line underneath says it in words.
+
 <ul class="wall">
 <li>
-  <img src="https://github.com/erensh27.png?size=144" alt="" loading="lazy">
+  <span class="wall-avatar">
+    <img src="https://github.com/erensh27.png?size=144" alt="" loading="lazy">
+    <span class="wall-badge" aria-hidden="true">🧭</span>
+  </span>
   <span class="wall-name">abhinav</span>
   <span class="wall-handle"><a href="https://github.com/erensh27">@erensh27</a></span>
   <span class="wall-role">First contributor</span>
+  <span class="wall-tag">Friendly CLI errors</span>
+</li>
+<li>
+  <span class="wall-avatar">
+    <img src="https://github.com/Barshana24.png?size=144" alt="" loading="lazy">
+    <span class="wall-badge" aria-hidden="true">🔌</span>
+  </span>
+  <span class="wall-name">Barshana Chatterjee</span>
+  <span class="wall-handle"><a href="https://github.com/Barshana24">@Barshana24</a></span>
+  <span class="wall-role">Contributor</span>
+  <span class="wall-tag">Machine-readable output</span>
+</li>
+<li>
+  <span class="wall-avatar">
+    <img src="https://github.com/LobsterQBA.png?size=144" alt="" loading="lazy">
+    <span class="wall-badge" aria-hidden="true">⚖️</span>
+  </span>
+  <span class="wall-name">LeoZhaoo</span>
+  <span class="wall-handle"><a href="https://github.com/LobsterQBA">@LobsterQBA</a></span>
+  <span class="wall-role">Contributor</span>
+  <span class="wall-tag">Side-by-side comparison</span>
 </li>
 </ul>
 
-**[@erensh27](https://github.com/erensh27)** is AOBench's first external contributor. They
-took [issue #2](https://github.com/MSKazemi/aobench/issues/2) and replaced the raw Python
-traceback you used to get from a mistyped `--task` or `--env` with an actionable one-line
-error, and — this is the part that matters — wrote end-to-end CLI tests for it. Those tests
-then failed against the maintainer's own overlapping implementation and exposed a real
-ranking bug in it: `aobench run task --task JOB_USR_00` was answering *"did you mean
-JOB_USR_005, JOB_USR_004, JOB_USR_003?"* and silently omitting `JOB_USR_001`. It suggests
-`JOB_USR_001` today because of [PR #25](https://github.com/MSKazemi/aobench/pull/25).
+| Contributor | What they added | |
+|---|---|---|
+| [@erensh27](https://github.com/erensh27) | An actionable one-line error, with tests, in place of the traceback you used to get from a mistyped `--task` or `--env` | [#25](https://github.com/MSKazemi/aobench/pull/25) |
+| [@Barshana24](https://github.com/Barshana24) | `--json` on `report json` and `compare runs`, so AOBench's numbers can be piped into `jq` instead of scraped | [#43](https://github.com/MSKazemi/aobench/pull/43) |
+| [@LobsterQBA](https://github.com/LobsterQBA) | `examples/05_compare_two_adapters.py` — two systems side by side with per-dimension deltas, offline | [#44](https://github.com/MSKazemi/aobench/pull/44) |
 
-That is the whole argument for outside contributors in one example: a second person's test
-found something the author's own tests were structurally unable to see.
+This is a young project and that is a short list. It is worth reading anyway, because one
+of those three contributions has already paid for itself: the CLI tests in #25 failed
+against the maintainer's *own* overlapping implementation and exposed a ranking bug in it —
+`--task JOB_USR_00` was answering *"did you mean JOB_USR_005, JOB_USR_004, JOB_USR_003?"*
+and silently omitting `JOB_USR_001`. A second person's test found what the author's own
+tests were structurally unable to see. That is the argument for contributing here, and it
+is the reason the list being short is a reason to add to it rather than a reason to wait.
 
 ## How you get on this wall
 

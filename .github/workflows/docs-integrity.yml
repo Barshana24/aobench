@@ -15,6 +15,13 @@ on:
       - "scripts/gen_catalog.py"
       - "scripts/seo_check.py"
       - "README.md"
+      # These four are pulled into docs/ by include-markdown, so a link added here
+      # is a docs link — and a relative one to a root file breaks the strict build
+      # without ever touching docs/**. That is how the DCO link slipped through.
+      - "CONTRIBUTING.md"
+      - "CHANGELOG.md"
+      - "ROADMAP.md"
+      - "SECURITY.md"
       - "llms.txt"
       - "examples/**"
       - ".github/workflows/docs-integrity.yml"

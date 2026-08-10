@@ -255,3 +255,28 @@ Write tests in `tests/unit/test_my_scorer.py`.
 - Branch from `main`, name: `feature/<topic>` or `fix/<topic>`
 - Each PR should do one thing
 - The CI workflow (`.github/workflows/ci.yml`) must pass
+
+## License and sign-off
+
+By contributing, you agree that your contributions will be licensed under the Apache 2.0 License.
+
+**There is no CLA.** AOBench uses a
+[Developer Certificate of Origin](https://github.com/MSKazemi/aobench/blob/main/DCO.md) — the same one the Linux
+kernel uses. There is nothing to sign, no account to create, and nothing for your employer's legal team
+to review. You simply certify that you wrote the change and are allowed to submit it, by adding one
+line to your commit:
+
+```
+Signed-off-by: Your Name <your.email@example.com>
+```
+
+Git writes it for you with `-s`:
+
+```bash
+git commit -s -m "your message"
+```
+
+Forgot it? `git commit --amend --signoff && git push --force-with-lease`. Want it always on?
+`git config --global format.signOff true`.
+
+**You keep the copyright in your work.** AOBench is Apache-2.0 and stays that way.

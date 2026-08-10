@@ -28,7 +28,7 @@
     "sysadmin",
     "system_designer"
   ],
-  "scoring_dimensions": 6,
+  "scoring_dimensions": 7,
   "adapters": [
     "direct_qa",
     "openai",
