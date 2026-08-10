@@ -464,6 +464,7 @@ aobench report json [OPTIONS] RUN_DIR
 |-------------------|-------|---------|-------------|
 | `RUN_DIR` | | (required) | Path to run directory, e.g. `data/runs/run_…` |
 | `--output` | `-o` | `<run_dir>/run_summary.json` | Output file path |
+| `--json` | | `False` | Emit JSON instead of a table. Prints the summary dict to stdout with no banner and no human-readable lines — the file is still written as usual. Useful for wiring into CI. |
 | `-h`, `--help` | | | Show help and exit |
 
 **Output file:** `run_summary.json` with:
@@ -497,6 +498,7 @@ Full category definitions and detection heuristics: `benchmark/configs/error_tax
 ```bash
 aobench report json data/runs/run_20260318_135249_14013e8c
 aobench report json data/runs/run_20260318_135249_14013e8c -o reports/summary.json
+aobench report json data/runs/run_20260318_135249_14013e8c --json | jq '.mean_aggregate_score'
 ```
 
 #### report slices
@@ -567,11 +569,13 @@ aobench compare runs [OPTIONS] RUN_A RUN_B
 | `RUN_A`  | Baseline run directory |
 | `RUN_B`  | Comparison run directory |
 | `--output` / `-o` | Optional path to write diff JSON |
+| `--json` | Emit JSON instead of a table. Prints the same diff object to stdout with no banner and no tables — nothing else. Combine with `--output` to get both a file and stdout JSON. |
 
 **Example:**
 
 ```bash
 aobench compare runs data/runs/run_20260318_130835_abc data/runs/run_20260318_143040_def
+aobench compare runs data/runs/run_20260318_130835_abc data/runs/run_20260318_143040_def --json | jq '.summary'
 ```
 
 **Output:**

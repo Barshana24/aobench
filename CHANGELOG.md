@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Added — `--json` for `report json` and `compare runs`
+
+- **`aobench report json <run_dir> --json`** and **`aobench compare runs <a> <b>
+  --json`** now print the underlying summary/diff object as a single JSON value on
+  stdout, with no banner and no human-readable table — the same convention every
+  `aobench list` subcommand already uses. Wiring either command into a CI step
+  previously meant scraping formatted text; both now pipe cleanly into `jq` or any
+  JSON consumer. Default (no flag) output is unchanged.
+
 ### Fixed — `aobench clear run <dir>` did not work as documented
 
 - **`aobench clear run data/runs/<run_id>` errored.** That positional form is what

@@ -32,6 +32,7 @@ def compare_runs(
     show_slices: Annotated[bool, typer.Option("--show-slices", help="Print role×QCAT slice comparison table")] = False,
     label_a: Annotated[str | None, typer.Option("--label-a", help="Label for run_a in output")] = None,
     label_b: Annotated[str | None, typer.Option("--label-b", help="Label for run_b in output")] = None,
+    as_json: Annotated[bool, typer.Option("--json", help="Emit JSON instead of a table.")] = False,
 ) -> None:
     """Show score deltas between two runs (run_b minus run_a).
 
@@ -126,6 +127,41 @@ def compare_runs(
     hard_fail_count_a = sum(1 for t in filtered_tasks_a if t.get("hard_fail"))
     hard_fail_count_b = sum(1 for t in filtered_tasks_b if t.get("hard_fail"))
 
+    # Build slices for JSON (always)
+    slices_a_json = role_category_table({"tasks": filtered_tasks_a})
+    slices_b_json = role_category_table({"tasks": filtered_tasks_b})
+
+    result = {
+        "run_a": label_a_str,
+        "run_b": label_b_str,
+        "mean_score_a": mean_a,
+        "mean_score_b": mean_b,
+        "mean_delta": mean_delta,
+        "filter_qcat": qcat,
+        "filter_role": role,
+        "delta_threshold": delta_threshold,
+        "task_count_a": len(filtered_tasks_a),
+        "task_count_b": len(filtered_tasks_b),
+        "tasks": rows,
+        "summary": {
+            "improved": improved,
+            "regressed": regressed,
+            "unchanged": unchanged,
+            "new": new_tasks,
+            "removed": removed_tasks,
+            "new_hard_fails": new_hard_fails,
+            "resolved_hard_fails": resolved_hard_fails,
+        },
+        "slices_a": slices_a_json,
+        "slices_b": slices_b_json,
+    }
+
+    if as_json:
+        if output:
+            Path(output).write_text(json.dumps(result, indent=2))
+        typer.echo(json.dumps(result))
+        return
+
     # Print header
     typer.echo(f"\nBaseline : {label_a_str}")
     typer.echo(f"Compare  : {label_b_str}")
@@ -207,35 +243,6 @@ def compare_runs(
                 row_str += f"{cell:>{col_w}}"
             typer.echo(row_str)
 
-    # Build slices for JSON (always)
-    slices_a_json = role_category_table({"tasks": filtered_tasks_a})
-    slices_b_json = role_category_table({"tasks": filtered_tasks_b})
-
     if output:
-        result = {
-            "run_a": label_a_str,
-            "run_b": label_b_str,
-            "mean_score_a": mean_a,
-            "mean_score_b": mean_b,
-            "mean_delta": mean_delta,
-            "filter_qcat": qcat,
-            "filter_role": role,
-            "delta_threshold": delta_threshold,
-            "task_count_a": len(filtered_tasks_a),
-            "task_count_b": len(filtered_tasks_b),
-            "tasks": rows,
-            "summary": {
-                "improved": improved,
-                "regressed": regressed,
-                "unchanged": unchanged,
-                "new": new_tasks,
-                "removed": removed_tasks,
-                "new_hard_fails": new_hard_fails,
-                "resolved_hard_fails": resolved_hard_fails,
-            },
-            "slices_a": slices_a_json,
-            "slices_b": slices_b_json,
-        }
-        from pathlib import Path
         Path(output).write_text(json.dumps(result, indent=2))
         typer.echo(f"\nDiff written: {output}")

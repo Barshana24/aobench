@@ -166,3 +166,38 @@ def test_compare_runs_show_slices(tmp_path):
     result = runner.invoke(app, ["compare", "runs", str(run_dir_a), str(run_dir_b), "--show-slices"])
     assert result.exit_code == 0
     assert "Role × QCAT" in result.output
+
+
+def test_compare_runs_json_flag_emits_clean_json_on_stdout(tmp_path):
+    run_dir_a = _make_run_dir(tmp_path, "run_a", _TASKS_A)
+    run_dir_b = _make_run_dir(tmp_path, "run_b", _TASKS_B)
+
+    runner = CliRunner()
+    result = runner.invoke(app, ["compare", "runs", str(run_dir_a), str(run_dir_b), "--json"])
+    assert result.exit_code == 0
+
+    # Nothing but a single JSON object on stdout: no banner, no table, no trailing blank line.
+    assert result.output.count("\n") == 1
+    data = json.loads(result.output)
+
+    assert data["summary"]["improved"] == 2
+    assert data["summary"]["regressed"] == 2
+    assert data["summary"]["resolved_hard_fails"] == 1
+    assert "slices_a" in data
+    assert "slices_b" in data
+
+
+def test_compare_runs_json_flag_matches_output_file(tmp_path):
+    run_dir_a = _make_run_dir(tmp_path, "run_a", _TASKS_A)
+    run_dir_b = _make_run_dir(tmp_path, "run_b", _TASKS_B)
+    out = tmp_path / "diff.json"
+
+    runner = CliRunner()
+    result = runner.invoke(app, [
+        "compare", "runs", str(run_dir_a), str(run_dir_b), "--json", "--output", str(out),
+    ])
+    assert result.exit_code == 0
+
+    stdout_data = json.loads(result.output)
+    file_data = json.loads(out.read_text())
+    assert stdout_data == file_data
