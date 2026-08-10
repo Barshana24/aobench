@@ -31,6 +31,16 @@ _SCORERS = [OutcomeScorer(), GovernanceScorer(), EfficiencyScorer(), ToolUseScor
 
 
 class AggregateScorer:
+    @staticmethod
+    def scorers() -> list[Any]:
+        """The per-dimension scorers evaluated on every trace.
+
+        The ``workflow`` dimension is deliberately absent: ``WorfEvalScorer`` compares
+        two graphs rather than a task/trace pair, so it runs on its own path below and
+        only when the task carries a ``ground_truth_workflow``.
+        """
+        return list(_SCORERS)
+
     def __init__(self, scoring_config_path: str | Path) -> None:
         with Path(scoring_config_path).open() as f:
             raw: dict[str, Any] = yaml.safe_load(f)

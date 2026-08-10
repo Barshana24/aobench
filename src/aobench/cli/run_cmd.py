@@ -417,7 +417,10 @@ def run_all(
     """
     configure_logging("DEBUG" if verbose else "WARNING")
 
+    from aobench.cli._common import resolve_root
     from aobench.loaders.task_loader import load_tasks_from_dir
+
+    root = resolve_root(benchmark_root)
 
     # Determine which model tokens to iterate over.
     # --models takes precedence over --adapter when provided.
@@ -436,13 +439,13 @@ def run_all(
             raise typer.Exit(1)
         model_tokens = None  # signal: use legacy adapter path
 
-    specs_dir = Path(benchmark_root) / "tasks" / "specs"
+    specs_dir = root / "tasks" / "specs"
     all_tasks = load_tasks_from_dir(specs_dir)
     if not all_tasks:
         typer.echo(f"No tasks found in {specs_dir}", err=True)
         raise typer.Exit(1)
 
-    split_ids = _load_split_ids(split, benchmark_root)
+    split_ids = _load_split_ids(split, str(root))
     if split_ids is not None:
         tasks = [t for t in all_tasks if t.task_id in split_ids]
         typer.echo(f"Split '{split}': {len(tasks)}/{len(all_tasks)} tasks selected.")
@@ -466,7 +469,7 @@ def run_all(
                 adapter_label=token,
                 adapter_obj=adapter_obj,
                 tasks=tasks,
-                benchmark_root=benchmark_root,
+                benchmark_root=str(root),
                 output_root=token_output,
                 split=split,
                 langfuse=langfuse,
@@ -480,7 +483,7 @@ def run_all(
             adapter_label=adapter,
             adapter_obj=adapter_obj,
             tasks=tasks,
-            benchmark_root=benchmark_root,
+            benchmark_root=str(root),
             output_root=output_root,
             split=split,
             langfuse=langfuse,
@@ -504,8 +507,13 @@ def run_task(
     """Run a single benchmark task."""
     configure_logging("DEBUG" if verbose else "WARNING")
 
+    from aobench.cli._common import require_env_dir, require_task_spec, resolve_root
     from aobench.loaders.task_loader import load_task
     from aobench.runners.runner import BenchmarkRunner
+
+    root = resolve_root(benchmark_root)
+    require_task_spec(root, task_id)
+    require_env_dir(root, env_id)
 
     try:
         adapter_obj = _build_adapter(adapter)
@@ -519,7 +527,7 @@ def run_task(
 
     # Apply system-prompt prefix if provided
     if system_prompt_prefix is not None and hasattr(adapter_obj, "_system_prompt"):
-        task_spec = load_task(Path(benchmark_root) / "tasks" / "specs" / f"{task_id}.json")
+        task_spec = load_task(root / "tasks" / "specs" / f"{task_id}.json")
         prefix = _load_system_prompt_prefix(system_prompt_prefix, task_spec)
         if prefix:
             adapter_obj._system_prompt = prefix + "\n\n" + adapter_obj._system_prompt
@@ -527,7 +535,7 @@ def run_task(
     exporter = _build_exporter(langfuse)
     runner = BenchmarkRunner(
         adapter=adapter_obj,
-        benchmark_root=Path(benchmark_root),
+        benchmark_root=root,
         output_root=Path(output_root),
         exporter=exporter,
     )

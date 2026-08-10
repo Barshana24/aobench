@@ -1,3 +1,15 @@
+---
+title: "AOBench — an open-source benchmark for AI agents that operate HPC systems"
+description: "AOBench is an open-source Python benchmark for evaluating AI agents that operate HPC systems: 88 tasks, 29 deterministic environment snapshots, RBAC-enforced, trace-scored, reproducible without a live cluster."
+keywords:
+  - HPC agent benchmark
+  - AI agent evaluation
+  - LLM benchmark HPC
+  - SLURM agent
+  - RBAC agent evaluation
+  - AIOps benchmark
+---
+
 <div class="hero" markdown>
 
 <p class="hero-label">Open Source · HPC Benchmarking · AI Evaluation</p>
@@ -5,20 +17,21 @@
 # AOBench
 
 <p class="hero-sub">
-Benchmark framework for evaluating AI agents in High-Performance Computing (HPC) environments —
-role-aware, tool-using, trace-based, and reproducible.
+The open-source benchmark for AI agents that operate High-Performance Computing systems —
+role-aware, permission-enforced, tool-using, trace-scored, and reproducible on a laptop.
 </p>
 
 <div class="badge-row" markdown>
 [![Python](https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4CAF50)](https://github.com/MSKazemi/aobench/blob/main/LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-1a237e)](https://github.com/MSKazemi/aobench/releases)
-[![Tasks](https://img.shields.io/badge/tasks-30-FF6F00)](benchmark/tasks/)
-[![Environments](https://img.shields.io/badge/environments-20-0288D1)](benchmark/environments/)
+[![Version](https://img.shields.io/badge/version-0.4.1-1a237e)](https://github.com/MSKazemi/aobench/releases)
+[![Tasks](https://img.shields.io/badge/tasks-88-FF6F00)](reference/task-catalog.md)
+[![Environments](https://img.shields.io/badge/environments-29-0288D1)](reference/environment-catalog.md)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21854862.svg)](https://doi.org/10.5281/zenodo.21854862)
 </div>
 
 <div class="btn-row" markdown>
-[Get Started](framework/overview.md){ .btn .btn-primary }
+[Quickstart — 5 minutes](getting-started/quickstart.md){ .btn .btn-primary }
 [View on GitHub](https://github.com/MSKazemi/aobench){ .btn .btn-secondary }
 </div>
 
@@ -26,7 +39,28 @@ role-aware, tool-using, trace-based, and reproducible.
 
 ---
 
-## Five Benchmark Principles
+## What AOBench is
+
+- **AOBench (Agent Operations Benchmark) is an open-source Python benchmark framework for
+  evaluating AI agents that operate High-Performance Computing (HPC) systems.**
+- **AOBench helps researchers and engineers measure** whether an agent completes HPC
+  operational tasks — job scheduling, telemetry interpretation, energy reasoning, policy
+  enforcement — with the right tools, roles, and permissions.
+- **Use AOBench when you need** reproducible, role-aware, permission-enforced evaluation of
+  HPC agents against deterministic environment snapshots instead of live clusters.
+- **AOBench differs from general-purpose LLM-agent benchmarks** because it is domain-specific
+  to HPC operations, enforces role-based access control, and scores the full execution trace
+  rather than only the final answer.
+- **AOBench is not intended for** measuring general-purpose reasoning, software-engineering,
+  or web-browsing agents, and it does not execute against real production clusters.
+
+Six of the 29 environments and eight of the 88 tasks are built from **real operational data**
+from CINECA's 980-node Marconi100 Tier-0 supercomputer (the public
+[M100 ExaData release](guides/m100_environments.md)) — not synthesised.
+
+---
+
+## Five benchmark principles
 
 | Principle | Meaning |
 |-----------|---------|
@@ -38,30 +72,49 @@ role-aware, tool-using, trace-based, and reproducible.
 
 ---
 
-## Quick Start
+## Quick start
 
-AOBench installs from source — see the [Installation guide](getting-started/installation.md)
-for the Docker and Compose paths.
+No API key and no cluster access are needed for the first run.
 
 ```bash
 git clone https://github.com/MSKazemi/aobench.git && cd aobench
-uv sync --extra openai          # or: pip install -e ".[openai]"
+uv sync --all-extras          # or: pip install -e ".[dev]"
 
-# Validate all task specs and environment bundles
-aobench validate benchmark
-
-# Run one task end-to-end with the zero-tool baseline
+aobench validate benchmark    # check all 88 tasks and 29 environments load
+aobench list tasks --qcat JOB # browse the corpus
 aobench run task --task JOB_USR_001 --env env_01 --adapter direct_qa
-
-# Generate a report
-aobench report json --run data/runs/<run-id>
 ```
+
+Expected output of the run command:
+
+```text
+Running task=JOB_USR_001  env=env_01  adapter=direct_qa
+
+Result: aggregate_score=0.3340  hard_fail=False
+  outcome=0.24  tool_use=0.0  governance=1.0  efficiency=1.0
+
+Run ID: run_20260810_132408_8a2b57c7
+```
+
+`direct_qa` is the deliberately tool-free reference baseline — `tool_use=0.0` is the
+point of it, and `0.334` is the floor a real agent should beat. See the
+[quickstart](getting-started/quickstart.md) for the full walkthrough and the
+[evaluate-your-own-agent guide](guides/evaluating-your-own-agent.md) to plug in your
+system.
 
 ---
 
-## Where to Go Next
+## Where to go next
 
 <div class="grid cards" markdown>
+
+-   :material-rocket-launch: **Get started**
+
+    ---
+
+    Install, run your first task, and read a scorecard in five minutes.
+
+    [:octicons-arrow-right-24: Quickstart](getting-started/quickstart.md)
 
 -   :material-book-open-variant: **Framework**
 
@@ -71,28 +124,37 @@ aobench report json --run data/runs/<run-id>
 
     [:octicons-arrow-right-24: Read the framework docs](framework/overview.md)
 
--   :material-console: **Guides**
+-   :material-flask: **For researchers**
 
     ---
 
-    Adapter setup, tool reference, Langfuse observability integration, and CLI usage.
+    Datasheet, benchmark card, reproducibility checklist, related work, and how to cite.
 
-    [:octicons-arrow-right-24: Browse guides](guides/adapters-and-tools.md)
+    [:octicons-arrow-right-24: Research surfaces](about/datasheet.md)
 
--   :material-code-tags: **Contributing**
+-   :material-account-group: **Contribute**
 
     ---
 
-    Add tasks, environments, adapters, or scorers. Codebase map for new contributors.
+    Good first issues, how to add a task, an environment, an adapter, or a scorer.
 
     [:octicons-arrow-right-24: How to contribute](about/contributing.md)
 
--   :material-github: **GitHub**
-
-    ---
-
-    Source code, issue tracker, and releases.
-
-    [:octicons-arrow-right-24: MSKazemi/aobench](https://github.com/MSKazemi/aobench)
-
 </div>
+
+---
+
+## Frequently asked
+
+**Do I need an HPC cluster to run AOBench?** No. Every task runs against a frozen snapshot
+bundle with mock tools, on a laptop.
+
+**Which models can I evaluate?** Anything reachable through the `openai`, `anthropic`, or
+`mcp` adapters, plus the tool-free `direct_qa` reference baseline.
+
+**Is it just another LLM leaderboard?** No — AOBench scores the whole trace across six
+dimensions and hard-fails RBAC violations, so an agent that produces the right answer by
+overstepping its role scores zero.
+
+More in the [FAQ](about/faq.md) and the
+[comparison with other agent benchmarks](about/comparison.md).

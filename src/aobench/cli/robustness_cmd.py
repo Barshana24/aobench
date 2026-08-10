@@ -62,9 +62,18 @@ def robustness_task(  # noqa: PLR0913
     Recommended: --n 8 or higher to compute all standard k values (1, 2, 4, 8).
     """
     from aobench.adapters.direct_qa_adapter import DirectQAAdapter  # noqa: PLC0415
+    from aobench.cli._common import (  # noqa: PLC0415
+        require_env_dir,
+        require_task_spec,
+        resolve_root,
+    )
     from aobench.runners.runner import BenchmarkRunner  # noqa: PLC0415
     from aobench.scorers.robustness_scorer import compute_robustness  # noqa: PLC0415
     from aobench.utils.ids import make_run_id  # noqa: PLC0415
+
+    root = resolve_root(benchmark_root)
+    require_task_spec(root, task)
+    require_env_dir(root, env)
 
     # Build adapter
     if adapter == "direct_qa":
@@ -88,7 +97,7 @@ def robustness_task(  # noqa: PLR0913
 
     runner = BenchmarkRunner(
         adapter=_adapter,
-        benchmark_root=benchmark_root,
+        benchmark_root=root,
         output_root=output_root,
     )
 
@@ -211,9 +220,11 @@ def robustness_all(  # noqa: PLR0913
     Use --split dev for a quick smoke-test (12 tasks × N runs).
     Use --models to iterate over multiple models in one invocation.
     """
+    from aobench.cli._common import resolve_root  # noqa: PLC0415
     from aobench.loaders.task_loader import load_tasks_from_dir  # noqa: PLC0415
 
-    specs_dir = Path(benchmark_root) / "tasks" / "specs"
+    root = resolve_root(benchmark_root)
+    specs_dir = root / "tasks" / "specs"
     all_tasks = load_tasks_from_dir(specs_dir)
     if not all_tasks:
         typer.echo(f"No tasks found in {specs_dir}", err=True)
