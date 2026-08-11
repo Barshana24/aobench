@@ -12,6 +12,15 @@
   out explicitly, and a second table breaks out the M100-grounded subset on its own, so
   it stays visible how much of any cell's coverage is real hardware data versus
   synthetic. `--json` matches every other `aobench list` subcommand.
+- The matrix axes are the **union** of the documented QCATs/roles and whatever the corpus
+  actually contains, so a task carrying an unrecognised or blank `qcat`/`role` widens the
+  matrix instead of vanishing from it. The header states the corpus size, so a dropped
+  task would have made the command under-report coverage while claiming to be complete.
+  Deciding whether such a value is legal stays with `aobench validate benchmark`.
+- **Empty cells (no task at all) are now reported separately from thin ones.** An empty
+  cell is a coverage gap and a thin cell is a single point of failure; the two are worth
+  distinguishing when the point of the command is to state coverage honestly. `--json`
+  gains `empty_cells`, `cells_total`, and `m100_grounded_total`.
 
 ### Changed — `scripts/` is now under the lint gate
 

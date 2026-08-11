@@ -176,6 +176,55 @@ def test_list_coverage_m100_subset_matches_grounded_task_count() -> None:
     grounded_count = len(json.loads(grounded_result.output))
 
     assert sum(row["total"] for row in payload["m100_grounded_counts"]) == grounded_count
+    assert payload["m100_grounded_total"] == grounded_count
+
+
+def test_list_coverage_counts_tasks_with_an_unknown_qcat_or_role(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """No task may be dropped from the matrix for carrying an unrecognised qcat/role.
+
+    The header states the corpus size, so a task the axes do not recognise must widen
+    the matrix rather than disappear from it -- otherwise ``list coverage`` under-reports
+    coverage while claiming to be complete, which is the one thing this command exists
+    to get right. CONTRIBUTING.md actively invites new tasks, so an unfamiliar qcat or a
+    typo'd role is a matter of time; judging whether the value is *legal* is the job of
+    ``aobench validate benchmark``, not of a read-only listing.
+    """
+    spec_dir = tmp_path / "tasks" / "specs"
+    spec_dir.mkdir(parents=True)
+    for task_id, qcat, role in [
+        ("JOB_USR_001", "JOB", "scientific_user"),
+        ("NEWQ_USR_001", "NEWQ", "scientific_user"),  # qcat not in _QCAT_DESCRIPTIONS
+        ("JOB_OPS_001", "JOB", "ml_engineer"),  # role not in _ROLE_CODES
+        ("BLANK_001", "", ""),  # neither field usable
+    ]:
+        (spec_dir / f"{task_id}.json").write_text(
+            json.dumps({"task_id": task_id, "qcat": qcat, "role": role})
+        )
+
+    monkeypatch.setenv("AOBENCH_BENCHMARK_ROOT", str(tmp_path))
+    payload = json.loads(runner.invoke(app, ["list", "coverage", "--json"]).output)
+
+    assert payload["total_tasks"] == 4
+    assert sum(row["total"] for row in payload["qcat_role_counts"]) == 4
+
+    by_qcat = {row["qcat"]: row for row in payload["qcat_role_counts"]}
+    assert by_qcat["NEWQ"]["USR"] == 1, "an unknown qcat must get its own row"
+    assert by_qcat["JOB"]["ML_ENGINEER"] == 1, "an unknown role must get its own column"
+    assert by_qcat["(unset)"]["(UNSET)"] == 1, "a blank qcat/role must still be counted"
+
+    # The documented QCATs stay present even with nothing in them, and an empty cell is
+    # reported as a gap rather than folded in with the merely-thin ones.
+    assert by_qcat["ENERGY"]["total"] == 0
+    assert "ENERGY_FAC" in payload["empty_cells"]
+    assert set(payload["empty_cells"]) <= set(payload["thin_cells"])
+
+
+def test_list_coverage_help_reads_like_its_neighbours() -> None:
+    result = runner.invoke(app, ["list", "coverage", "--help"])
+    assert result.exit_code == 0, result.output
+    assert "--json" in result.output
 
 
 # ---------------------------------------------------------------------------

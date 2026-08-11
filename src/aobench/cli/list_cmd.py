@@ -63,6 +63,20 @@ _ROLE_CODES: dict[str, str] = {
     "system_designer": "DES",
 }
 
+# Stand-in axis label for a spec whose qcat or role is missing or blank, so such a task
+# is still counted somewhere visible instead of vanishing from the coverage matrix.
+_UNSET = "(unset)"
+
+
+def _is_m100_grounded(spec: dict[str, Any]) -> bool:
+    """True when *spec* is a task grounded in real Marconi100 ExaData.
+
+    The ``M100_`` task_id prefix is the corpus-wide convention for grounded tasks. Both
+    ``list tasks --grounded`` and ``list coverage`` go through here so the two can never
+    drift apart on what "grounded" means.
+    """
+    return str(spec.get("task_id", "")).startswith("M100_")
+
 
 def _load_specs(root: Path) -> list[dict[str, Any]]:
     spec_dir = root / "tasks" / "specs"
@@ -138,7 +152,7 @@ def list_tasks(
             return False
         if env and str(spec.get("environment_id", "")) != env:
             return False
-        return not (grounded and not str(spec.get("task_id", "")).startswith("M100_"))
+        return not (grounded and not _is_m100_grounded(spec))
 
     rows = [
         {
@@ -305,45 +319,78 @@ def list_coverage(
     as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
     benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
 ) -> None:
-    """Show the QCAT x role task-count matrix, and call out the thin cells."""
+    """Show the QCAT x role task-count matrix, and call out the thin and empty cells."""
     # Counts come from each TaskSpec's own qcat/role fields, not from parsing task_id
-    # strings: the 8 M100_* tasks carry an extra "M100_" segment that shifts every
-    # position after it, so a filename-parsing approach silently miscounts them.
-    # M100 tasks are otherwise ordinary tasks with real qcat/role metadata, so they're
-    # included in the main matrix like any other task; a second table below breaks out
-    # just the M100-grounded subset, so it stays visible how much of any cell's
-    # coverage is grounded in real Marconi100 data versus synthetic.
+    # strings: the M100_* tasks carry an extra "M100_" segment that shifts every position
+    # after it, so a filename-parsing approach silently miscounts them.
+    #
+    # The axes are the *union* of the documented QCATs/roles and whatever the corpus
+    # actually contains. A task carrying an unrecognised or blank qcat/role therefore
+    # still lands in a visible row or column, rather than being dropped from a matrix
+    # whose header claims to be the size of the corpus. Deciding whether such a value is
+    # *legal* belongs to `aobench validate benchmark`; `list` only ever describes what is
+    # actually there, exactly as `list qcats` and `list roles` already do.
+    #
+    # M100 tasks are otherwise ordinary tasks with real qcat/role metadata, so they are
+    # included in the main matrix like any other task; the second table below breaks out
+    # just the M100-grounded subset, so it stays visible how much of any cell's coverage
+    # is grounded in real Marconi100 data versus synthetic. The two tables therefore
+    # overlap by design -- the second is a subset of the first, not an addition to it.
     specs = _load_specs(resolve_root(benchmark_root))
 
-    qcats = sorted(_QCAT_DESCRIPTIONS)
-    roles = list(_ROLE_CODES)  # fixed, documented order rather than alphabetical
-    codes = [_ROLE_CODES[r] for r in roles]
+    def _qcat_of(spec: dict[str, Any]) -> str:
+        return str(spec.get("qcat") or "").strip() or _UNSET
 
-    def _build_matrix(rows_in: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
+    def _role_of(spec: dict[str, Any]) -> str:
+        return str(spec.get("role") or "").strip() or _UNSET
+
+    qcats = sorted(set(_QCAT_DESCRIPTIONS) | {_qcat_of(s) for s in specs})
+    # Documented roles keep their documented order; anything else the corpus contains is
+    # appended alphabetically so it is visible rather than silently uncounted.
+    extra_roles = sorted({_role_of(s) for s in specs} - set(_ROLE_CODES))
+    roles = [*_ROLE_CODES, *extra_roles]
+
+    # Short column headers. Undocumented roles fall back to their own name; the loop
+    # guarantees the headers stay distinct so two roles can never share a column.
+    codes_by_role: dict[str, str] = {}
+    for role in roles:
+        code = _ROLE_CODES.get(role) or role.upper()
+        while code in codes_by_role.values():
+            code += "*"
+        codes_by_role[role] = code
+    codes = [codes_by_role[r] for r in roles]
+
+    def _build_matrix(specs_in: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
         matrix: dict[str, dict[str, int]] = {q: dict.fromkeys(roles, 0) for q in qcats}
-        for s in rows_in:
-            qcat, role = str(s.get("qcat", "")), str(s.get("role", ""))
-            if qcat in matrix and role in roles:
-                matrix[qcat][role] += 1
+        for spec in specs_in:
+            matrix[_qcat_of(spec)][_role_of(spec)] += 1
         return matrix
 
     matrix = _build_matrix(specs)
-    m100_matrix = _build_matrix([s for s in specs if str(s.get("task_id", "")).startswith("M100_")])
+    m100_matrix = _build_matrix([s for s in specs if _is_m100_grounded(s)])
 
     def _rows(m: dict[str, dict[str, int]]) -> list[dict[str, Any]]:
-        out = []
+        out: list[dict[str, Any]] = []
         for q in qcats:
             row: dict[str, Any] = {"qcat": q}
-            row.update({_ROLE_CODES[r]: m[q][r] for r in roles})
+            row.update({codes_by_role[r]: m[q][r] for r in roles})
             row["total"] = sum(m[q][r] for r in roles)
             out.append(row)
         return out
 
     main_rows = _rows(matrix)
     total_tasks = sum(r["total"] for r in main_rows)
+    cells_total = len(qcats) * len(roles)
+    # An empty cell is a coverage gap and a thin cell is a single point of failure; both
+    # are reported, and empty cells are a subset of thin ones.
     thin_cells = sorted(
-        f"{q}_{_ROLE_CODES[r]}" for q in qcats for r in roles if matrix[q][r] <= 1
+        f"{q}_{codes_by_role[r]}" for q in qcats for r in roles if matrix[q][r] <= 1
     )
+    empty_cells = sorted(
+        f"{q}_{codes_by_role[r]}" for q in qcats for r in roles if not matrix[q][r]
+    )
+    m100_rows = _rows(m100_matrix)
+    m100_total = sum(r["total"] for r in m100_rows)
 
     if as_json:
         typer.echo(
@@ -351,26 +398,33 @@ def list_coverage(
                 {
                     "qcat_role_counts": main_rows,
                     "total_tasks": total_tasks,
+                    "cells_total": cells_total,
                     "thin_cells": thin_cells,
-                    "m100_grounded_counts": _rows(m100_matrix),
+                    "empty_cells": empty_cells,
+                    "m100_grounded_counts": m100_rows,
+                    "m100_grounded_total": m100_total,
                 },
                 indent=2,
             )
         )
         return
 
-    typer.echo(f"QCAT x role task counts ({total_tasks} tasks)\n")
+    typer.echo(f"QCAT x role task counts ({total_tasks} task{'s' if total_tasks != 1 else ''})\n")
     _emit(main_rows, ["qcat", *codes, "total"], False)
 
     typer.echo(
-        f"\nThin cells ({len(thin_cells)}, <=1 task): {', '.join(thin_cells)}"
+        f"\nThin cells ({len(thin_cells)} of {cells_total}, <=1 task): {', '.join(thin_cells)}"
         if thin_cells
-        else "\nNo thin cells."
+        else f"\nNo thin cells: all {cells_total} have more than one task."
     )
+    if empty_cells:
+        typer.echo(
+            f"Empty cells ({len(empty_cells)} of {cells_total}, no task at all): "
+            f"{', '.join(empty_cells)}"
+        )
 
-    grounded_rows = [r for r in _rows(m100_matrix) if r["total"] > 0]
     typer.echo(
-        f"\nM100-grounded tasks ({sum(r['total'] for r in grounded_rows)} total, "
+        f"\nM100-grounded tasks ({m100_total} of the {total_tasks} above, "
         "real Marconi100 ExaData):\n"
     )
-    _emit(grounded_rows, ["qcat", *codes, "total"], False)
+    _emit([r for r in m100_rows if r["total"] > 0], ["qcat", *codes, "total"], False)
