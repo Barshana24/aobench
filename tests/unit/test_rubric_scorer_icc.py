@@ -15,6 +15,7 @@ from aobench.scorers.rubric_scorer import (
 # compute_icc
 # ---------------------------------------------------------------------------
 
+
 class TestComputeICC:
     def test_high_agreement_near_one(self):
         """Near-identical per-judge scores should yield ICC close to 1."""
@@ -30,6 +31,7 @@ class TestComputeICC:
     def test_random_disagreement_low(self):
         """Judges who disagree randomly should yield low ICC."""
         import random
+
         rng = random.Random(42)
         ratings = [
             [rng.random() for _ in range(6)],
@@ -55,10 +57,64 @@ class TestComputeICC:
         result = compute_icc(ratings)
         assert isinstance(result, float)
 
+    def test_selects_icc2_not_icc1(self):
+        """``compute_icc`` must return ICC(A,1) — pingouin's ICC2 — not ICC1.
+
+        Every other test in this class asserts a threshold (``> 0.90``, ``< 0.80``),
+        and every one of them passes with *either* statistic. That is how the scorer
+        computed ICC1 while its docstrings, its error message, the docs and this
+        module's own title all said ICC(A,1): nothing pinned the choice.
+
+        ICC1 is one-way random effects — it folds systematic per-judge bias into the
+        error term. ICC(A,1)/ICC2 is two-way random effects with absolute agreement,
+        which models that bias as a rater main effect. So the two only diverge when a
+        rater main effect exists: these ratings give each judge a constant offset, plus
+        small per-cell jitter to keep the residual variance non-zero.
+        """
+        pd = pytest.importorskip("pandas")
+        pg = pytest.importorskip("pingouin")
+
+        # base dimension means + per-judge offset + jitter; all within a rubric's [0, 1]
+        ratings = [
+            [0.21, 0.30, 0.46, 0.55, 0.68],
+            [0.36, 0.51, 0.61, 0.76, 0.87],
+            [0.08, 0.18, 0.31, 0.40, 0.53],
+        ]
+
+        table = pg.intraclass_corr(
+            data=pd.DataFrame(
+                [
+                    {"target": f"dim_{d}", "rater": f"judge_{j}", "rating": value}
+                    for j, judge in enumerate(ratings)
+                    for d, value in enumerate(judge)
+                ]
+            ),
+            targets="target",
+            raters="rater",
+            ratings="rating",
+            nan_policy="raise",
+        )
+        icc1 = float(table[table["Type"] == "ICC1"]["ICC"].values[0])
+        icc2 = float(table[table["Type"] == "ICC2"]["ICC"].values[0])
+
+        # Guard the fixture itself: if a future pingouin makes these coincide, this test
+        # would silently stop discriminating and quietly pass on the wrong statistic.
+        assert abs(icc2 - icc1) > 0.02, (
+            f"fixture no longer separates the two statistics (ICC1={icc1:.4f}, "
+            f"ICC2={icc2:.4f}) — it cannot detect a regression to ICC1"
+        )
+
+        result = compute_icc(ratings)
+        assert result == pytest.approx(icc2, abs=1e-6), (
+            f"compute_icc returned {result:.4f}; expected ICC2/ICC(A,1)={icc2:.4f}, "
+            f"not ICC1={icc1:.4f}"
+        )
+
 
 # ---------------------------------------------------------------------------
 # validate_rubric_reliability
 # ---------------------------------------------------------------------------
+
 
 class TestValidateRubricReliability:
     def _high_agreement_ratings(self):
@@ -70,6 +126,7 @@ class TestValidateRubricReliability:
 
     def _low_agreement_ratings(self):
         import random
+
         rng = random.Random(7)
         return [[rng.random() for _ in range(6)] for _ in range(3)]
 
@@ -92,11 +149,13 @@ class TestValidateRubricReliability:
 # rubric_score ICC gate integration (mocked judge)
 # ---------------------------------------------------------------------------
 
+
 class TestRubricScoreICCGate:
     """Test that rubric_score raises RubricReliabilityError when ICC < threshold."""
 
     def _make_judge_response(self, dim_scores: dict[str, float], normalized: float) -> str:
         import json
+
         dims = {
             name: {
                 "path_chosen": None,
@@ -107,13 +166,15 @@ class TestRubricScoreICCGate:
             }
             for name, score in dim_scores.items()
         }
-        return json.dumps({
-            "dimensions": dims,
-            "total_score": sum(dim_scores.values()),
-            "max_total": len(dim_scores),
-            "normalized_score": normalized,
-            "overall_rationale": "test rationale",
-        })
+        return json.dumps(
+            {
+                "dimensions": dims,
+                "total_score": sum(dim_scores.values()),
+                "max_total": len(dim_scores),
+                "normalized_score": normalized,
+                "overall_rationale": "test rationale",
+            }
+        )
 
     def test_single_judge_no_gate(self, tmp_path):
         """n_judges=1 should never trigger the ICC gate."""
@@ -129,6 +190,7 @@ class TestRubricScoreICCGate:
         }
         rubric_file = tmp_path / f"{rubric_id}.yaml"
         import yaml
+
         rubric_file.write_text(yaml.dump(rubric))
 
         response = self._make_judge_response({"dim_a": 0.5, "dim_b": 0.5}, 0.5)
@@ -150,7 +212,10 @@ class TestRubricScoreICCGate:
         from aobench.scorers.rubric_scorer import rubric_score
 
         rubric_id = "test_icc_rubric2"
-        rubric = {"rubric_id": rubric_id, "dimensions": {f"d{i}": {"max_score": 1} for i in range(5)}}
+        rubric = {
+            "rubric_id": rubric_id,
+            "dimensions": {f"d{i}": {"max_score": 1} for i in range(5)},
+        }
         (tmp_path / f"{rubric_id}.yaml").write_text(yaml.dump(rubric))
 
         # High ICC requires high between-dimension variance AND low within-dimension
@@ -183,7 +248,10 @@ class TestRubricScoreICCGate:
         from aobench.scorers.rubric_scorer import rubric_score
 
         rubric_id = "test_icc_rubric3"
-        rubric = {"rubric_id": rubric_id, "dimensions": {f"d{i}": {"max_score": 1} for i in range(6)}}
+        rubric = {
+            "rubric_id": rubric_id,
+            "dimensions": {f"d{i}": {"max_score": 1} for i in range(6)},
+        }
         (tmp_path / f"{rubric_id}.yaml").write_text(yaml.dump(rubric))
 
         rng = random.Random(99)

@@ -2,11 +2,40 @@
 
 ## Unreleased
 
-### Fixed — ICC reliability gate selection
+### Fixed — the rubric reliability gate now computes the statistic it documents
 
-- **`rubric_scorer.py`** now explicitly selects Pingouin's `ICC2` (two-way random effects, absolute agreement, single rater), matching `compute_icc.py` and the documented `ICC(A,1)` McGraw & Wong convention.
+- **`rubric_scorer.compute_icc` selected `ICC1` while everything around it said
+  `ICC(A,1)`** — the function docstring, the `RubricReliabilityError` message, the debug
+  log line, `docs/reference/commands.md` and the test module's own title. ICC(A,1) in
+  McGraw & Wong notation is two-way random effects with absolute agreement, single rater,
+  which is pingouin's `ICC2`; `ICC1` is one-way random and folds systematic per-judge bias
+  into the error term. `scripts/compute_icc.py` already used `ICC2`, so the project was
+  computing two different statistics under one name. The scorer now selects `ICC2`
+  explicitly.
+- **Practical effect:** `ICC2 >= ICC1` whenever a rater main effect is present, so the
+  `icc_threshold` reliability gate (default 0.80) is marginally easier to pass than it was.
+  Reported ICC figures produced by the *scorer* path change; figures produced by
+  `scripts/compute_icc.py` (Gate R1) are unaffected, as it already used `ICC2`.
+- A regression test now **pins the statistic** rather than a threshold. Every pre-existing
+  ICC test asserted a range and passed with either statistic, which is how the mismatch
+  survived: `test_selects_icc2_not_icc1` builds ratings with a deliberate per-judge offset
+  so the two measurably diverge, and fails if the selection reverts to `ICC1`.
 
 ### Changed — `scripts/` is now under the lint gate
+
+- **`ruff check` now covers `scripts/`** in the Makefile `lint` target, in CI, and in
+  `CONTRIBUTING.md`. The 55 maintenance and analysis scripts were the one Python
+  directory no gate looked at, and they had accumulated 54 findings: unused imports,
+  f-strings with no placeholders, multi-import lines, and compound statements. All 54
+  are resolved and the directory is clean.
+- **`scripts/generate_tool_docs.py` no longer crashes on an empty `metadata.yaml`.**
+  `_detect_role()` read `supported_roles` off the parsed YAML inside its `try`, so a
+  file that parses to `None` raised `AttributeError` instead of returning `None`. The
+  mapping check is now explicit.
+- **`scripts/trace_diff.py`** compares types with `is not` rather than `!=`.
+- `ruff format` deliberately still covers only `src/` and `tests/`: `scripts/` is
+  lint-clean but not format-clean (46 of 51 files would be rewritten), so that
+  reformat is left to land as its own reviewable change.
 
 ### Added — comparison example
 
