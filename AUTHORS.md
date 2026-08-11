@@ -30,7 +30,14 @@ Added when a first PR merges, newest last.
   `compare runs` a `--json` flag, so AOBench can be wired into CI without scraping
   formatted tables ([PR #43](https://github.com/MSKazemi/aobench/pull/43)). Also spotted
   that the issue named a `report summary` command that does not exist, and said so
-  instead of inventing one.
+  instead of inventing one. Came back for
+  [issue #28](https://github.com/MSKazemi/aobench/issues/28) and built
+  `aobench list coverage`, which turns "where is this benchmark thin?" from a shell
+  pipeline over filenames into one command
+  ([PR #47](https://github.com/MSKazemi/aobench/pull/47)) — and, told not to parse
+  filenames, worked out for herself *why*: the `M100_` tasks carry an extra ID segment
+  that shifts every position after it. The design call on how to count those tasks was
+  hers, made and defended before anyone asked.
 
 - **LeoZhaoo** ([@LobsterQBA](https://github.com/LobsterQBA)) — took
   [issue #31](https://github.com/MSKazemi/aobench/issues/31) and wrote
@@ -47,7 +54,12 @@ Added when a first PR merges, newest last.
   docs catalogs, the RBAC policy pages and the frozen paper tables, so `ruff check` now
   covers them in CI. Narrowing their blanket `except Exception` handlers also exposed a
   latent crash in the tool-docs generator that an empty `metadata.yaml` had been able to
-  abort since the script was written.
+  abort since the script was written. Then split a second finding out of that PR rather
+  than burying it in it: the rubric reliability gate computed `ICC1` while its docstring,
+  its error message, the docs and its own test module all said `ICC(A,1)` — two different
+  statistics under one name ([PR #46](https://github.com/MSKazemi/aobench/pull/46)). The
+  gate is dormant until multi-judge scoring is switched on, which makes this the cheapest
+  moment it could possibly have been caught.
 
 <!-- Add yourself in your first PR: - **Your Name** (@handle) — what you contributed -->
 

@@ -58,7 +58,7 @@ they worked on; the line underneath says it in words.
   <span class="wall-name">Barshana Chatterjee</span>
   <span class="wall-handle"><a href="https://github.com/Barshana24">@Barshana24</a></span>
   <span class="wall-role">Contributor</span>
-  <span class="wall-tag">Machine-readable output</span>
+  <span class="wall-tag">Machine-readable output · coverage matrix</span>
 </li>
 <li>
   <span class="wall-avatar">
@@ -78,7 +78,7 @@ they worked on; the line underneath says it in words.
   <span class="wall-name">Atiqur Rahman</span>
   <span class="wall-handle"><a href="https://github.com/atiqur-rahman-pro">@atiqur-rahman-pro</a></span>
   <span class="wall-role">Contributor</span>
-  <span class="wall-tag">Lint gate for scripts/</span>
+  <span class="wall-tag">Lint gate for scripts/ · ICC(A,1) fix</span>
 </li>
 </ul>
 
@@ -86,11 +86,13 @@ they worked on; the line underneath says it in words.
 |---|---|---|
 | [@erensh27](https://github.com/erensh27) | An actionable one-line error, with tests, in place of the traceback you used to get from a mistyped `--task` or `--env` | [#25](https://github.com/MSKazemi/aobench/pull/25) |
 | [@Barshana24](https://github.com/Barshana24) | `--json` on `report json` and `compare runs`, so AOBench's numbers can be piped into `jq` instead of scraped | [#43](https://github.com/MSKazemi/aobench/pull/43) |
+| [@Barshana24](https://github.com/Barshana24) | `aobench list coverage` — the QCAT × role matrix, its thin and empty cells, and how much of each rests on real Marconi100 data | [#47](https://github.com/MSKazemi/aobench/pull/47) |
 | [@LobsterQBA](https://github.com/LobsterQBA) | `examples/05_compare_two_adapters.py` — two systems side by side with per-dimension deltas, offline | [#44](https://github.com/MSKazemi/aobench/pull/44) |
 | [@atiqur-rahman-pro](https://github.com/atiqur-rahman-pro) | `ruff check` over `scripts/` — the 55 generators behind the catalogs, RBAC pages and paper tables, previously outside every gate | [#45](https://github.com/MSKazemi/aobench/pull/45) |
+| [@atiqur-rahman-pro](https://github.com/atiqur-rahman-pro) | The rubric reliability gate now computes `ICC(A,1)`, the statistic it had always documented, instead of `ICC1` | [#46](https://github.com/MSKazemi/aobench/pull/46) |
 
 This is a young project and that is a short list. It is worth reading anyway, because one
-of those three contributions has already paid for itself: the CLI tests in #25 failed
+of those contributions has already paid for itself: the CLI tests in #25 failed
 against the maintainer's *own* overlapping implementation and exposed a ranking bug in it —
 `--task JOB_USR_00` was answering *"did you mean JOB_USR_005, JOB_USR_004, JOB_USR_003?"*
 and silently omitting `JOB_USR_001`. A second person's test found what the author's own
