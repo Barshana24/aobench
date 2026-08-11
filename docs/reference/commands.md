@@ -12,6 +12,7 @@ Reference for all AOBench CLI commands and Makefile targets.
 | `aobench list tasks` | List task IDs, filterable by `--qcat` / `--role` / `--split` / `--env` |
 | `aobench list envs` | List environment bundles and their grounding |
 | `aobench list qcats` \| `roles` \| `adapters` \| `profiles` \| `scorers` | Other views over the corpus |
+| `aobench list coverage` | QCAT x role task-count matrix, with thin cells called out |
 | `aobench validate benchmark` | Validate all task specs and environment bundles |
 | `aobench run task` | Run a single benchmark task against an environment |
 | `aobench run all` | Run all benchmark tasks (one run dir, one trace per task) |
@@ -118,7 +119,26 @@ aobench list roles                       # the 5 operator roles, with task count
 aobench list adapters                    # what you can evaluate, and what each needs
 aobench list profiles                    # scoring weight profiles and their weights
 aobench list scorers                     # the scorers behind each dimension
+aobench list coverage                    # QCAT x role task counts, and the thin cells
 ```
+
+`list coverage` answers "where is the corpus thin, and how much of it is real hardware
+data?" — the two questions you need before writing a task or citing a result:
+
+- The **main matrix** counts every task once, from the spec's own `qcat`/`role` fields.
+  Its total is always the size of the corpus; a task whose `qcat` or `role` is not one of
+  the documented ten or five widens the matrix with its own row or column rather than
+  going uncounted. (Whether such a value is *legal* is a question for
+  `aobench validate benchmark` — `list` only reports what is there.)
+- **Thin cells** hold at most one task, so a single spec carries the whole cell. **Empty
+  cells** hold none at all and are listed separately when any exist; they are a subset of
+  the thin ones, not an addition to them.
+- The **M100-grounded table** is a *subset* of the main matrix, not an addition to it —
+  those tasks are counted in both. It shows how much of any cell rests on real Marconi100
+  ExaData rather than a synthetic snapshot.
+
+Thin cells are where a contribution helps most — see
+[issue #26](https://github.com/MSKazemi/aobench/issues/26).
 
 ```bash
 # Pipe IDs straight into a loop
