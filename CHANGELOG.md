@@ -22,6 +22,25 @@
   distinguishing when the point of the command is to state coverage honestly. `--json`
   gains `empty_cells`, `cells_total`, and `m100_grounded_total`.
 
+### Fixed — the rubric reliability gate now computes the statistic it documents
+
+- **`rubric_scorer.compute_icc` selected `ICC1` while everything around it said
+  `ICC(A,1)`** — the function docstring, the `RubricReliabilityError` message, the debug
+  log line, `docs/reference/commands.md` and the test module's own title. ICC(A,1) in
+  McGraw & Wong notation is two-way random effects with absolute agreement, single rater,
+  which is pingouin's `ICC2`; `ICC1` is one-way random and folds systematic per-judge bias
+  into the error term. `scripts/compute_icc.py` already used `ICC2`, so the project was
+  computing two different statistics under one name. The scorer now selects `ICC2`
+  explicitly.
+- **Practical effect:** `ICC2 >= ICC1` whenever a rater main effect is present, so the
+  `icc_threshold` reliability gate (default 0.80) is marginally easier to pass than it was.
+  Reported ICC figures produced by the *scorer* path change; figures produced by
+  `scripts/compute_icc.py` (Gate R1) are unaffected, as it already used `ICC2`.
+- A regression test now **pins the statistic** rather than a threshold. Every pre-existing
+  ICC test asserted a range and passed with either statistic, which is how the mismatch
+  survived: `test_selects_icc2_not_icc1` builds ratings with a deliberate per-judge offset
+  so the two measurably diverge, and fails if the selection reverts to `ICC1`.
+
 ### Changed — `scripts/` is now under the lint gate
 
 - **`ruff check` now covers `scripts/`** in the Makefile `lint` target, in CI, and in
