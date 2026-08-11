@@ -86,6 +86,7 @@ def compute_icc(ratings: list[list[float]]) -> float:
     if n_dims < 2:
         raise ValueError("compute_icc requires at least 2 dimensions (targets).")
 
+    # Format for pingouin: targets=dimensions, raters=judges
     rows = []
     for judge_idx, judge_scores in enumerate(ratings):
         for dim_idx, score in enumerate(judge_scores):
@@ -102,7 +103,11 @@ def compute_icc(ratings: list[list[float]]) -> float:
         ratings="rating",
         nan_policy="raise",
     )
-    icc_val = icc_table[icc_table["Type"] == "ICC1"]["ICC"].values[0]
+    # ICC2 / ICC(A,1) = two-way random effects, absolute agreement, single rater
+    matching = icc_table[icc_table["Type"].isin(["ICC2", "ICC(A,1)"])]
+    if matching.empty:
+        raise ValueError("Could not find ICC2 / ICC(A,1) in intraclass_corr result.")
+    icc_val = matching["ICC"].values[0]
     return float(icc_val)
 
 
