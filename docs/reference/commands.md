@@ -12,6 +12,7 @@ Reference for all AOBench CLI commands and Makefile targets.
 | `aobench list tasks` | List task IDs, filterable by `--qcat` / `--role` / `--split` / `--env` |
 | `aobench list envs` | List environment bundles and their grounding |
 | `aobench list qcats` \| `roles` \| `adapters` \| `profiles` \| `scorers` | Other views over the corpus |
+| `aobench list coverage` | QCAT x role task-count matrix, with thin cells called out |
 | `aobench validate benchmark` | Validate all task specs and environment bundles |
 | `aobench run task` | Run a single benchmark task against an environment |
 | `aobench run all` | Run all benchmark tasks (one run dir, one trace per task) |
@@ -118,6 +119,7 @@ aobench list roles                       # the 5 operator roles, with task count
 aobench list adapters                    # what you can evaluate, and what each needs
 aobench list profiles                    # scoring weight profiles and their weights
 aobench list scorers                     # the scorers behind each dimension
+aobench list coverage                    # QCAT x role task counts, and the thin cells
 ```
 
 ```bash

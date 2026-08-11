@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Added — `aobench list coverage`
+
+- **`aobench list coverage`** prints the QCAT x role task-count matrix (issue #28).
+  Until now, finding a thin cell meant a shell pipeline over `benchmark/tasks/specs/`
+  filenames; counts now come from each TaskSpec's own `qcat`/`role` fields instead,
+  which also sidesteps the 8 `M100_*` tasks silently miscounting under a filename-parsing
+  approach (their task_id carries an extra segment). Thin cells (<=1 task) are called
+  out explicitly, and a second table breaks out the M100-grounded subset on its own, so
+  it stays visible how much of any cell's coverage is real hardware data versus
+  synthetic. `--json` matches every other `aobench list` subcommand.
+
 ### Changed — `scripts/` is now under the lint gate
 
 - **`ruff check` now covers `scripts/`** in the Makefile `lint` target, in CI, and in

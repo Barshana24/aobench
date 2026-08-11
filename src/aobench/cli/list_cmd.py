@@ -53,6 +53,16 @@ _ROLE_DESCRIPTIONS: dict[str, str] = {
     "system_designer": "Plans future systems; architecture and capacity questions",
 }
 
+# Role -> the short code already used in every non-M100 task_id, e.g. JOB_USR_004.
+# Order matches the column order in issue #28's own example output (USR SYS RES FAC DES).
+_ROLE_CODES: dict[str, str] = {
+    "scientific_user": "USR",
+    "sysadmin": "SYS",
+    "researcher": "RES",
+    "facility_admin": "FAC",
+    "system_designer": "DES",
+}
+
 
 def _load_specs(root: Path) -> list[dict[str, Any]]:
     spec_dir = root / "tasks" / "specs"
@@ -288,3 +298,79 @@ def list_scorers(
         for scorer in AggregateScorer.scorers()
     ]
     _emit(rows, ["dimension", "scorer", "description"], as_json)
+
+
+@list_app.command("coverage")
+def list_coverage(
+    as_json: bool = typer.Option(False, "--json", help="Emit JSON instead of a table."),
+    benchmark_root: str = typer.Option("benchmark", "--benchmark-root"),
+) -> None:
+    """Show the QCAT x role task-count matrix, and call out the thin cells."""
+    # Counts come from each TaskSpec's own qcat/role fields, not from parsing task_id
+    # strings: the 8 M100_* tasks carry an extra "M100_" segment that shifts every
+    # position after it, so a filename-parsing approach silently miscounts them.
+    # M100 tasks are otherwise ordinary tasks with real qcat/role metadata, so they're
+    # included in the main matrix like any other task; a second table below breaks out
+    # just the M100-grounded subset, so it stays visible how much of any cell's
+    # coverage is grounded in real Marconi100 data versus synthetic.
+    specs = _load_specs(resolve_root(benchmark_root))
+
+    qcats = sorted(_QCAT_DESCRIPTIONS)
+    roles = list(_ROLE_CODES)  # fixed, documented order rather than alphabetical
+    codes = [_ROLE_CODES[r] for r in roles]
+
+    def _build_matrix(rows_in: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
+        matrix: dict[str, dict[str, int]] = {q: dict.fromkeys(roles, 0) for q in qcats}
+        for s in rows_in:
+            qcat, role = str(s.get("qcat", "")), str(s.get("role", ""))
+            if qcat in matrix and role in roles:
+                matrix[qcat][role] += 1
+        return matrix
+
+    matrix = _build_matrix(specs)
+    m100_matrix = _build_matrix([s for s in specs if str(s.get("task_id", "")).startswith("M100_")])
+
+    def _rows(m: dict[str, dict[str, int]]) -> list[dict[str, Any]]:
+        out = []
+        for q in qcats:
+            row: dict[str, Any] = {"qcat": q}
+            row.update({_ROLE_CODES[r]: m[q][r] for r in roles})
+            row["total"] = sum(m[q][r] for r in roles)
+            out.append(row)
+        return out
+
+    main_rows = _rows(matrix)
+    total_tasks = sum(r["total"] for r in main_rows)
+    thin_cells = sorted(
+        f"{q}_{_ROLE_CODES[r]}" for q in qcats for r in roles if matrix[q][r] <= 1
+    )
+
+    if as_json:
+        typer.echo(
+            json.dumps(
+                {
+                    "qcat_role_counts": main_rows,
+                    "total_tasks": total_tasks,
+                    "thin_cells": thin_cells,
+                    "m100_grounded_counts": _rows(m100_matrix),
+                },
+                indent=2,
+            )
+        )
+        return
+
+    typer.echo(f"QCAT x role task counts ({total_tasks} tasks)\n")
+    _emit(main_rows, ["qcat", *codes, "total"], False)
+
+    typer.echo(
+        f"\nThin cells ({len(thin_cells)}, <=1 task): {', '.join(thin_cells)}"
+        if thin_cells
+        else "\nNo thin cells."
+    )
+
+    grounded_rows = [r for r in _rows(m100_matrix) if r["total"] > 0]
+    typer.echo(
+        f"\nM100-grounded tasks ({sum(r['total'] for r in grounded_rows)} total, "
+        "real Marconi100 ExaData):\n"
+    )
+    _emit(grounded_rows, ["qcat", *codes, "total"], False)

@@ -129,6 +129,55 @@ def test_list_adapters_needs_no_corpus(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "direct_qa" in result.output
 
 
+def test_list_coverage_totals_match_the_corpus_size() -> None:
+    result = runner.invoke(app, ["list", "coverage", "--json"])
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.output)
+
+    tasks_result = runner.invoke(app, ["list", "tasks", "--json"])
+    corpus_size = len(json.loads(tasks_result.output))
+
+    assert payload["total_tasks"] == corpus_size
+    assert sum(row["total"] for row in payload["qcat_role_counts"]) == corpus_size
+    assert len(payload["qcat_role_counts"]) == 10  # every QCAT gets a row, even if thin
+
+
+def test_list_coverage_json_matches_the_table() -> None:
+    json_result = runner.invoke(app, ["list", "coverage", "--json"])
+    table_result = runner.invoke(app, ["list", "coverage"])
+    assert json_result.exit_code == 0, json_result.output
+    assert table_result.exit_code == 0, table_result.output
+
+    payload = json.loads(json_result.output)
+    for row in payload["qcat_role_counts"]:
+        assert row["qcat"] in table_result.output
+        assert str(row["total"]) in table_result.output
+
+
+def test_list_coverage_calls_out_thin_cells() -> None:
+    result = runner.invoke(app, ["list", "coverage", "--json"])
+    payload = json.loads(result.output)
+    assert payload["thin_cells"], "expected at least one thin cell in the current corpus"
+    for cell in payload["thin_cells"]:
+        qcat, code = cell.rsplit("_", 1)
+        row = next(r for r in payload["qcat_role_counts"] if r["qcat"] == qcat)
+        assert row[code] <= 1
+
+
+def test_list_coverage_m100_subset_matches_grounded_task_count() -> None:
+    """Cross-check against ``list tasks --grounded`` rather than a hardcoded count.
+
+    The corpus grows as contributors add tasks (CONTRIBUTING.md invites exactly that),
+    so this must hold for whatever the M100-grounded count happens to be, not today's 8.
+    """
+    coverage_result = runner.invoke(app, ["list", "coverage", "--json"])
+    grounded_result = runner.invoke(app, ["list", "tasks", "--grounded", "--json"])
+    payload = json.loads(coverage_result.output)
+    grounded_count = len(json.loads(grounded_result.output))
+
+    assert sum(row["total"] for row in payload["m100_grounded_counts"]) == grounded_count
+
+
 # ---------------------------------------------------------------------------
 # quickstart
 # ---------------------------------------------------------------------------
