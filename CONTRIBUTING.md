@@ -256,27 +256,19 @@ Write tests in `tests/unit/test_my_scorer.py`.
 - Each PR should do one thing
 - The CI workflow (`.github/workflows/ci.yml`) must pass
 
-## License and sign-off
+## License
 
-By contributing, you agree that your contributions will be licensed under the Apache 2.0 License.
+**There is nothing to sign.** No CLA, no DCO sign-off line, no `git commit -s`, no box to
+tick, no account to create, and nothing for an employer's legal team to review. Opening the
+pull request is the whole contract.
 
-**There is no CLA.** AOBench uses a
-[Developer Certificate of Origin](https://github.com/MSKazemi/aobench/blob/main/DCO.md) — the same one the Linux
-kernel uses. There is nothing to sign, no account to create, and nothing for your employer's legal team
-to review. You simply certify that you wrote the change and are allowed to submit it, by adding one
-line to your commit:
+Apache-2.0 already grants the licence, in section 5:
 
-```
-Signed-off-by: Your Name <your.email@example.com>
-```
+> Unless You explicitly state otherwise, any Contribution intentionally submitted for
+> inclusion in the Work by You to the Licensor shall be under the terms and conditions of
+> this License, without any additional terms or conditions.
 
-Git writes it for you with `-s`:
-
-```bash
-git commit -s -m "your message"
-```
-
-Forgot it? `git commit --amend --signoff && git push --force-with-lease`. Want it always on?
-`git config --global format.signOff true`.
+A sign-off would re-certify what the licence has already done, at the cost of a red check on
+somebody's first pull request. Nothing checks for one, so there is nothing you can get wrong.
 
 **You keep the copyright in your work.** AOBench is Apache-2.0 and stays that way.
