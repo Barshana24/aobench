@@ -45,7 +45,13 @@ Added when a first PR merges, newest last.
   for and the one thing the first four examples never showed
   ([PR #44](https://github.com/MSKazemi/aobench/pull/44)). It reuses `aobench compare runs`
   rather than re-deriving the deltas, and registers itself in the example smoke tests, so
-  the README's promise that a broken example breaks the build stays true.
+  the README's promise that a broken example breaks the build stays true. Came back for
+  [issue #3](https://github.com/MSKazemi/aobench/issues/3) and taught `aobench report` to
+  say what went wrong when a run directory is missing or empty — naming the path, listing
+  the runs that *do* exist, and separating "you typed the wrong path" from "the run
+  produced nothing" ([PR #48](https://github.com/MSKazemi/aobench/pull/48)). He also
+  disclosed his use of AI assistance unprompted and reported exactly which gates he had
+  and had not been able to run, which is the part that made the review cheap.
 
 - **Atiqur Rahman** ([@atiqur-rahman-pro](https://github.com/atiqur-rahman-pro)) — noticed
   that `scripts/` was the one Python directory sitting outside every quality gate, and did

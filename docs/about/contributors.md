@@ -68,7 +68,7 @@ they worked on; the line underneath says it in words.
   <span class="wall-name">LeoZhaoo</span>
   <span class="wall-handle"><a href="https://github.com/LobsterQBA">@LobsterQBA</a></span>
   <span class="wall-role">Contributor</span>
-  <span class="wall-tag">Side-by-side comparison</span>
+  <span class="wall-tag">Side-by-side comparison · report error messages</span>
 </li>
 <li>
   <span class="wall-avatar">
@@ -88,6 +88,7 @@ they worked on; the line underneath says it in words.
 | [@Barshana24](https://github.com/Barshana24) | `--json` on `report json` and `compare runs`, so AOBench's numbers can be piped into `jq` instead of scraped | [#43](https://github.com/MSKazemi/aobench/pull/43) |
 | [@Barshana24](https://github.com/Barshana24) | `aobench list coverage` — the QCAT × role matrix, its thin and empty cells, and how much of each rests on real Marconi100 data | [#47](https://github.com/MSKazemi/aobench/pull/47) |
 | [@LobsterQBA](https://github.com/LobsterQBA) | `examples/05_compare_two_adapters.py` — two systems side by side with per-dimension deltas, offline | [#44](https://github.com/MSKazemi/aobench/pull/44) |
+| [@LobsterQBA](https://github.com/LobsterQBA) | `aobench report` now names a missing run directory and lists the runs that exist, instead of raising a traceback | [#48](https://github.com/MSKazemi/aobench/pull/48) |
 | [@atiqur-rahman-pro](https://github.com/atiqur-rahman-pro) | `ruff check` over `scripts/` — the 55 generators behind the catalogs, RBAC pages and paper tables, previously outside every gate | [#45](https://github.com/MSKazemi/aobench/pull/45) |
 | [@atiqur-rahman-pro](https://github.com/atiqur-rahman-pro) | The rubric reliability gate now computes `ICC(A,1)`, the statistic it had always documented, instead of `ICC1` | [#46](https://github.com/MSKazemi/aobench/pull/46) |
 
