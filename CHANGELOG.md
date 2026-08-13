@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed — `aobench report` explains missing or empty runs
+
+- **`aobench report <sub> <run_dir>` no longer wraps common run-directory mistakes in a traceback** (issue #3). A path that does not exist now names the missing directory, lists up to ten sibling run directories when available, and exits 2. A run directory with no completed result files now explains that it contains no results and gives the offline `direct_qa` re-run command. The guard covers `json`, `html`, `slices` and `governance` alike, so `make report` fails the same way at every step. Valid report output is unchanged.
+
 ### Added — `aobench list coverage`
 
 - **`aobench list coverage`** prints the QCAT x role task-count matrix (issue #28).

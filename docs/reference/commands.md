@@ -472,6 +472,11 @@ Generate reports from a completed benchmark run directory.
 aobench report [OPTIONS] COMMAND [ARGS]...
 ```
 
+Every `report` subcommand validates `RUN_DIR` before doing any work. If the path does not
+exist, the command names it and lists up to ten sibling run directories. If it exists but
+holds no completed result files, the command says so separately and prints an offline
+re-run command. Both cases exit with code 2 and print no traceback.
+
 #### report json
 
 Write a JSON summary of all results in a run directory.
